@@ -2,23 +2,34 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Grade curricular</title>
-    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Grade Curricular</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="modalidade">
+        <button id="toggleMode" data-mode="grade">Ver Planejamento</button>
+    </div>
+    <div class="seletor">
+        <h2>Selecione o seu período</h2>
+        <select>
+            <option value="">Selecione um período</option>
+            <option value="1">1°</option>
+            <option value="2">2°</option>
+            <option value="3">3°</option>
+            <option value="4">4°</option>
+            <option value="5">5°</option>
+            <option value="6">6°</option>
+            <option value="7">7°</option>
+            <option value="8">8°</option>
+            <option value="9">9°</option>
+            <option value="10">10°</option>
+        </select>
+        <h2>Selecione as matérias já cursadas</h2>
+    </div>
     <div class="painel">
-        
+        <!-- Conteúdo do painel -->
     </div>
-    <div id="detalhesLayer" class="detalhes-layer">
-    <div class="detalhes-conteudo">
-        <h2 id="detalhesTitulo"></h2>
-        <p id="detalhesDescricao"></p>
-        <h3>Pré-Requisitos</h3>
-        <ul id="detalhesPreRequisitos"></ul>
-        <button id="fecharDetalhes">Fechar</button>
-    </div>
-</div>
     <script src="db.js"></script>
     <script src="index.js"></script>
 </body>

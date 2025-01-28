@@ -1,5 +1,7 @@
 function criarPainel(cursoEngenharia) {
     const painel = document.querySelector('.painel');
+    painel.style.display = "flex";
+    painel.innerHTML = "";
 
     for (let chave in cursoEngenharia) {
         const periodo = cursoEngenharia[chave];
@@ -19,32 +21,50 @@ function criarPainel(cursoEngenharia) {
 
         // Adiciona as matérias
         periodo.materias.forEach((materia) => {
-            const divMateria = document.createElement('div');
-            divMateria.className = `materia ${materia.tipo}`;
-            divMateria.innerHTML = `
-                <p>${materia.nome}</p>
-                <p>${materia.credito} Créditos</p>
-            `;
+    const divMateria = document.createElement('div');
+    divMateria.className = `materia ${materia.tipo}`;
+    
+    divMateria.innerHTML = `
+        <p>${materia.nome}</p>
+        <p>${materia.credito} Créditos</p>
+    `;
 
-            // Adiciona a bolinha de notificação se houver pré-requisitos
-            const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
-            if (preRequisitos.length > 0) {
-                const notificacao = document.createElement('div');
-                notificacao.className = 'notificacao';
-                notificacao.textContent = preRequisitos.length;
-                divMateria.appendChild(notificacao);
-            }
+    // Adiciona a bolinha de notificação se houver pré-requisitos
+    const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
+    if (preRequisitos.length > 0) {
+        const notificacao = document.createElement('div');
+        notificacao.className = 'notificacao';
+        notificacao.textContent = preRequisitos.length;
+        divMateria.appendChild(notificacao);
+    }
 
-            // Adiciona o evento de clique para mostrar os detalhes
-            divMateria.addEventListener('click', () => {
-                mostrarDetalhes(materia);
-            });
+    // Se o período está cumprido, desabilita o clique
+    const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
+    if (todasCumpridas) {
+        divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
+        divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
+    }
 
-            divPeriodo.appendChild(divMateria);
-        });
+    // Adiciona o evento de clique para mostrar os detalhes
+    divMateria.addEventListener('click', () => {
+        if (!todasCumpridas) {  // Verifica se o período não está cumprido
+            mostrarDetalhes(materia);
+        }
+    });
+
+    divPeriodo.appendChild(divMateria);
+});
 
         // Adiciona o período ao painel
         painel.appendChild(divPeriodo);
+
+        // Controla o overflow do período (ativa ou desativa dependendo se cumprido)
+        const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
+        if (todasCumpridas) {
+            divPeriodo.style.overflow = 'hidden'; // Desativa a rolagem para períodos cumpridos
+        } else {
+            divPeriodo.style.overflow = 'auto'; // Ativa a rolagem para períodos não cumpridos
+        }
     }
 
     // Configura o Intersection Observer para resetar o scroll
@@ -70,11 +90,12 @@ function criarPainel(cursoEngenharia) {
         observer.observe(periodo);
     });
 }
+
 function mostrarDetalhes(materia) {
-    const detalhesLayer = document.getElementById('detalhesLayer');
-    const detalhesTitulo = document.getElementById('detalhesTitulo');
-    const detalhesDescricao = document.getElementById('detalhesDescricao');
-    const detalhesPreRequisitos = document.getElementById('detalhesPreRequisitos');
+    const detalhesLayer = document.querySelector('#detalhesLayer');
+    const detalhesTitulo = document.querySelector('#detalhesTitulo');
+    const detalhesDescricao = document.querySelector('#detalhesDescricao');
+    const detalhesPreRequisitos = document.querySelector('#detalhesPreRequisitos');
 
     // Preenche os detalhes com as informações da matéria
     detalhesTitulo.textContent = materia.nome;
@@ -98,13 +119,256 @@ function mostrarDetalhes(materia) {
     // Exibe o layer de detalhes
     detalhesLayer.style.display = 'flex';
 }
+// Chama a função para criar o layer ao carregar o script
+
+criarLayerDetalhes();
 // Adiciona o evento para fechar o layer
-document.getElementById('fecharDetalhes').addEventListener('click', () => {
-    document.getElementById('detalhesLayer').style.display = 'none';
+document.querySelector('#fecharDetalhes').addEventListener('click', () => {
+    document.querySelector('#detalhesLayer').style.display = 'none';
 });
 
-document.getElementById('detalhesLayer').addEventListener("click", ()=>{
-    document.getElementById('detalhesLayer').style.display = 'none';
+// Fecha o layer ao clicar na área fora do conteúdo
+document.querySelector('#detalhesLayer').addEventListener('click', (event) => {
+    if (event.target.id === 'detalhesLayer') {
+        document.querySelector('#detalhesLayer').style.display = 'none';
+    }
 });
 
-criarPainel(cursoEngenharia)
+//criarPainel(cursoEngenharia);
+
+function criarLayerDetalhes() {
+    // Cria o layer principal
+    const detalhesLayer = document.createElement('div');
+    detalhesLayer.id = 'detalhesLayer';
+    detalhesLayer.className = 'detalhes-layer';
+
+    // Cria o container interno
+    const detalhesContainer = document.createElement('div');
+    detalhesContainer.className = 'detalhes-conteudo';
+
+    // Cria o título
+    const detalhesTitulo = document.createElement('h2');
+    detalhesTitulo.id = 'detalhesTitulo';
+
+    // Cria a descrição
+    const detalhesDescricao = document.createElement('p');
+    detalhesDescricao.id = 'detalhesDescricao';
+
+    // Cria o subtítulo de pré-requisitos
+    const subtituloPreRequisitos = document.createElement('h3');
+    subtituloPreRequisitos.textContent = 'Pré-Requisitos';
+
+    // Cria a lista de pré-requisitos
+    const detalhesPreRequisitos = document.createElement('ul');
+    detalhesPreRequisitos.id = 'detalhesPreRequisitos';
+
+    // Cria o botão de fechar
+    const fecharBtn = document.createElement('button');
+    fecharBtn.id = 'fecharDetalhes';
+    fecharBtn.textContent = 'Fechar';
+    fecharBtn.addEventListener('click', () => {
+        detalhesLayer.style.display = 'none';
+    });
+
+    // Monta o container interno
+    detalhesContainer.appendChild(detalhesTitulo);
+    detalhesContainer.appendChild(detalhesDescricao);
+    detalhesContainer.appendChild(subtituloPreRequisitos);
+    detalhesContainer.appendChild(detalhesPreRequisitos);
+    detalhesContainer.appendChild(fecharBtn);
+
+    // Adiciona o container ao layer principal
+    detalhesLayer.appendChild(detalhesContainer);
+
+    // Adiciona o layer ao body
+    document.body.appendChild(detalhesLayer);
+
+    // Adiciona o evento para fechar ao clicar fora do conteúdo
+    detalhesLayer.addEventListener('click', (event) => {
+        if (event.target.id === 'detalhesLayer') {
+            detalhesLayer.style.display = 'none';
+        }
+    });
+}
+
+function criarSeletor(cursoEngenharia) {
+    
+    const seletor = document.querySelector('.seletor');
+
+    // Itera por todos os períodos no objeto cursoEngenharia
+    for (const chave in cursoEngenharia) {
+        const periodo = cursoEngenharia[chave];
+
+        // Adiciona título do período
+        const titulo = document.createElement('h3');
+        titulo.textContent = `${periodo.semestre}° Período`;
+        seletor.appendChild(titulo);
+
+        // Adiciona botão para selecionar todas as matérias do período
+        const selecionarTodas = document.createElement('label');
+        selecionarTodas.classList = "todosLabel";
+        selecionarTodas.innerHTML = `
+            <input type="checkbox" class="selecionar-todas"> Todas
+        `;
+        seletor.appendChild(selecionarTodas);
+
+        // Container para as matérias
+        const materiasContainer = document.createElement('div');
+        materiasContainer.className = 'materias-container';
+
+        // Adiciona cada matéria do período como checkbox
+        periodo.materias.forEach((materia) => {
+            const checkboxContainer = document.createElement('label');
+            checkboxContainer.innerHTML = `
+               ${materia.sigla} <input type="checkbox" class="materia-checkbox" value="${materia.nome}">
+                
+            `;
+            materiasContainer.appendChild(checkboxContainer);
+        });
+
+        // Adiciona funcionalidade ao botão "selecionar todas"
+        const selecionarTodasCheckbox = selecionarTodas.querySelector('input');
+        selecionarTodasCheckbox.addEventListener('change', () => {
+            const checkboxes = materiasContainer.querySelectorAll('.materia-checkbox');
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = selecionarTodasCheckbox.checked;
+            });
+        });
+
+        // Adiciona o container de matérias ao seletor
+    
+    seletor.appendChild(materiasContainer);
+    }
+}
+
+// Exemplo de chamada da função
+criarSeletor(cursoEngenharia)
+
+// Adiciona um botão para capturar os valores selecionados
+document.querySelector('.seletor').addEventListener('change', () => {
+    const selecionados = Array.from(document.querySelectorAll('.materia-checkbox:checked'))
+        .map((checkbox) => checkbox.value);
+        criarPainel(cursoEngenharia)
+ atualizarEstadoMaterias(cursoEngenharia)
+});
+
+function atualizarEstadoMaterias(cursoEngenharia) {
+    const todosOsPeriodos = document.querySelectorAll(".periodo");
+
+    todosOsPeriodos.forEach((divPeriodo, index) => {
+        const periodoKey = Object.keys(cursoEngenharia)[index];
+        const periodo = cursoEngenharia[periodoKey];
+
+        // Verifica se todas as matérias do período estão cumpridas
+        const todasCumpridas = periodo.materias.every((materia) => estaCumprido(materia.nome));
+
+        if (todasCumpridas) {
+            divPeriodo.style.backgroundColor = 'gray'; // Marca o período como cumprido
+            divPeriodo.style.overflow = 'hidden'; // Desabilita o overflow para períodos cumpridos
+            divPeriodo.classList.add('cumprido'); // Adiciona a classe 'cumprido' para efeitos visuais
+            adicionarOverlay(divPeriodo); // Adiciona a sobreposição visual
+        } else {
+            divPeriodo.style.backgroundColor = ''; // Remove o estilo se não estiver cumprido
+            divPeriodo.style.overflow = 'auto'; // Permite o overflow para períodos não cumpridos
+            divPeriodo.classList.remove('cumprido'); // Remove a classe 'cumprido' para efeitos visuais
+            removerOverlay(divPeriodo); // Remove a sobreposição visual se não cumprido
+        }
+
+        // Atualiza o estado de cada matéria no período
+        const materiasElements = divPeriodo.querySelectorAll('.materia');
+        materiasElements.forEach((materiaElement) => {
+            const nomeMateria = materiaElement.querySelector('p').textContent;
+            const materia = encontrarMateria(cursoEngenharia, nomeMateria);
+            const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
+
+            if (preRequisitos.length === 0 || preRequisitos.every(pr => estaCumprido(pr))) {
+                // Matéria pode ser cumprida
+                if (estaCumprido(nomeMateria)) {
+                    removedorDeClasse(materiaElement, 'cumprida'); // Matéria já cumprida
+                } else {
+                    removedorDeClasse(materiaElement, 'pendente'); // Matéria pendente, mas liberada
+                }
+            } else {
+                // Matéria não pode ser cumprida (pré-requisitos não atendidos)
+                removedorDeClasse(materiaElement, 'bloqueada');
+            }
+        });
+    });
+}
+
+// Função para adicionar o overlay visual
+function adicionarOverlay(periodoElement) {
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+    overlay.innerText = 'Já Cumprido';
+    periodoElement.appendChild(overlay);
+}
+
+// Função para remover o overlay visual
+function removerOverlay(periodoElement) {
+    const overlay = periodoElement.querySelector('.overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+/// remove classes 
+function removedorDeClasse(elemento, classe) {
+    elemento.classList.remove("curso");
+    elemento.classList.remove("geral");
+    elemento.classList.remove("optativa");
+    elemento.classList.remove("estagio");
+    elemento.classList.remove("tcc");
+    elemento.classList.remove("especifica");
+    elemento.className = `materia ${classe}`;
+}
+
+
+// Função para verificar se a matéria está cumprida (se está marcada no checkbox)
+function estaCumprido(nomeMateria) {
+    const checkboxes = document.querySelectorAll('.materia-checkbox');
+    for (let checkbox of checkboxes) {
+        if (checkbox.value === nomeMateria && checkbox.checked) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Função para encontrar a matéria no objeto de cursoEngenharia
+function encontrarMateria(cursoEngenharia, nomeMateria) {
+    for (const periodoKey in cursoEngenharia) {
+        const periodo = cursoEngenharia[periodoKey];
+        for (const materia of periodo.materias) {
+            if (materia.nome === nomeMateria) {
+                return materia;
+            }
+        }
+    }
+    return null;
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.getElementById('toggleMode');
+    const seletor = document.querySelector('.seletor');
+    const painel = document.querySelector(".painel");
+    
+
+    toggleButton.addEventListener('click', () => {
+        const mode = toggleButton.getAttribute('data-mode');
+        painel.innerHTML = ""
+        if (mode === 'grade') {
+            // Exibir a grade inteira
+            seletor.classList.add('hidden');
+            criarPainel(cursoEngenharia)
+            toggleButton.textContent = 'Ver Planejamento';
+            toggleButton.setAttribute('data-mode', 'planejamento');
+        } else {
+            // Exibir o planejamento
+            seletor.classList.remove('hidden');
+            toggleButton.textContent = 'Ver Grade Inteira';
+            toggleButton.setAttribute('data-mode', 'grade');
+        }
+    });
+});
