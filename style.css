@@ -136,7 +136,7 @@ body {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
     display: none;
-    z-index: 2;
+    z-index: 99;
     justify-content: center;
     align-items: center;
     padding: 2rem;
@@ -512,6 +512,7 @@ body {
 
     .materia {
         width: 80%;
+        
     }
 
     .detalhes-layer {

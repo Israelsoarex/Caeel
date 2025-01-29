@@ -41,13 +41,15 @@ function criarPainel(cursoEngenharia) {
     // Se o período está cumprido, desabilita o clique
     const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
     if (todasCumpridas) {
-        divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
+        //divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
        // divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
     }
 
     // Adiciona o evento de clique para mostrar os detalhes
     divMateria.addEventListener('click', () => {
-        if (!todasCumpridas) {  // Verifica se o período não está cumprido
+        const mode = document.querySelector('#toggleMode').getAttribute('data-mode');
+        
+        if (!todasCumpridas || mode === 'planejamento') {  // Verifica se o período não está cumprido
             mostrarDetalhes(materia);
         }
     });
@@ -358,8 +360,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mode === 'grade') {
             // Exibir a grade inteira
             generateCourseColors();
-            
+            criarLayerDetalhes();
 criarPainel(cursoEngenharia);
+
 const periodos = document.querySelectorAll('.periodo');
             periodos.forEach(periodo => {
                 const materias = periodo.querySelectorAll('.materia');
