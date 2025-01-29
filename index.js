@@ -388,7 +388,18 @@ function salvarMateriasCumpridas() {
 
     // Salva no localStorage
     localStorage.setItem('materiasCumpridas', JSON.stringify(materiasCumpridas));
-    alert('Matérias salvas com sucesso!');
+
+    // Exibe notificação
+    Toastify({
+        text: "Matérias salvas com sucesso!",
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#4CAF50"
+    }).showToast();
+
+    // Recarrega a página após 3 segundos
+    setTimeout(() => location.reload(), 3000);
 }
 
 function limparMateriasCumpridas() {
@@ -396,13 +407,20 @@ function limparMateriasCumpridas() {
     localStorage.removeItem('materiasCumpridas');
 
     // Desmarca todos os checkboxes
-    const checkboxes = document.querySelectorAll('.materia-checkbox');
-    checkboxes.forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll('.materia-checkbox').forEach(checkbox => checkbox.checked = false);
 
-    alert('Matérias limpas com sucesso!');
-    atualizarEstadoMaterias(cursoEngenharia); // Atualiza o estado visual das matérias
+    // Exibe notificação
+    Toastify({
+        text: "Matérias limpas com sucesso!",
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#4CAF50"
+    }).showToast();
+
+    // Recarrega a página após 3 segundos
+    setTimeout(() => location.reload(), 3000);
 }
-
 document.getElementById('salvar').addEventListener('click', salvarMateriasCumpridas);
 document.getElementById('limpar').addEventListener('click', limparMateriasCumpridas);
 

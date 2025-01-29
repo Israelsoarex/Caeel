@@ -494,3 +494,47 @@ body {
     font-size: 20px;
     font-weight: bold;
 }
+@media (min-width: 1024px) {
+    .painel {
+        display: flex; 
+        align-items: flex-start;
+    }
+
+    .periodo {
+        min-width: 30%;
+        height: 85vh;
+        margin: 1rem;
+        overflow-y: auto;
+    }
+    .periodo:first-child {
+        margin: 1rem .5rem .5rem 3rem;
+    }
+
+    .materia {
+        width: 80%;
+        padding: 1rem;
+    }
+
+    .detalhes-layer {
+        padding: 4rem;
+    }
+
+    .detalhes-conteudo {
+        max-width: 600px;
+        padding: 2.5rem;
+    }
+
+    .seletor {
+        max-width: 400px;
+        padding: 2rem;
+    }
+
+    .modalidade {
+        justify-content: center;
+    }
+
+    #coloGraph {
+        margin: 2rem 0 1rem 0;
+        justify-content: center;
+    }
+}
