@@ -5,14 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Grade Curricular</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <div class="modalidade">
-        <button id="toggleMode" data-mode="grade">Ver Planejamento</button>
+    <nav class="navbar">
+    <div class="nav-logo">
+        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
     </div>
-    <div class="seletor">
+</nav>
+    <div class="imagem">
+        <img src="lobo.webp" alt=""></img>
+    </div>
+    <div class="modalidade">
+        <button id="toggleMode" data-mode="grade">Ver Grade Inteira</button>
+    </div>
+    <div class="seletor hidden">
         <h2>Selecione o seu período</h2>
-        <select>
+        <select id="periodo">
             <option value="">Selecione um período</option>
             <option value="1">1°</option>
             <option value="2">2°</option>
@@ -26,7 +35,13 @@
             <option value="10">10°</option>
         </select>
         <h2>Selecione as matérias já cursadas</h2>
+        <div id="materias"></div> <!-- Área para listar as matérias -->
+        <button id="salvar">Salvar Matérias</button>
+        <button id="limpar">Limpar Matérias</button>
     </div>
+    <div id="coloGraph">
+    
+</div>
     <div class="painel">
         <!-- Conteúdo do painel -->
     </div>

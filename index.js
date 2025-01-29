@@ -9,7 +9,7 @@ function criarPainel(cursoEngenharia) {
         // Cria a div do período
         const divPeriodo = document.createElement('div');
         divPeriodo.className = 'periodo';
-
+        
         // Adiciona o título do período
         const tituloPeriodo = document.createElement('div');
         tituloPeriodo.className = 'top';
@@ -42,7 +42,7 @@ function criarPainel(cursoEngenharia) {
     const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
     if (todasCumpridas) {
         divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
-        divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
+       // divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
     }
 
     // Adiciona o evento de clique para mostrar os detalhes
@@ -269,7 +269,7 @@ function atualizarEstadoMaterias(cursoEngenharia) {
             adicionarOverlay(divPeriodo); // Adiciona a sobreposição visual
         } else {
             divPeriodo.style.backgroundColor = ''; // Remove o estilo se não estiver cumprido
-            divPeriodo.style.overflow = 'auto'; // Permite o overflow para períodos não cumpridos
+            divPeriodo.style.overflow = 'scroll'; // Permite o overflow para períodos não cumpridos
             divPeriodo.classList.remove('cumprido'); // Remove a classe 'cumprido' para efeitos visuais
             removerOverlay(divPeriodo); // Remove a sobreposição visual se não cumprido
         }
@@ -294,6 +294,7 @@ function atualizarEstadoMaterias(cursoEngenharia) {
             }
         });
     });
+    
 }
 
 // Função para adicionar o overlay visual
@@ -325,13 +326,8 @@ function removedorDeClasse(elemento, classe) {
 
 // Função para verificar se a matéria está cumprida (se está marcada no checkbox)
 function estaCumprido(nomeMateria) {
-    const checkboxes = document.querySelectorAll('.materia-checkbox');
-    for (let checkbox of checkboxes) {
-        if (checkbox.value === nomeMateria && checkbox.checked) {
-            return true;
-        }
-    }
-    return false;
+    const checkboxes = document.querySelectorAll('.materia-checkbox:checked');
+    return Array.from(checkboxes).some(checkbox => checkbox.value === nomeMateria);
 }
 
 // Função para encontrar a matéria no objeto de cursoEngenharia
@@ -352,23 +348,133 @@ function encontrarMateria(cursoEngenharia, nomeMateria) {
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('toggleMode');
     const seletor = document.querySelector('.seletor');
-    const painel = document.querySelector(".painel");
-    
-
+    generateStatusColors();
+    recuperarMateriasCumpridas();
+    criarPainel(cursoEngenharia)
+    atualizarEstadoMaterias(cursoEngenharia);
     toggleButton.addEventListener('click', () => {
         const mode = toggleButton.getAttribute('data-mode');
-        painel.innerHTML = ""
+
         if (mode === 'grade') {
             // Exibir a grade inteira
+            generateCourseColors();
+            
+criarPainel(cursoEngenharia);
+const periodos = document.querySelectorAll('.periodo');
+            periodos.forEach(periodo => {
+                const materias = periodo.querySelectorAll('.materia');
+                periodo.style.overflowY = "scroll"
+                materias.forEach(materia => {
+                    materia.style.opacity = '1';});
+});
+
             seletor.classList.add('hidden');
-            criarPainel(cursoEngenharia)
+            
             toggleButton.textContent = 'Ver Planejamento';
             toggleButton.setAttribute('data-mode', 'planejamento');
         } else {
-            // Exibir o planejamento
+           generateStatusColors();
+            atualizarEstadoMaterias(cursoEngenharia);
             seletor.classList.remove('hidden');
             toggleButton.textContent = 'Ver Grade Inteira';
             toggleButton.setAttribute('data-mode', 'grade');
         }
     });
 });
+
+function salvarMateriasCumpridas() {
+    const checkboxes = document.querySelectorAll('.materia-checkbox:checked');
+    const materiasCumpridas = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+    // Salva no localStorage
+    localStorage.setItem('materiasCumpridas', JSON.stringify(materiasCumpridas));
+    alert('Matérias salvas com sucesso!');
+}
+
+function limparMateriasCumpridas() {
+    // Remove do localStorage
+    localStorage.removeItem('materiasCumpridas');
+
+    // Desmarca todos os checkboxes
+    const checkboxes = document.querySelectorAll('.materia-checkbox');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+
+    alert('Matérias limpas com sucesso!');
+    atualizarEstadoMaterias(cursoEngenharia); // Atualiza o estado visual das matérias
+}
+
+document.getElementById('salvar').addEventListener('click', salvarMateriasCumpridas);
+document.getElementById('limpar').addEventListener('click', limparMateriasCumpridas);
+
+
+function recuperarMateriasCumpridas() {
+    const materiasCumpridas = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
+
+    // Marca os checkboxes das matérias cumpridas
+    const checkboxes = document.querySelectorAll('.materia-checkbox');
+    checkboxes.forEach(checkbox => {
+        if (materiasCumpridas.includes(checkbox.value)) {
+            checkbox.checked = true;
+        }
+    });
+
+    // Atualiza o estado visual das matérias
+    atualizarEstadoMaterias(cursoEngenharia);
+}
+
+const generateCourseColors = () => {
+    const coloGraph = document.querySelector('#coloGraph');
+    coloGraph.innerHTML = '';  // Limpar qualquer conteúdo anterior
+
+    const items = [
+        { class: 'geral', label: 'Geral' },
+        { class: 'curso', label: 'Curso' },
+        { class: 'optativa', label: 'Optativa' },
+        { class: 'estagio', label: 'Estágio' },
+        { class: 'tcc', label: 'TCC' },
+        { class: 'especifica', label: 'Específica' }
+    ];
+
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('color-item', item.class);
+
+        const box = document.createElement('span');
+        box.classList.add('color-box');
+
+        const label = document.createElement('span');
+        label.textContent = item.label;
+
+        div.appendChild(box);
+        div.appendChild(label);
+
+        coloGraph.appendChild(div);
+    });
+};
+
+const generateStatusColors = () => {
+    const coloGraph = document.querySelector('#coloGraph');
+    coloGraph.innerHTML = '';  // Limpar qualquer conteúdo anterior
+
+    const items = [
+        { class: 'bloqueada', label: 'Bloqueada' },
+        { class: 'cumprida', label: 'Cumprida' },
+        { class: 'pendente', label: 'Pendente' }
+    ];
+
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('color-item', item.class);
+
+        const box = document.createElement('span');
+        box.classList.add('color-box');
+
+        const label = document.createElement('span');
+        label.textContent = item.label;
+
+        div.appendChild(box);
+        div.appendChild(label);
+
+        coloGraph.appendChild(div);
+    });
+};

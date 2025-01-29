@@ -65,7 +65,7 @@ body {
 
 /* Estilos para cada tipo */
 .materia.geral {
-    background-color: #16a34a; /* Verde mais vibrante */
+    background-color: #16a34a; 
     border-color: #15803d;
 }
 .materia.geral p:nth-of-type(2) {
@@ -353,6 +353,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+   
     color: white;
     display: flex;
     justify-content: center;
@@ -360,4 +361,136 @@ body {
     font-size: 1.5em;
     z-index: 10;
     pointer-events: none; /* Permite que o conteúdo abaixo seja clicável se necessário */
+}
+/* Estilo para o botão Salvar Matérias */
+#salvar {
+    background-color: #22C55E; /* Verde vibrante e moderno */
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#salvar:hover {
+    background-color: #16A34A; /* Verde mais escuro ao passar o mouse */
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.4);
+}
+
+/* Estilo para o botão Limpar Matérias */
+#limpar {
+    background-color: #EF4444; /* Vermelho vibrante UI */
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+#limpar:hover {
+    background-color: #DC2626; /* Vermelho mais escuro ao passar o mouse */
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+}
+#coloGraph {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+    margin: 2rem 0 1rem 3rem;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+}
+
+.color-box {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+}
+
+.color-item span {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* Cores para o curso, geral, optativa, etc. */
+.color-item.geral .color-box {
+    background-color: #16a34a;
+    border-color: #15803d;
+}
+
+.color-item.curso .color-box {
+    background-color: #2563eb;
+    border-color: #1d4ed8;
+}
+
+.color-item.optativa .color-box {
+    background-color: #f97316;
+    border-color: #ea580c;
+}
+
+.color-item.estagio .color-box {
+    background-color: #facc15;
+    border-color: #eab308;
+}
+
+.color-item.tcc .color-box {
+    background-color: #8b5cf6;
+    border-color: #7c3aed;
+}
+
+.color-item.especifica .color-box {
+    background-color: #d946ef;
+    border-color: #c026d3;
+}
+
+/* Cores para a situação de pendente e bloqueada */
+.color-item.bloqueada .color-box {
+    background-color: #dc2626; /* Vermelho */
+    border-color: #b91c1c;
+}
+
+.color-item.cumprida .color-box {
+    background-color: #ccc; /* Cinza claro */
+    border-color: #d1d5db;
+}
+
+.color-item.pendente .color-box {
+    background-color: #22c55e; /* Verde */
+    border-color: #15803d;
+}
+
+.imagem{
+    width: 100%;
+}
+
+.imagem img{
+    width: 100%;
+}
+
+/* Estilos da Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #043E7D; /* Azul escuro */
+    color: white;
+    padding: 15px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.nav-logo {
+    font-size: 20px;
+    font-weight: bold;
 }
