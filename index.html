@@ -15,11 +15,11 @@
         <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
     </div>
 
-    <div class="menu-sanduiche">
+    <div class="menu-sanduiche" onclick="toggleMenu()">
         <div class="bar"></div>
         <div class="bar"></div>
         <div class="bar"></div>
-        <div class="menu-content">
+        <div class="menu-content" id="menu-content">
             <a href="iraconfer.html">Conferir IRA</a>
         </div>
     </div>
@@ -62,11 +62,10 @@
 <script src="index.js"></script>
 
 <script>
-    const menu = document.querySelector('.menu-sanduiche');
-
-    menu.addEventListener('click', () => {
-        menu.classList.toggle('active');
-    });
+    function toggleMenu() {
+    const menu = document.getElementById("menu-content");
+    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+}
 </script>
 </body>
 </html>

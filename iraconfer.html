@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Conferidor de IRA</title>
     <style>
         body {
@@ -9,6 +10,8 @@
             font-family: Arial, sans-serif;
             background-color: #f0f4f8;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
         label {
             display: block;
@@ -69,35 +72,122 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
     background-color: #ffffff;
 }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #043E7D;
+    color: white;
+    padding: 15px 20px;
+    font-family: Arial, sans-serif;
+    position: relative;
+}
+
+.nav-logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Estilo do botão sanduíche */
+.menu-sanduiche {
+    cursor: pointer;
+    position: relative;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+/* Menu dropdown */
+.menu-content {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background-color: #043E7D;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.menu-content a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.menu-content a:hover {
+    background-color: #0369a1;
+}
+.container {
+    padding: 1rem;
+}
     </style>
 </head>
-<body><h1>Cálculo de IRA</h1><label>Carga horária passada: <input type="number" id="chcumprida" placeholder="Ex: 810"> </label>
+<body>
+<nav class="navbar">
+    <div class="nav-logo">
+        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
+    </div>
 
-<label>Somatório passado: <input type="number" id="somaPassada" placeholder="Ex: 6741"> </label>
+    <div class="menu-sanduiche" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="menu-content" id="menu-content">
+            <a href="index.html">Grade Curricular</a>
+            
+        </div>
+    </div>
+</nav>
 
-<div>
-    <p><strong>Adicionar matéria:</strong></p><label>Matéria:
-    <input type="text" id="nomeMateria" placeholder="Ex: Cálculo III">
-</label>
+<div class="container">
+    <h1>Cálculo de IRA</h1>
 
-<label>Carga horária:
-    <select id="cargaHoraria" onchange="gerarNotas()">
-        <option value="30">30 horas</option>
-        <option value="60">60 horas</option>
-        <option value="90">90 horas</option>
-    </select>
-</label>
+    <label>Carga horária passada:
+        <input type="number" id="chcumprida" placeholder="Ex: 810">
+    </label>
 
-<div id="notasContainer"></div>
+    <label>Somatório passado:
+        <input type="number" id="somaPassada" placeholder="Ex: 6741">
+    </label>
 
-<label>Nota da prova final (opcional):
-    <input type="number" id="provaFinal" min="0" max="10">
-</label>
+    <div>
+        <p><strong>Adicionar matéria:</strong></p>
 
-<button class="btn-add" onclick="adicionarMateria()">Adicionar matéria</button>
-<button class="btn-remove"onclick="limparTudo()">Limpar tudo</button>
+        <label>Matéria:
+            <input type="text" id="nomeMateria" placeholder="Ex: Cálculo III">
+        </label>
 
-</div><div id="materiasLista"></div><div id="result"></div><script>
+        <label>Carga horária:
+            <select id="cargaHoraria" onchange="gerarNotas()">
+                <option value="30">30 horas</option>
+                <option value="60">60 horas</option>
+                <option value="90">90 horas</option>
+            </select>
+        </label>
+
+        <div id="notasContainer"></div>
+
+        <label>Nota da prova final (opcional):
+            <input type="number" id="provaFinal" min="0" max="10">
+        </label>
+
+        <button class="btn-add" onclick="adicionarMateria()">Adicionar matéria</button>
+        <button class="btn-remove" onclick="limparTudo()">Limpar tudo</button>
+    </div>
+
+    <div id="materiasLista"></div>
+    <div id="result"></div>
+</div><script>
     let materias = JSON.parse(localStorage.getItem("materias")) || [];
 
     function gerarNotas() {
@@ -203,5 +293,11 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
 
     gerarNotas();
     atualizarResultado();
+    
+    
+    function toggleMenu() {
+    const menu = document.getElementById("menu-content");
+    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+}
 </script></body>
 </html>

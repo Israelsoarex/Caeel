@@ -479,21 +479,8 @@ body {
     width: 100%;
 }
 
-/* Estilos da Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #043E7D; /* Azul escuro */
-    color: white;
-    padding: 1rem .8rem;
-    font-family: Arial, sans-serif;
-}
 
-.nav-logo {
-    font-size: 20px;
-    font-weight: bold;
-}
+
 @media (min-width: 1024px) {
     .painel {
         display: flex; 
@@ -570,48 +557,58 @@ body {
 
 
 
-.menu-sanduiche {
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #043E7D;
+    color: white;
+    padding: 15px 20px;
+    font-family: Arial, sans-serif;
     position: relative;
-    width: 2rem;
-    cursor: pointer;
-    margin-left: 0;
-    margin-right: 1rem;
 }
 
-.menu-sanduiche .bar {
-    width: 100%;
+.nav-logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Estilo do botão sanduíche */
+.menu-sanduiche {
+    cursor: pointer;
+    position: relative;
+}
+
+.bar {
+    width: 25px;
     height: 3px;
-    background-color: #fff;
-    margin: 5px 0;
+    background-color: white;
+    margin: 4px 0;
     transition: 0.4s;
 }
 
+/* Menu dropdown */
 .menu-content {
     display: none;
+    flex-direction: column;
     position: absolute;
+    top: 45px;
     right: 0;
-    top: 40px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    min-width: 150px;
-    z-index: 10;
+    background-color: #043E7D;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .menu-content a {
-    display: block;
-    padding: 10px;
-    color: #043e7d;
+    color: white;
     text-decoration: none;
-    transition: background 0.3s;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 
 .menu-content a:hover {
-    background-color: #f0f0f0;
-}
-
-/* Quando clicado, mostra o menu */
-.menu-sanduiche.active .menu-content {
-    display: block;
+    background-color: #0369a1;
 }
