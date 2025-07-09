@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Conferidor de IRA</title>
+    <style>
+        body {
+            padding: 1rem;
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            cursor: pointer;
+        }
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-add:hover {
+            background-color: #218838;
+        }
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-remove:hover {
+            background-color: #c82333;
+        }
+        .materia-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .materia-info {
+            flex: 1;
+        }
+        #materiasLista {
+            margin-top: 20px;
+        }
+        input[type="number"], input[type="text"], select {
+    margin-top: 5px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #a8c0d9;
+    background-color: #f7fbff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    background-color: #ffffff;
+}
+    </style>
+</head>
+<body><h1>Cálculo de IRA</h1><label>Carga horária passada: <input type="number" id="chcumprida" placeholder="Ex: 810"> </label>
+
+<label>Somatório passado: <input type="number" id="somaPassada" placeholder="Ex: 6741"> </label>
+
+<div>
+    <p><strong>Adicionar matéria:</strong></p><label>Matéria:
+    <input type="text" id="nomeMateria" placeholder="Ex: Cálculo III">
+</label>
+
+<label>Carga horária:
+    <select id="cargaHoraria" onchange="gerarNotas()">
+        <option value="30">30 horas</option>
+        <option value="60">60 horas</option>
+        <option value="90">90 horas</option>
+    </select>
+</label>
+
+<div id="notasContainer"></div>
+
+<label>Nota da prova final (opcional):
+    <input type="number" id="provaFinal" min="0" max="10">
+</label>
+
+<button class="btn-add" onclick="adicionarMateria()">Adicionar matéria</button>
+<button class="btn-remove"onclick="limparTudo()">Limpar tudo</button>
+
+</div><div id="materiasLista"></div><div id="result"></div><script>
+    let materias = JSON.parse(localStorage.getItem("materias")) || [];
+
+    function gerarNotas() {
+        const carga = Number(document.getElementById('cargaHoraria').value);
+        const notasContainer = document.getElementById('notasContainer');
+        notasContainer.innerHTML = '';
+
+        const numNotas = carga === 30 ? 2 : carga === 60 ? 3 : 4;
+
+        for (let i = 0; i < numNotas; i++) {
+            notasContainer.innerHTML += `<label>Nota ${i + 1}: <input type="number" class="nota" min="0" max="10"></label>`;
+        }
+    }
+
+    function adicionarMateria() {
+        const nome = document.getElementById('nomeMateria').value;
+        const carga = Number(document.getElementById('cargaHoraria').value);
+        const notaInputs = document.querySelectorAll('.nota');
+        const provaFinal = document.getElementById('provaFinal').value;
+
+        const notas = Array.from(notaInputs).map(input => Number(input.value));
+
+        if (!nome || notas.length === 0 || notas.some(n => isNaN(n))) {
+            alert("Preencha corretamente o nome e todas as notas.");
+            return;
+        }
+
+        if ([...notas, Number(provaFinal)].some(n => n > 10)) {
+            alert("Erro: as notas devem ser entre 0 e 10.");
+            return;
+        }
+
+        let media = notas.reduce((acc, val) => acc + val, 0) / notas.length;
+
+        if (provaFinal) {
+            media = (media + Number(provaFinal)) / 2;
+        }
+
+        materias.push({ nome, carga, media });
+
+        salvarMaterias();
+        atualizarResultado();
+
+        document.getElementById('nomeMateria').value = "";
+        document.getElementById('provaFinal').value = "";
+        gerarNotas();
+    }
+
+    function removerMateria(index) {
+        materias.splice(index, 1);
+        salvarMaterias();
+        atualizarResultado();
+    }
+
+    function salvarMaterias() {
+        localStorage.setItem("materias", JSON.stringify(materias));
+    }
+
+    function limparTudo() {
+        if (confirm("Tem certeza que deseja limpar tudo?")) {
+            materias = [];
+            localStorage.removeItem("materias");
+            atualizarResultado();
+        }
+    }
+
+    function atualizarResultado() {
+        const cargaAnterior = Number(document.getElementById('chcumprida').value);
+        const somaAnterior = Number(document.getElementById('somaPassada').value);
+
+        let cargaMaterias = 0;
+        let somaMaterias = 0;
+
+        const listaHTML = materias.map((mat, index) => {
+            const soma = mat.carga * mat.media;
+            cargaMaterias += mat.carga;
+            somaMaterias += soma;
+            return `
+                <div class="materia-card">
+                    <div class="materia-info">
+                        <strong>${mat.nome}</strong><br>
+                        ${mat.carga}h × ${mat.media.toFixed(2)} = ${soma.toFixed(2)}
+                    </div>
+                    <button class="btn-remove" onclick="removerMateria(${index})">Remover</button>
+                </div>
+            `;
+        }).join('');
+
+        const cargaTotal = cargaAnterior + cargaMaterias;
+        const somaTotal = somaAnterior + somaMaterias;
+        const iraNovo = (cargaTotal > 0) ? (somaTotal / cargaTotal).toFixed(2) : 0;
+        const iraAnterior = (cargaAnterior > 0) ? (somaAnterior / cargaAnterior).toFixed(2) : "N/A";
+
+        document.getElementById('materiasLista').innerHTML = `<p><strong>Matérias adicionadas:</strong></p>${listaHTML}`;
+
+        document.getElementById('result').innerHTML = `
+            IRA Anterior: ${iraAnterior} <br>
+            Carga horária total: ${cargaTotal}h <br>
+            Somatório total: ${somaTotal.toFixed(2)} <br>
+            <strong>IRA Atualizado: ${iraNovo}</strong>
+        `;
+    }
+
+    gerarNotas();
+    atualizarResultado();
+</script></body>
+</html>

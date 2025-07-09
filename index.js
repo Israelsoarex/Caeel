@@ -243,15 +243,17 @@ function criarSeletor(cursoEngenharia) {
     }
 }
 
-// Exemplo de chamada da função
+
 criarSeletor(cursoEngenharia)
 
 // Adiciona um botão para capturar os valores selecionados
+//////
 document.querySelector('.seletor').addEventListener('change', () => {
     const selecionados = Array.from(document.querySelectorAll('.materia-checkbox:checked'))
         .map((checkbox) => checkbox.value);
         criarPainel(cursoEngenharia)
  atualizarEstadoMaterias(cursoEngenharia)
+ 
 });
 
 function atualizarEstadoMaterias(cursoEngenharia) {
@@ -499,3 +501,57 @@ const generateStatusColors = () => {
         coloGraph.appendChild(div);
     });
 };
+
+let contador = document.querySelector("#contador");
+
+function contarMateria(cursoEngenharia) {
+    let qtdMateria = 0;
+    const qtdCumprida= localStorage.getItem('materiasCumpridas')? JSON.parse(localStorage.getItem('materiasCumpridas')).length : 0;
+    for(periodo in cursoEngenharia){
+       qtdMateria += cursoEngenharia[periodo].materias.length;
+       
+    }
+    let materiasRestantes = qtdMateria - qtdCumprida; 
+    contador.innerHTML = ` Ainda Restam ${materiasRestantes} Matérias de ${qtdMateria}`
+}
+
+contarMateria(cursoEngenharia);
+
+
+
+console.log(localStorage.getItem('materiasCumpridas')? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
+
+
+function layoutCursando() {
+   let todasAsMaterias = [];
+   let materiaPendentes = [];
+   let materiaPaga = JSON.parse(localStorage.getItem('materiasCumpridas'));
+    for (const chave in cursoEngenharia) {
+        const periodo = cursoEngenharia[chave];
+        
+        for(let i = 0; i<periodo.materias.length; i++){
+           todasAsMaterias.push(periodo.materias[i].nome)
+        }
+        
+    }
+    for(let i = 0;i<todasAsMaterias.length; i++){
+        
+        
+        for (let j = 0; j < materiaPaga.length; j++) {
+           
+            if (todasAsMaterias[i] != materiaPaga[j]) {
+                materiaPendentes.push(todasAsMaterias[i]);
+                
+            }
+            
+        }
+    }
+    /* for(let i = 0; i<todasAsMaterias.length; i++){
+        console.log(todasAsMaterias[i])
+    } */
+    for(let c = 0; c<materiaPendentes.length; c++){
+        //console.log(materiaPendentes[c])
+    }
+}
+
+layoutCursando()
