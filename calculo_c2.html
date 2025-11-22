@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<title>Cálculos: Indutor / Capacitor / Impedância</title>
+<style>
+    :root{
+        --primary: #043E7D;
+        --card-bg: #fff;
+        --muted: #6b7280;
+        --accent: #4a90e2;
+        --glass: rgba(10,25,47,0.03);
+    }
+    *{box-sizing: border-box}
+    body{
+        margin:0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg,#f3f7fb,#eef6ff);
+        color:#222;
+    }
+    /* Navbar (mantive sua navbar original estilo) */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--primary);
+        color: white;
+        padding: 12px 18px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .nav-logo{font-size:18px;font-weight:700;display:flex;gap:8px;align-items:center}
+    .menu-sanduiche{cursor:pointer;position:relative}
+    .bar{width:22px;height:2px;background:white;margin:3px 0;transition:0.3s}
+    .menu-content{
+        display:none;
+        flex-direction:column;
+        position:absolute;
+        top:44px;
+        right:0;
+        background:var(--primary);
+        padding:8px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.15)
+    }
+    .menu-content a{color:white;text-decoration:none;padding:6px 10px;border-radius:6px}
+    .menu-content a:hover{background:#0369a1}
+
+    .container{max-width:1100px;margin:22px auto;padding:18px}
+    .grid{display:grid;grid-template-columns: 1fr 420px;gap:18px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{
+        background:var(--card-bg);
+        border-radius:10px;
+        padding:14px;
+        box-shadow:0 6px 18px rgba(15,23,42,0.06);
+        border:1px solid rgba(10,25,47,0.04);
+    }
+    h1{margin:0 0 8px 0;font-size:20px}
+    label{display:block;margin:10px 0 6px 0;font-size:14px;color:var(--muted)}
+    select,input,button{font-size:14px}
+    input,select{width:100%;padding:8px;border-radius:8px;border:1px solid #cbd5e1;background:#fbfdff}
+    .row{display:flex;gap:10px}
+    .row .col{flex:1}
+    .btn{
+        padding:9px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;
+    }
+    .btn-primary{background:var(--primary);color:white}
+    .btn-ghost{background:transparent;border:1px solid #cbd5e1}
+    .small{font-size:13px;color:var(--muted)}
+    .result-block{background:linear-gradient(180deg,#fcffff,#f3fbff);padding:12px;border-radius:8px;margin-top:12px;border:1px solid #e6f0ff}
+    .muted{color:var(--muted)}
+    .flex-between{display:flex;justify-content:space-between;align-items:center}
+    .components-list{margin-top:8px}
+    .comp-item{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .comp-item input, .comp-item select{padding:6px}
+    .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:none;cursor:pointer}
+    .icon-add{background:#10b981;color:white}
+    .icon-remove{background:#ef4444;color:white}
+    .note{font-size:13px;color:#334155;margin-top:6px}
+    pre{background:#0b1220;color:#dbeafe;padding:10px;border-radius:6px;overflow:auto}
+</style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-logo">
+        <i class="fas fa-bolt"></i>
+        Engenharia Elétrica - UFPI
+    </div>
+    <div class="menu-sanduiche" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="menu-content" id="menu-content">
+            <a href="index.html">Grade Curricular</a>
+            <a href="iraconfer.html">Conferir IRA</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>Cálculos — Indutor / Capacitor / Associação de Impedâncias</h1>
+    <p class="small">Escolha o tipo de operação à esquerda e os parâmetros. Os resultados aparecerão na coluna da direita.</p>
+
+    <div class="grid">
+        <!-- LEFT: controls -->
+        <div class="card">
+            <label>Operação</label>
+            <select id="operation" onchange="onOperationChange()">
+                <option value="indutor">Indutor</option>
+                <option value="capacitor">Capacitor</option>
+                <option value="associacao">Associação de impedâncias</option>
+            </select>
+
+            <div id="commonUnits" style="margin-top:10px">
+                <label>Unidades (tolerância para entrada)</label>
+                <div class="row">
+                    <div class="col">
+                        <select id="unitVoltage">
+                            <option value="V">V (volt)</option>
+                            <option value="mV">mV</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select id="unitCurrent">
+                            <option value="A">A (ampere)</option>
+                            <option value="mA">mA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin:12px 0;border-color:#eef6ff">
+
+            <!-- Indutor / Capacitor panel -->
+            <div id="singlePanel">
+                <label>Comportamento</label>
+                <select id="ccOrCa" onchange="renderSingleInputs()">
+                    <option value="ca">CA (corrente alternada)</option>
+                    <option value="cc">CC (corrente contínua / transitório)</option>
+                </select>
+
+                <div id="singleTypeSpecific" style="margin-top:10px">
+                    <!-- dynamic fields (L or C) -->
+                    <div id="indutorInputs">
+                        <label>Indutância</label>
+                        <div class="row">
+                            <input type="number" id="Lvalue" placeholder="Ex: 10" min="0" step="any">
+                            <select id="Lunit">
+                                <option value="H">H</option>
+                                <option value="mH">mH</option>
+                                <option value="uH">µH</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="capacitorInputs" style="display:none">
+                        <label>Capacitância</label>
+                        <div class="row">
+                            <input type="number" id="Cvalue" placeholder="Ex: 100" min="0" step="any">
+                            <select id="Cunit">
+                                <option value="F">F</option>
+                                <option value="mF">mF</option>
+                                <option value="uF">µF</option>
+                                <option value="nF">nF</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="freqRow" style="margin-top:10px">
+                        <label>Frequência (apenas para CA)</label>
+                        <div class="row">
+                            <input type="number" id="freq" placeholder="Hz" min="0" step="any">
+                            <select id="freqUnit">
+                                <option value="Hz">Hz</option>
+                                <option value="kHz">kHz</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="dcInputs" style="margin-top:10px;display:none">
+                        <label>Parâmetros em CC / transitório</label>
+                        <div class="row">
+                            <input type="number" id="dcVoltage" placeholder="Tensão V (opcional)" step="any">
+                            <input type="number" id="dcCurrent" placeholder="Corrente A (opcional)" step="any">
+                        </div>
+                        <div class="note">Em CC com sinais constantes: capacitor bloqueia corrente estacionária (I=0) e indutor tende a curto (V=0). Aqui calculamos energia, cargas e relações dinâmicas (dI/dt, dV/dt) quando apropriado.</div>
+                        <label style="margin-top:8px">Taxas dI/dt ou dV/dt (opcional — para transientes)</label>
+                        <div class="row">
+                            <input type="number" id="dIdt" placeholder="dI/dt (A/s)" step="any">
+                            <input type="number" id="dVdt" placeholder="dV/dt (V/s)" step="any">
+                        </div>
+                    </div>
+
+                    <div style="margin-top:12px">
+                        <label>Se fornecer tensão ou corrente</label>
+                        <div class="row">
+                            <input type="number" id="voltageSingle" placeholder="Tensão (V) — opcional" step="any">
+                            <input type="number" id="currentSingle" placeholder="Corrente (A) — opcional" step="any">
+                        </div>
+                        <div class="note">No modo CA: informe magnitude RMS da tensão ou corrente para calcular as demais grandezas.</div>
+                    </div>
+
+                    <div style="margin-top:12px" class="flex-between">
+                        <div>
+                            <button class="btn btn-primary" onclick="calculateSingle()">Calcular</button>
+                            <button class="btn btn-ghost" onclick="resetSingle()">Limpar</button>
+                        </div>
+                        <div class="small muted">Resultados aparecem à direita</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Associação panel -->
+            <div id="assocPanel" style="display:none;margin-top:12px">
+                <label>Tipo de associação</label>
+                <select id="assocType">
+                    <option value="serie">Série</option>
+                    <option value="paralelo">Paralelo</option>
+                </select>
+
+                <div style="margin-top:10px" class="flex-between">
+                    <label>Frequentia (Hz)</label>
+                    <div style="width:45%">
+                        <input type="number" id="assocFreq" placeholder="Ex: 1000" step="any">
+                    </div>
+                </div>
+
+                <div style="margin-top:12px" class="flex-between">
+                    <label>Componentes</label>
+                    <div>
+                        <button title="adicionar" class="icon-btn icon-add" onclick="addAssocComp()"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div id="componentsList" class="components-list"></div>
+
+                <div style="margin-top:12px" class="flex-between">
+                    <div>
+                        <button class="btn btn-primary" onclick="calcAssociation()">Calcular associação</button>
+                        <button class="btn btn-ghost" onclick="resetAssociation()">Limpar</button>
+                    </div>
+                    <div class="small muted">Use pelo menos 1 componente</div>
+                </div>
+                <div class="note">Cada componente pode ser R, L ou C. Para L/C informe a unidade apropriada.</div>
+            </div>
+        </div>
+
+        <!-- RIGHT: results -->
+        <div class="card">
+            <div class="flex-between">
+                <h2 style="margin:0">Resultados</h2>
+                <div class="small muted" id="timeStamp"></div>
+            </div>
+
+            <div id="resultsArea" style="margin-top:10px">
+                <div class="result-block" id="singleResult">
+                    <div class="muted">Nenhum cálculo ainda — escolha uma operação e clique em <strong>Calcular</strong>.</div>
+                </div>
+
+                <div class="result-block" id="assocResult" style="display:none;margin-top:12px"></div>
+            </div>
+
+            <div style="margin-top:14px">
+                <label>Exportar</label>
+                <div class="row">
+                    <button class="btn btn-ghost" onclick="copyResults()">Copiar resultados</button>
+                    <button class="btn btn-ghost" onclick="downloadTxt()">Baixar .txt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ----------------- UI helpers ----------------- */
+function toggleMenu(){
+    const menu = document.getElementById('menu-content');
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+// show timestamp
+document.getElementById('timeStamp').innerText = (new Date()).toLocaleString();
+
+/* ----------------- Operation switching ----------------- */
+function onOperationChange(){
+    const op = document.getElementById('operation').value;
+    const singlePanel = document.getElementById('singlePanel');
+    const assocPanel = document.getElementById('assocPanel');
+    if(op === 'associacao'){
+        singlePanel.style.display = 'none';
+        assocPanel.style.display = 'block';
+        document.getElementById('assocResult').style.display = 'block';
+        document.getElementById('singleResult').style.display = 'none';
+    } else {
+        singlePanel.style.display = 'block';
+        assocPanel.style.display = 'none';
+        document.getElementById('assocResult').style.display = 'none';
+        document.getElementById('singleResult').style.display = 'block';
+    }
+    renderSingleInputs();
+}
+
+/* ----------------- Render L / C inputs ----------------- */
+function renderSingleInputs(){
+    const op = document.getElementById('operation').value;
+    const type = op; // 'indutor' or 'capacitor' when single
+    const ccOrCa = document.getElementById('ccOrCa').value;
+    const indInp = document.getElementById('indutorInputs');
+    const capInp = document.getElementById('capacitorInputs');
+    const freqRow = document.getElementById('freqRow');
+    const dcInputs = document.getElementById('dcInputs');
+
+    if(op === 'indutor'){
+        indInp.style.display = 'block';
+        capInp.style.display = 'none';
+    } else if(op === 'capacitor'){
+        indInp.style.display = 'none';
+        capInp.style.display = 'block';
+    }
+
+    if(ccOrCa === 'ca'){
+        freqRow.style.display = 'block';
+        dcInputs.style.display = 'none';
+    } else {
+        freqRow.style.display = 'none';
+        dcInputs.style.display = 'block';
+    }
+}
+
+/* ----------------- Unit helpers ----------------- */
+function unitMultiplier(unit){
+    switch(unit){
+        case 'H': return 1;
+        case 'mH': return 1e-3;
+        case 'uH': return 1e-6;
+        case 'F': return 1;
+        case 'mF': return 1e-3;
+        case 'uF': return 1e-6;
+        case 'nF': return 1e-9;
+        case 'Hz': return 1;
+        case 'kHz': return 1e3;
+        case 'V': return 1;
+        case 'mV': return 1e-3;
+        case 'A': return 1;
+        case 'mA': return 1e-3;
+        default: return 1;
+    }
+}
+
+/* ----------------- Complex number helpers ----------------- */
+function Complex(re, im){
+    return {re: re, im: im};
+}
+function cAdd(a,b){ return Complex(a.re+b.re, a.im+b.im); }
+function cSub(a,b){ return Complex(a.re-b.re, a.im-b.im); }
+function cMul(a,b){ return Complex(a.re*b.re - a.im*b.im, a.re*b.im + a.im*b.re); }
+function cDiv(a,b){
+    const den = b.re*b.re + b.im*b.im;
+    return Complex((a.re*b.re + a.im*b.im)/den, (a.im*b.re - a.re*b.im)/den);
+}
+function cMag(a){ return Math.sqrt(a.re*a.re + a.im*a.im); }
+function cPhaseDeg(a){ return Math.atan2(a.im, a.re) * 180/Math.PI; }
+function cInv(a){ const den = a.re*a.re + a.im*a.im; return Complex(a.re/den, -a.im/den); }
+
+/* format complex nicely */
+function formatComplex(c){
+    const re = Math.abs(c.re) < 1e-12 ? 0 : c.re;
+    const im = Math.abs(c.im) < 1e-12 ? 0 : c.im;
+    if(re === 0 && im === 0) return "0";
+    let reStr = (re !== 0) ? re.toExponential ? re.toString() : Number(re.toPrecision(12)) : "";
+    let imStr = (im !== 0) ? (Math.abs(im)===1 ? (im<0?"-j":"j") : (im<0?("-j"+Math.abs(im)) : ("+j"+im))) : "";
+    if(re === 0) {
+        // only imaginary
+        if(im === 1) return "j";
+        if(im === -1) return "-j";
+        return (im===0?"0":( (im<0? "-" : "" ) + "j" + Math.abs(Number(im.toPrecision(12))) ));
+    }
+    // both
+    const sign = im < 0 ? "-" : "+";
+    return `${Number(re.toPrecision(12))} ${sign} j${Number(Math.abs(im).toPrecision(12))}`;
+}
+
+/* ----------------- Single element calculations ----------------- */
+function resetSingle(){
+    document.getElementById('Lvalue').value = '';
+    document.getElementById('Cvalue').value = '';
+    document.getElementById('freq').value = '';
+    document.getElementById('voltageSingle').value = '';
+    document.getElementById('currentSingle').value = '';
+    document.getElementById('dcVoltage').value = '';
+    document.getElementById('dcCurrent').value = '';
+    document.getElementById('dIdt').value = '';
+    document.getElementById('dVdt').value = '';
+    renderSingleInputs();
+    document.getElementById('singleResult').innerHTML = '<div class="muted">Campos limpos. Insira valores e clique em Calcular.</div>';
+}
+
+function calculateSingle(){
+    const op = document.getElementById('operation').value; // indutor or capacitor
+    const mode = document.getElementById('ccOrCa').value; // ca or cc
+    const voltage = parseFloat(document.getElementById('voltageSingle').value || NaN);
+    const current = parseFloat(document.getElementById('currentSingle').value || NaN);
+
+    let out = [];
+    if(op === 'indutor'){
+        const Lraw = parseFloat(document.getElementById('Lvalue').value || NaN);
+        if(isNaN(Lraw) || Lraw <= 0){ alert('Informe L válida'); return; }
+        const Lunit = document.getElementById('Lunit').value;
+        const L = Lraw * unitMultiplier(Lunit); // H
+
+        out.push(`<strong>Indutância:</strong> ${Lraw} ${Lunit} = ${L} H`);
+
+        if(mode === 'ca'){
+            // frequency
+            let fraw = parseFloat(document.getElementById('freq').value || NaN);
+            if(isNaN(fraw) || fraw < 0){ alert('Informe frequência válida (CA)'); return; }
+            const f = fraw * unitMultiplier(document.getElementById('freqUnit').value);
+            const w = 2 * Math.PI * f;
+            const XL = w * L; // ohms
+            out.push(`<strong>Frequência:</strong> ${f} Hz (ω = ${w.toFixed(3)} rad/s)`);
+            out.push(`<strong>Reatância indutiva:</strong> X<sub>L</sub> = ωL = ${XL.toPrecision(6)} Ω (imutável: +jX)`);
+            const Z = Complex(0, XL);
+            out.push(`<strong>Impedância:</strong> ${formatComplex(Z)} Ω (módulo = ${cMag(Z).toPrecision(6)} Ω, fase = ${cPhaseDeg(Z).toFixed(2)}°)`);
+
+            if(!isNaN(voltage)){
+                const I = Math.abs(voltage) / cMag(Z);
+                out.push(`<strong>Com V = ${voltage} V (RMS):</strong> |I| = V/|Z| = ${Number(I.toPrecision(6))} A`);
+            }
+            if(!isNaN(current)){
+                const V = Math.abs(current) * cMag(Z);
+                out.push(`<strong>Com I = ${current} A (RMS):</strong> |V| = I·|Z| = ${Number(V.toPrecision(6))} V`);
+            }
+            // energy: for AC energy instantánea não é simples; give stored energy at peak current
+            if(!isNaN(current)){
+                // energy stored in inductor: 1/2 L I^2 (I is instantaneous or peak) - we used RMS above: convert to peak = RMS*sqrt(2)
+                const Ipeak = Math.abs(current) * Math.sqrt(2);
+                const W = 0.5 * L * Ipeak * Ipeak;
+                out.push(`<strong>Energia armazenada (com I como RMS informado):</strong> W = 1/2·L·Iₚ² = ${W.toExponential(6)} J (usando Iₚ = I_rms·√2)`);
+            } else if(!isNaN(voltage)){
+                // compute current as RMS
+                const I = Math.abs(voltage) / cMag(Z);
+                const Ipeak = I * Math.sqrt(2);
+                const W = 0.5 * L * Ipeak * Ipeak;
+                out.push(`<strong>Energia armazenada (com V informado):</strong> calculada a partir de I = V/|Z| → energia ≈ ${W.toExponential(6)} J`);
+            }
+        } else {
+            // CC / transitório
+            const Icc = parseFloat(document.getElementById('dcCurrent').value || NaN);
+            const Vcc = parseFloat(document.getElementById('dcVoltage').value || NaN);
+            const dIdt = parseFloat(document.getElementById('dIdt').value || NaN);
+            const dVdt = parseFloat(document.getElementById('dVdt').value || NaN);
+
+            // Basic notes
+            out.push(`<div class="note">Em estado DC estacionário (constante) o indutor se comporta como curto ideal (V ≈ 0). Aqui calculamos relações dinâmicas se dI/dt ou V forem fornecidos.</div>`);
+
+            if(!isNaN(Icc)){
+                const W = 0.5 * L * Icc * Icc;
+                out.push(`<strong>Com I = ${Icc} A (DC):</strong> Energia armazenada W = 1/2·L·I² = ${W.toExponential(6)} J`);
+            }
+            if(!isNaN(Vcc)){
+                if(!isNaN(dIdt)){
+                    // v = L * dI/dt -> consistency check
+                    const vcalc = L * dIdt;
+                    out.push(`<strong>Se dI/dt = ${dIdt} A/s:</strong> V = L·dI/dt = ${vcalc} V`);
+                } else {
+                    out.push(`<strong>V (DC) informado:</strong> ${Vcc} V — em regime permanente V≈0 para indutor; use dI/dt para obter V = L·dI/dt.`);
+                }
+            }
+            if(!isNaN(dIdt) && isNaN(Vcc)){
+                const vcalc = L * dIdt;
+                out.push(`<strong>dI/dt = ${dIdt} A/s:</strong> V = L·dI/dt = ${vcalc} V`);
+            }
+            if(!isNaN(dVdt)){
+                // di/dt = v/L
+                const di_dt = dVdt / L;
+                out.push(`<strong>dV/dt = ${dVdt} V/s:</strong> di/dt = v/L = ${di_dt} A/s`);
+            }
+        }
+    } else if(op === 'capacitor'){
+        const Craw = parseFloat(document.getElementById('Cvalue').value || NaN);
+        if(isNaN(Craw) || Craw <= 0){ alert('Informe C válida'); return; }
+        const Cunit = document.getElementById('Cunit').value;
+        const C = Craw * unitMultiplier(Cunit); // F
+
+        let outLocal = [];
+        outLocal.push(`<strong>Capacitância:</strong> ${Craw} ${Cunit} = ${C} F`);
+
+        if(mode === 'ca'){
+            let fraw = parseFloat(document.getElementById('freq').value || NaN);
+            if(isNaN(fraw) || fraw < 0){ alert('Informe frequência válida (CA)'); return; }
+            const f = fraw * unitMultiplier(document.getElementById('freqUnit').value);
+            const w = 2 * Math.PI * f;
+            const XC = 1 / (w * C);
+            outLocal.push(`<strong>Frequência:</strong> ${f} Hz (ω = ${w.toFixed(3)} rad/s)`);
+            outLocal.push(`<strong>Reatância capacitiva:</strong> X<sub>C</sub> = 1/(ωC) = ${XC.toPrecision(6)} Ω (comportamento: -jX)`);
+            const Z = Complex(0, -XC);
+            outLocal.push(`<strong>Impedância:</strong> ${formatComplex(Z)} Ω (módulo = ${cMag(Z).toPrecision(6)} Ω, fase = ${cPhaseDeg(Z).toFixed(2)}°)`);
+
+            if(!isNaN(voltage)){
+                const I = Math.abs(voltage) / cMag(Z);
+                outLocal.push(`<strong>Com V = ${voltage} V (RMS):</strong> |I| = V/|Z| = ${Number(I.toPrecision(6))} A`);
+            }
+            if(!isNaN(current)){
+                const V = Math.abs(current) * cMag(Z);
+                outLocal.push(`<strong>Com I = ${current} A (RMS):</strong> |V| = I·|Z| = ${Number(V.toPrecision(6))} V`);
+            }
+
+            if(!isNaN(voltage)){
+                const Vpeak = Math.abs(voltage) * Math.sqrt(2);
+                const Qpeak = C * Vpeak;
+                const W = 0.5 * C * Vpeak * Vpeak;
+                outLocal.push(`<strong>Carga e energia (usando V como RMS):</strong> Qₚ = C·Vₚ = ${Qpeak.toExponential(6)} C, Energia W = 1/2·C·Vₚ² = ${W.toExponential(6)} J`);
+            } else if(!isNaN(current)){
+                // compute voltage
+                const V = Math.abs(current) * cMag(Z);
+                const Vp = V * Math.sqrt(2);
+                const Qp = C * Vp;
+                const W = 0.5 * C * Vp * Vp;
+                outLocal.push(`<strong>Cálculo aproximado (com I fornecido):</strong> V_rms=${V.toPrecision(6)} V → Vₚ=${Vp.toPrecision(6)} V → Qₚ=${Qp.toExponential(6)} C → W=${W.toExponential(6)} J`);
+            }
+        } else {
+            // CC / transitório
+            const Icc = parseFloat(document.getElementById('dcCurrent').value || NaN);
+            const Vcc = parseFloat(document.getElementById('dcVoltage').value || NaN);
+            const dIdt = parseFloat(document.getElementById('dIdt').value || NaN);
+            const dVdt = parseFloat(document.getElementById('dVdt').value || NaN);
+
+            outLocal.push(`<div class="note">Em DC estacionário capacitor bloqueia corrente (I≈0). Aqui calculamos Q e energia se V fornecida e dV/dt se corrente fornecida.</div>`);
+
+            if(!isNaN(Vcc)){
+                const Q = C * Vcc;
+                const W = 0.5 * C * Vcc * Vcc;
+                outLocal.push(`<strong>Com V = ${Vcc} V (DC):</strong> Carga Q = C·V = ${Q.toExponential(6)} C, Energia W = 1/2·C·V² = ${W.toExponential(6)} J`);
+            }
+            if(!isNaN(Icc)){
+                // dV/dt = I/C
+                const dvdt = Icc / C;
+                outLocal.push(`<strong>Com I = ${Icc} A (corrente através do capacitor):</strong> dV/dt = I/C = ${dvdt} V/s`);
+            }
+            if(!isNaN(dVdt)){
+                const i = C * dVdt;
+                outLocal.push(`<strong>dV/dt = ${dVdt} V/s:</strong> I = C·dV/dt = ${i} A`);
+            }
+        }
+        out = outLocal;
+    } else {
+        alert('Operação inválida');
+        return;
+    }
+
+    // show results
+    const html = out.map(s => `<div style="margin-bottom:6px">${s}</div>`).join('');
+    document.getElementById('singleResult').innerHTML = html;
+}
+
+/* ----------------- Association (series/parallel) ----------------- */
+let assocCount = 0;
+function addAssocComp(type='R', value='', unit=''){
+    assocCount++;
+    const id = 'comp_' + assocCount;
+    const list = document.getElementById('componentsList');
+    const div = document.createElement('div');
+    div.className = 'comp-item';
+    div.id = id;
+
+    div.innerHTML = `
+        <select class="comp-type" style="width:90px">
+            <option value="R">R (Ω)</option>
+            <option value="L">L (H)</option>
+            <option value="C">C (F)</option>
+        </select>
+        <input class="comp-value" type="number" placeholder="valor" style="width:110px" step="any">
+        <select class="comp-unit" style="width:110px">
+            <option value="ohm">Ω</option>
+            <option value="H">H</option>
+            <option value="mH">mH</option>
+            <option value="uH">uH</option>
+            <option value="F">F</option>
+            <option value="mF">mF</option>
+            <option value="uF">uF</option>
+            <option value="nF">nF</option>
+        </select>
+        <button title="remover" class="icon-btn icon-remove" onclick="removeComp('${id}')"><i class="fas fa-trash"></i></button>
+    `;
+    list.appendChild(div);
+    // set sensible defaults
+    const selects = div.querySelectorAll('.comp-unit');
+    selects.forEach(s => {
+        if(type === 'L') s.value = 'mH';
+        if(type === 'C') s.value = 'uF';
+    });
+}
+function removeComp(id){
+    const el = document.getElementById(id);
+    if(el) el.remove();
+}
+
+/* calculate total impedance for association */
+function calcAssociation(){
+    const comps = Array.from(document.querySelectorAll('#componentsList .comp-item'));
+    if(comps.length === 0){ alert('Adicione ao menos um componente'); return; }
+    let fraw = parseFloat(document.getElementById('assocFreq').value || NaN);
+    if(isNaN(fraw) || fraw < 0){ alert('Informe frequência para cálculo da associação'); return; }
+    const f = fraw; // Hz
+    const w = 2*Math.PI*f;
+
+    // build Z list
+    let Zs = [];
+    for(const c of comps){
+        const type = c.querySelector('.comp-type').value;
+        const val = parseFloat(c.querySelector('.comp-value').value || NaN);
+        const unit = c.querySelector('.comp-unit').value;
+        if(isNaN(val)){ alert('Valor inválido num dos componentes'); return; }
+        let Z;
+        if(type === 'R'){
+            Z = Complex(val, 0);
+        } else if(type === 'L'){
+            const L = val * unitMultiplier(unit);
+            const XL = w * L;
+            Z = Complex(0, XL);
+        } else if(type === 'C'){
+            const C = val * unitMultiplier(unit);
+            const XC = 1 / (w * C);
+            Z = Complex(0, -XC);
+        }
+        Zs.push({type, raw: val, unit, Z});
+    }
+
+    const assocType = document.getElementById('assocType').value;
+    let Ztotal;
+    if(assocType === 'serie'){
+        // sum impedances
+        Ztotal = Zs.reduce((acc,cur)=> cAdd(acc,cur.Z), Complex(0,0));
+    } else {
+        // paralelo: 1 / sum(1/Z)
+        let Ysum = Complex(0,0);
+        for(const x of Zs){
+            const inv = cInv(x.Z);
+            Ysum = cAdd(Ysum, inv);
+        }
+        Ztotal = cInv(Ysum); // total impedance
+    }
+
+    // build result HTML
+    let html = `<div><strong>Associação:</strong> ${assocType === 'serie' ? 'Série' : 'Paralelo'}</div>`;
+    html += `<div style="margin-top:10px"><strong>Frequência:</strong> ${f} Hz (ω=${w.toFixed(3)} rad/s)</div>`;
+    html += `<div style="margin-top:10px"><strong>Componentes:</strong></div>`;
+    html += '<ul style="margin-left:14px">';
+    Zs.forEach((c, i)=>{
+        html += `<li>${i+1}) ${c.type} = ${c.raw} ${c.unit} → Z = ${formatComplex(c.Z)} Ω (|Z|=${cMag(c.Z).toPrecision(6)} Ω)</li>`;
+    });
+    html += '</ul>';
+    html += `<div style="margin-top:10px"><strong>Impedância total Z<sub>eq</sub>:</strong> ${formatComplex(Ztotal)} Ω</div>`;
+    html += `<div style="margin-top:8px"><strong>Módulo:</strong> ${cMag(Ztotal).toPrecision(8)} Ω — <strong>Fase:</strong> ${cPhaseDeg(Ztotal).toFixed(3)}°</div>`;
+
+    // If user provided a V or I in common units (right now we didn't include V/I fields for assoc; optionally parse global unit selectors)
+    // show note
+    html += `<div class="note" style="margin-top:8px">Dica: para calcular corrente (|I|) use |I| = |V| / |Z<sub>eq</sub>| com V em volts (RMS). Para tensões parciais em série usar divisão proporcional por impedâncias (queda de tensão).</div>`;
+
+    document.getElementById('assocResult').innerHTML = html;
+}
+
+/* clear association */
+function resetAssociation(){
+    document.getElementById('componentsList').innerHTML = '';
+    assocCount = 0;
+    document.getElementById('assocFreq').value = '';
+    document.getElementById('assocResult').innerHTML = '<div class="muted">Associação limpa.</div>';
+}
+
+/* ----------------- Export / copy helpers ----------------- */
+function copyResults(){
+    const op = document.getElementById('operation').value;
+    let txt = '';
+    if(op === 'associacao'){
+        txt = document.getElementById('assocResult').innerText;
+    } else {
+        txt = document.getElementById('singleResult').innerText;
+    }
+    navigator.clipboard.writeText(txt).then(()=> alert('Resultados copiados para área de transferência'));
+}
+function downloadTxt(){
+    const op = document.getElementById('operation').value;
+    let txt = '';
+    if(op === 'associacao'){
+        txt = document.getElementById('assocResult').innerText;
+    } else {
+        txt = document.getElementById('singleResult').innerText;
+    }
+    const blob = new Blob([txt], {type: 'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resultados_circuito.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+}
+
+/* ----------------- Init default UI ----------------- */
+(function init(){
+    // start with one component for association to help user
+    addAssocComp();
+    renderSingleInputs();
+    onOperationChange();
+})();
+</script>
+</body>
+</html>
