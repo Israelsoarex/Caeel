@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Efeito Bola de Neve – Reprovações</title>
+    <link rel="stylesheet" href="reprovometro.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-logo">Simulador Acadêmico</div>
+</nav>
+
+<section class="seletor">
+    <h2>Simule uma reprovação</h2>
+
+    <h3>Selecione as matérias reprovadas</h3>
+    <div class="materias-container" id="listaReprovadas"></div>
+
+    <button id="simular">Simular efeito</button>
+    <button id="limpar">Limpar</button>
+</section>
+
+<p id="contador"></p>
+
+<section class="painel" id="painel"></section>
+<script src="db.js"></script>
+<script src="reprovometro.js"></script>
+</body>
+</html>
