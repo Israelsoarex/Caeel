@@ -127,3 +127,36 @@ let cursoEngenharia = {
 };
 
 
+let materiaOpcional = {
+    eletronica: {
+        nome: "Eletrônica",
+        materias: [
+            {
+                nome: "Sistemas de Compensação de Energia", credito: 4, preRequisito: ["Circuitos Elétricos II", "Eletrônica de Potência"], tipo: "optativa", sigla: "SISCOMPE"
+            },
+            {
+                nome:"Inversores Multiníveis", credito: 4, preRequisito: ["Eletrônica de Potência"], tipo: "optativa", sigla: "INVMTN"
+            },
+            {
+                nome:"Conversores Ressonantes", credito: 4, preRequisito: ["Eletrônica de Potência"], tipo: "optativa", sigla: "CONVRES"
+            },
+              {
+                nome:"Modelagem e Controle de Conversores", credito: 4, preRequisito: ["Eletrônica de Potência"], tipo: "optativa", sigla: "MODCTRLCON"
+            },
+            {
+                nome:"Retificadores Controlados", credito: 4, preRequisito: ["Eletrônica de Potência"], tipo: "optativa", sigla: "RETCTRL"
+            },
+            {
+                nome:"Tópicos Especiais", credito: 4 , preRequisito: [""], tipo: "optativa", sigla: ""
+            }
+        ]
+    }
+}
+
+//console.log(materiaOpcional);
+
+
+
+/* {
+                nome:"", credito: 4, preRequisito: [""], tipo: "optativa", sigla: ""
+            }, */

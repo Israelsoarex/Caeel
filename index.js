@@ -9,7 +9,7 @@ function criarPainel(cursoEngenharia) {
         // Cria a div do período
         const divPeriodo = document.createElement('div');
         divPeriodo.className = 'periodo';
-        
+
         // Adiciona o título do período
         const tituloPeriodo = document.createElement('div');
         tituloPeriodo.className = 'top';
@@ -20,48 +20,55 @@ function criarPainel(cursoEngenharia) {
         divPeriodo.appendChild(tituloPeriodo);
 
         // Adiciona as matérias
-        periodo.materias.forEach((materia) => {
-    const divMateria = document.createElement('div');
-    divMateria.className = `materia ${materia.tipo}`;
-    
-    divMateria.innerHTML = `
+        periodo.materias.forEach((materia, index) => {
+            const divMateria = document.createElement('div');
+            divMateria.className = `materia ${materia.tipo}`;
+            divMateria.dataset.id = `${chave}-${index}`;
+
+            divMateria.innerHTML = `
         <p>${materia.nome}</p>
         <p>${materia.credito} Créditos</p>
     `;
 
-    // Adiciona a bolinha de notificação se houver pré-requisitos
-    const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
-    if (preRequisitos.length > 0) {
-        const notificacao = document.createElement('div');
-        notificacao.className = 'notificacao';
-        notificacao.textContent = preRequisitos.length;
-        divMateria.appendChild(notificacao);
-    }
+            // Adiciona a bolinha de notificação se houver pré-requisitos
+            const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
+            if (preRequisitos.length > 0) {
+                const notificacao = document.createElement('div');
+                notificacao.className = 'notificacao';
+                notificacao.textContent = preRequisitos.length;
+                divMateria.appendChild(notificacao);
+            }
 
-    // Se o período está cumprido, desabilita o clique
-    const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
-    if (todasCumpridas) {
-        //divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
-       // divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
-    }
+            // Se o período está cumprido, desabilita o clique
+            const todasCumpridas = periodo.materias.every((_, index) =>
+                estaCumprido(`${chave}-${index}`)
+            );
 
-    // Adiciona o evento de clique para mostrar os detalhes
-    divMateria.addEventListener('click', () => {
-        const mode = document.querySelector('#toggleMode').getAttribute('data-mode');
-        
-        if (!todasCumpridas || mode === 'planejamento') {  // Verifica se o período não está cumprido
-            mostrarDetalhes(materia);
-        }
-    });
+            if (todasCumpridas) {
+                //divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
+                // divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
+            }
 
-    divPeriodo.appendChild(divMateria);
-});
+            // Adiciona o evento de 5ü clique para mostrar os detalhes
+            divMateria.addEventListener('click', () => {
+                const mode = document.querySelector('#toggleMode').getAttribute('data-mode');
+
+                if (!todasCumpridas || mode === 'planejamento') {  // Verifica se o período não está cumprido
+                    mostrarDetalhes(materia);
+                }
+            });
+
+            divPeriodo.appendChild(divMateria);
+        });
 
         // Adiciona o período ao painel
         painel.appendChild(divPeriodo);
 
         // Controla o overflow do período (ativa ou desativa dependendo se cumprido)
-        const todasCumpridas = periodo.materias.every(materia => estaCumprido(materia.nome));
+        const todasCumpridas = periodo.materias.every((_, index) =>
+            estaCumprido(`${chave}-${index}`)
+        );
+
         if (todasCumpridas) {
             divPeriodo.style.overflow = 'hidden'; // Desativa a rolagem para períodos cumpridos
         } else {
@@ -102,7 +109,7 @@ function mostrarDetalhes(materia) {
     // Preenche os detalhes com as informações da matéria
     detalhesTitulo.textContent = materia.nome;
     detalhesDescricao.textContent = materia.descricao || 'Sem descrição disponível';
-    
+
     // Garantir que preRequisito seja um array, mesmo que seja uma string ou esteja vazio
     const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
 
@@ -194,7 +201,7 @@ function criarLayerDetalhes() {
 }
 
 function criarSeletor(cursoEngenharia) {
-    
+
     const seletor = document.querySelector('.seletor');
 
     // Itera por todos os períodos no objeto cursoEngenharia
@@ -219,15 +226,17 @@ function criarSeletor(cursoEngenharia) {
         materiasContainer.className = 'materias-container';
 
         // Adiciona cada matéria do período como checkbox
-        periodo.materias.forEach((materia) => {
+        periodo.materias.forEach((materia, index) => {
             const checkboxContainer = document.createElement('label');
             checkboxContainer.innerHTML = `
-               ${materia.sigla} <input type="checkbox" class="materia-checkbox" value="${materia.nome}">
-                
-            `;
+        ${materia.sigla}
+        <input type="checkbox"
+               class="materia-checkbox"
+               value="${chave}-${index}"
+               data-nome="${materia.nome}">
+    `;
             materiasContainer.appendChild(checkboxContainer);
         });
-
         // Adiciona funcionalidade ao botão "selecionar todas"
         const selecionarTodasCheckbox = selecionarTodas.querySelector('input');
         selecionarTodasCheckbox.addEventListener('change', () => {
@@ -238,8 +247,8 @@ function criarSeletor(cursoEngenharia) {
         });
 
         // Adiciona o container de matérias ao seletor
-    
-    seletor.appendChild(materiasContainer);
+
+        seletor.appendChild(materiasContainer);
     }
 }
 
@@ -251,9 +260,9 @@ criarSeletor(cursoEngenharia)
 document.querySelector('.seletor').addEventListener('change', () => {
     const selecionados = Array.from(document.querySelectorAll('.materia-checkbox:checked'))
         .map((checkbox) => checkbox.value);
-        criarPainel(cursoEngenharia)
- atualizarEstadoMaterias(cursoEngenharia)
- 
+    criarPainel(cursoEngenharia)
+    atualizarEstadoMaterias(cursoEngenharia)
+
 });
 
 function atualizarEstadoMaterias(cursoEngenharia) {
@@ -264,30 +273,36 @@ function atualizarEstadoMaterias(cursoEngenharia) {
         const periodo = cursoEngenharia[periodoKey];
 
         // Verifica se todas as matérias do período estão cumpridas
-        const todasCumpridas = periodo.materias.every((materia) => estaCumprido(materia.nome));
+        const todasCumpridas = periodo.materias.every((_, index) =>
+            estaCumprido(`${periodoKey}-${index}`)
+        );
 
         if (todasCumpridas) {
-            divPeriodo.style.backgroundColor = 'gray'; // Marca o período como cumprido
-            divPeriodo.style.overflow = 'hidden'; // Desabilita o overflow para períodos cumpridos
-            divPeriodo.classList.add('cumprido'); // Adiciona a classe 'cumprido' para efeitos visuais
-            adicionarOverlay(divPeriodo); // Adiciona a sobreposição visual
+            divPeriodo.classList.add('cumprido');
+            divPeriodo.style.overflow = 'hidden';
+            adicionarOverlay(divPeriodo);
         } else {
-            divPeriodo.style.backgroundColor = ''; // Remove o estilo se não estiver cumprido
-            divPeriodo.style.overflow = 'scroll'; // Permite o overflow para períodos não cumpridos
-            divPeriodo.classList.remove('cumprido'); // Remove a classe 'cumprido' para efeitos visuais
-            removerOverlay(divPeriodo); // Remove a sobreposição visual se não cumprido
+            divPeriodo.classList.remove('cumprido');
+            divPeriodo.style.overflow = 'scroll';
+            removerOverlay(divPeriodo);
         }
+
 
         // Atualiza o estado de cada matéria no período
         const materiasElements = divPeriodo.querySelectorAll('.materia');
         materiasElements.forEach((materiaElement) => {
             const nomeMateria = materiaElement.querySelector('p').textContent;
             const materia = encontrarMateria(cursoEngenharia, nomeMateria);
+            const idMateria = materiaElement.dataset.id;
             const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
 
-            if (preRequisitos.length === 0 || preRequisitos.every(pr => estaCumprido(pr))) {
+            if (preRequisitos.length === 0 || preRequisitos.every(pr => {
+                const idPrereq = obterIdDaMateriaPorNome(cursoEngenharia, pr);
+                return idPrereq && estaCumprido(idPrereq);
+            })
+            ) {
                 // Matéria pode ser cumprida
-                if (estaCumprido(nomeMateria)) {
+                if (estaCumprido(idMateria)) {
                     removedorDeClasse(materiaElement, 'cumprida'); // Matéria já cumprida
                 } else {
                     removedorDeClasse(materiaElement, 'pendente'); // Matéria pendente, mas liberada
@@ -298,7 +313,7 @@ function atualizarEstadoMaterias(cursoEngenharia) {
             }
         });
     });
-    
+
 }
 
 // Função para adicionar o overlay visual
@@ -329,11 +344,11 @@ function removedorDeClasse(elemento, classe) {
 
 
 // Função para verificar se a matéria está cumprida (se está marcada no checkbox)
-function estaCumprido(nomeMateria) {
-    const checkboxes = document.querySelectorAll('.materia-checkbox:checked');
-    return Array.from(checkboxes).some(checkbox => checkbox.value === nomeMateria);
+function estaCumprido(idMateria) {
+    return document.querySelector(
+        `.materia-checkbox[value="${idMateria}"]:checked`
+    ) !== null;
 }
-
 // Função para encontrar a matéria no objeto de cursoEngenharia
 function encontrarMateria(cursoEngenharia, nomeMateria) {
     for (const periodoKey in cursoEngenharia) {
@@ -363,22 +378,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // Exibir a grade inteira
             generateCourseColors();
             criarLayerDetalhes();
-criarPainel(cursoEngenharia);
+            criarPainel(cursoEngenharia);
 
-const periodos = document.querySelectorAll('.periodo');
+            const periodos = document.querySelectorAll('.periodo');
             periodos.forEach(periodo => {
                 const materias = periodo.querySelectorAll('.materia');
                 periodo.style.overflowY = "scroll"
                 materias.forEach(materia => {
-                    materia.style.opacity = '1';});
-});
+                    materia.style.opacity = '1';
+                });
+            });
 
             seletor.classList.add('hidden');
-            
+
             toggleButton.textContent = 'Ver Planejamento';
             toggleButton.setAttribute('data-mode', 'planejamento');
         } else {
-           generateStatusColors();
+            generateStatusColors();
             atualizarEstadoMaterias(cursoEngenharia);
             seletor.classList.remove('hidden');
             toggleButton.textContent = 'Ver Grade Inteira';
@@ -386,6 +402,19 @@ const periodos = document.querySelectorAll('.periodo');
         }
     });
 });
+
+function obterIdDaMateriaPorNome(cursoEngenharia, nomeMateria) {
+    for (const chave in cursoEngenharia) {
+        const periodo = cursoEngenharia[chave];
+        for (let i = 0; i < periodo.materias.length; i++) {
+            if (periodo.materias[i].nome === nomeMateria) {
+                return `${chave}-${i}`;
+            }
+        }
+    }
+    return null;
+}
+
 
 function salvarMateriasCumpridas() {
     const checkboxes = document.querySelectorAll('.materia-checkbox:checked');
@@ -506,12 +535,12 @@ let contador = document.querySelector("#contador");
 
 function contarMateria(cursoEngenharia) {
     let qtdMateria = 0;
-    const qtdCumprida= localStorage.getItem('materiasCumpridas')? JSON.parse(localStorage.getItem('materiasCumpridas')).length : 0;
-    for(periodo in cursoEngenharia){
-       qtdMateria += cursoEngenharia[periodo].materias.length;
-       
+    const qtdCumprida = localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')).length : 0;
+    for (periodo in cursoEngenharia) {
+        qtdMateria += cursoEngenharia[periodo].materias.length;
+
     }
-    let materiasRestantes = qtdMateria - qtdCumprida; 
+    let materiasRestantes = qtdMateria - qtdCumprida;
     contador.innerHTML = ` Ainda Restam ${materiasRestantes} Matérias de ${qtdMateria}`
 }
 
@@ -519,37 +548,37 @@ contarMateria(cursoEngenharia);
 
 
 
-console.log(localStorage.getItem('materiasCumpridas')? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
+console.log(localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
 
 
 function layoutCursando() {
-   let todasAsMaterias = [];
-   let materiaPendentes = [];
-   let materiaPaga = JSON.parse(localStorage.getItem('materiasCumpridas'));
+    let todasAsMaterias = [];
+    let materiaPendentes = [];
+    let materiaPaga = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
     for (const chave in cursoEngenharia) {
         const periodo = cursoEngenharia[chave];
-        
-        for(let i = 0; i<periodo.materias.length; i++){
-           todasAsMaterias.push(periodo.materias[i].nome)
+
+        for (let i = 0; i < periodo.materias.length; i++) {
+            todasAsMaterias.push(periodo.materias[i].nome)
         }
-        
+
     }
-    for(let i = 0;i<todasAsMaterias.length; i++){
-        
-        
+    for (let i = 0; i < todasAsMaterias.length; i++) {
+
+
         for (let j = 0; j < materiaPaga.length; j++) {
-           
+
             if (todasAsMaterias[i] != materiaPaga[j]) {
                 materiaPendentes.push(todasAsMaterias[i]);
-                
+
             }
-            
+
         }
     }
     /* for(let i = 0; i<todasAsMaterias.length; i++){
         console.log(todasAsMaterias[i])
     } */
-    for(let c = 0; c<materiaPendentes.length; c++){
+    for (let c = 0; c < materiaPendentes.length; c++) {
         //console.log(materiaPendentes[c])
     }
 }
