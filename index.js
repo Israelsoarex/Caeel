@@ -25,10 +25,19 @@ function criarPainel(cursoEngenharia) {
             divMateria.className = `materia ${materia.tipo}`;
             divMateria.dataset.id = `${chave}-${index}`;
 
+            const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+            const id = `${chave}-${index}`;
+
+            const nomeExibido =
+                materia.tipo === "optativa" && optativas[id]
+                    ? optativas[id].nome
+                    : materia.nome;
+
             divMateria.innerHTML = `
-        <p>${materia.nome}</p>
-        <p>${materia.credito} Créditos</p>
-    `;
+    <p>${nomeExibido}</p>
+    <p>${materia.credito} Créditos</p>
+`;
+
 
             // Adiciona a bolinha de notificação se houver pré-requisitos
             const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
@@ -54,7 +63,11 @@ function criarPainel(cursoEngenharia) {
                 const mode = document.querySelector('#toggleMode').getAttribute('data-mode');
 
                 if (!todasCumpridas || mode === 'planejamento') {  // Verifica se o período não está cumprido
-                    mostrarDetalhes(materia);
+                    if (materia.tipo === "optativa") {
+                        abrirSeletorOptativa(`${chave}-${index}`);
+                    } else {
+                        mostrarDetalhes(materia);
+                    }
                 }
             });
 
@@ -99,6 +112,203 @@ function criarPainel(cursoEngenharia) {
         observer.observe(periodo);
     });
 }
+
+function criarLayerOptativa() {
+    const layer = document.createElement('div');
+    layer.id = 'optativaLayer';
+    layer.className = 'detalhes-layer';
+
+    layer.innerHTML = `
+        <div class="detalhes-conteudo">
+            <h2 id="optativaTitulo">Selecionar Optativa</h2>
+            <div id="optativaConteudo"></div>
+            <button id="fecharOptativa">Fechar</button>
+        </div>
+    `;
+
+    document.body.appendChild(layer);
+
+    document.getElementById('fecharOptativa').onclick = () => {
+        layer.style.display = 'none';
+    };
+
+    layer.addEventListener('click', e => {
+        if (e.target.id === 'optativaLayer') {
+            layer.style.display = 'none';
+        }
+    });
+}
+function renderSelecaoArea(idSlot, container) {
+    container.innerHTML = `
+        <h3>Escolha a área</h3>
+        <div class="optativa-area-lista"></div>
+    `;
+
+    const lista = container.querySelector('.optativa-area-lista');
+
+    Object.keys(materiaOpitativa).forEach(area => {
+        const card = document.createElement('div');
+        card.className = 'optativa-area-card';
+
+        const qtd = materiaOpitativa[area].materias.length;
+
+        card.innerHTML = `
+            <div class="optativa-area-titulo">${area}</div>
+            <div class="optativa-area-sub">${qtd} disciplinas disponíveis</div>
+        `;
+
+        card.onclick = () => renderListaOptativas(idSlot, area, container);
+
+        lista.appendChild(card);
+    });
+}
+
+function renderListaOptativas(idSlot, area, container) {
+    container.innerHTML = `<h3>${area}</h3><div class="optativa-lista"></div>`;
+    const lista = container.querySelector('.optativa-lista');
+
+    materiaOpitativa[area].materias.forEach(opt => {
+        const liberada = verificaPreRequisitos(opt.preRequisito);
+
+        const card = document.createElement('div');
+        card.className = `optativa-card ${!liberada ? 'bloqueada' : ''}`;
+
+        const prereqs = Array.isArray(opt.preRequisito)
+            ? opt.preRequisito
+            : opt.preRequisito ? [opt.preRequisito] : [];
+
+        card.innerHTML = `
+            <div class="optativa-nome">${opt.nome}</div>
+            ${
+                !liberada && prereqs.length
+                    ? `<div class="optativa-prereq">
+                        Pré-requisito: ${prereqs.join(', ')}
+                       </div>`
+                    : ''
+            }
+        `;
+
+        if (liberada) {
+            card.onclick = () => {
+                const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+                optativas[idSlot] = { ...opt, area };
+                localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
+
+                criarPainel(cursoEngenharia);
+                atualizarEstadoMaterias(cursoEngenharia);
+                document.getElementById('optativaLayer').style.display = 'none';
+            };
+        }
+
+        lista.appendChild(card);
+    });
+}
+
+function verificaPreRequisitos(preReqs = []) {
+    const lista = Array.isArray(preReqs) ? preReqs : [preReqs];
+
+    return lista.every(pr => {
+        const id = obterIdDaMateriaPorNome(cursoEngenharia, pr);
+        return id && estaCumprido(id);
+    });
+}
+function renderGerenciamentoOptativa(idSlot, opt, container) {
+    const cumprida = estaCumprido(idSlot);
+
+    const preReqs = opt.preRequisito
+        ? (Array.isArray(opt.preRequisito) ? opt.preRequisito : [opt.preRequisito])
+        : [];
+
+    container.innerHTML = `
+        <h3>Gerenciar Optativa</h3>
+
+        <p><strong>Área:</strong> ${opt.area}</p>
+        <p><strong>Matéria:</strong> ${opt.nome}</p>
+
+        <p><strong>Pré-requisitos:</strong></p>
+        <ul class="optativa-prereq">
+            ${
+                preReqs.length
+                    ? preReqs.map(pr => `<li>${pr}</li>`).join('')
+                    : '<li>Nenhum</li>'
+            }
+        </ul>
+
+        <div class="optativa-actions">
+            <button class="btn-add">
+                ${cumprida ? 'Desmarcar como cumprida' : 'Marcar como cumprida'}
+            </button>
+            <button class="btn-change">Trocar matéria</button>
+            <button class="btn-remove">Excluir</button>
+        </div>
+    `;
+
+    // Marcar / desmarcar como cumprida
+    container.querySelector('.btn-add').onclick = () => {
+    const checkbox = document.querySelector(`.materia-checkbox[value="${idSlot}"]`);
+    if (!checkbox) return;
+
+    // Alterna o estado do checkbox
+    checkbox.checked = !checkbox.checked;
+
+    // Atualiza o estado visual
+    atualizarEstadoMaterias(cursoEngenharia);
+
+    // --- Salvar no localStorage ---
+    const materiasCumpridas = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
+
+    if (checkbox.checked) {
+        // adiciona se não existir
+        if (!materiasCumpridas.includes(idSlot)) materiasCumpridas.push(idSlot);
+    } else {
+        // remove se estiver desmarcado
+        const index = materiasCumpridas.indexOf(idSlot);
+        if (index > -1) materiasCumpridas.splice(index, 1);
+    }
+
+    localStorage.setItem('materiasCumpridas', JSON.stringify(materiasCumpridas));
+};
+
+
+    // Trocar optativa
+    container.querySelector('.btn-change').onclick = () => {
+        renderSelecaoArea(idSlot, container);
+    };
+
+    // Excluir optativa
+    container.querySelector('.btn-remove').onclick = () => {
+        const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+        delete optativas[idSlot];
+        localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
+
+        atualizarEstadoMaterias(cursoEngenharia);
+        document.getElementById('optativaLayer').style.display = 'none';
+    };
+}
+
+
+
+
+function abrirSeletorOptativa(idSlot) {
+    const layer = document.getElementById('optativaLayer');
+    const conteudo = document.getElementById('optativaConteudo');
+
+    const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+    const optativaAtual = optativas[idSlot];
+
+    conteudo.innerHTML = '';
+
+    if (optativaAtual) {
+        renderGerenciamentoOptativa(idSlot, optativaAtual, conteudo);
+    } else {
+        renderSelecaoArea(idSlot, conteudo);
+    }
+
+    layer.style.display = 'flex';
+}
+
+
+
 
 function mostrarDetalhes(materia) {
     const detalhesLayer = document.querySelector('#detalhesLayer');
@@ -291,10 +501,24 @@ function atualizarEstadoMaterias(cursoEngenharia) {
         // Atualiza o estado de cada matéria no período
         const materiasElements = divPeriodo.querySelectorAll('.materia');
         materiasElements.forEach((materiaElement) => {
-            const nomeMateria = materiaElement.querySelector('p').textContent;
-            const materia = encontrarMateria(cursoEngenharia, nomeMateria);
             const idMateria = materiaElement.dataset.id;
-            const preRequisitos = Array.isArray(materia.preRequisito) ? materia.preRequisito : (materia.preRequisito ? [materia.preRequisito] : []);
+
+            // matéria base SEMPRE vem da grade
+            const [periodoKeyMateria, indexMateria] = idMateria.split('-');
+            let materia = cursoEngenharia[periodoKeyMateria].materias[indexMateria];
+
+            // se for optativa, pode haver substituição
+            let materiaReal = materia;
+
+            if (materia.tipo === "optativa") {
+                const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+                materiaReal = optativas[idMateria] || materia;
+            }
+
+
+            const preRequisitos = Array.isArray(materiaReal.preRequisito)
+                ? materiaReal.preRequisito
+                : (materiaReal.preRequisito ? [materiaReal.preRequisito] : []);
 
             if (preRequisitos.length === 0 || preRequisitos.every(pr => {
                 const idPrereq = obterIdDaMateriaPorNome(cursoEngenharia, pr);
@@ -365,32 +589,25 @@ function encontrarMateria(cursoEngenharia, nomeMateria) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    criarLayerDetalhes();   
+    criarLayerOptativa();   
+
     const toggleButton = document.getElementById('toggleMode');
     const seletor = document.querySelector('.seletor');
+
     generateStatusColors();
     recuperarMateriasCumpridas();
-    criarPainel(cursoEngenharia)
+    criarPainel(cursoEngenharia);
     atualizarEstadoMaterias(cursoEngenharia);
+
     toggleButton.addEventListener('click', () => {
         const mode = toggleButton.getAttribute('data-mode');
 
         if (mode === 'grade') {
-            // Exibir a grade inteira
             generateCourseColors();
-            criarLayerDetalhes();
             criarPainel(cursoEngenharia);
-
-            const periodos = document.querySelectorAll('.periodo');
-            periodos.forEach(periodo => {
-                const materias = periodo.querySelectorAll('.materia');
-                periodo.style.overflowY = "scroll"
-                materias.forEach(materia => {
-                    materia.style.opacity = '1';
-                });
-            });
-
             seletor.classList.add('hidden');
-
             toggleButton.textContent = 'Ver Planejamento';
             toggleButton.setAttribute('data-mode', 'planejamento');
         } else {
@@ -402,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
 function obterIdDaMateriaPorNome(cursoEngenharia, nomeMateria) {
     for (const chave in cursoEngenharia) {
@@ -548,7 +766,7 @@ contarMateria(cursoEngenharia);
 
 
 
-console.log(localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
+//console.log(localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
 
 
 function layoutCursando() {
