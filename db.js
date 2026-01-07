@@ -56,7 +56,7 @@ let cursoEngenharia = {
         semestre: 5,
         totalCreditos: 23,
         materias: [
-            { nome: "Eletromagnetismo II", credito: 4, preRequisito: "Eletromagnetismo I", tipo: "curso", sigla: "ELM2" },
+            { nome: "Eletromagnetismo II", credito: 4, preRequisito: ["Eletromagnetismo I","Circuitos Elétricos I"], tipo: "curso", sigla: "ELM2" },
             { nome: "Conversão Eletromecânica", credito: 4, preRequisito: ["Circuitos Elétricos I", "Eletromagnetismo I"], tipo: "curso", sigla: "CEM" },
             { nome: "Circuitos Elétricos II", credito: 4, preRequisito: ["Circuitos Elétricos I", "Variáveis Complexas"], tipo: "curso", sigla: "CE2" },
             { nome: "Dispositivos Eletrônicos", credito: 4, preRequisito: "Circuitos Elétricos I", tipo: "curso", sigla: "DE" },
