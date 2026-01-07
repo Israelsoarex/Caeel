@@ -146,11 +146,11 @@ function renderSelecaoArea(idSlot, container) {
     Object.keys(materiaOpitativa).forEach(area => {
         const card = document.createElement('div');
         card.className = 'optativa-area-card';
-
+        const nome = materiaOpitativa[area].nome;
         const qtd = materiaOpitativa[area].materias.length;
 
         card.innerHTML = `
-            <div class="optativa-area-titulo">${area}</div>
+            <div class="optativa-area-titulo">${nome}</div>
             <div class="optativa-area-sub">${qtd} disciplinas disponíveis</div>
         `;
 
