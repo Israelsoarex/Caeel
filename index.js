@@ -161,7 +161,8 @@ function renderSelecaoArea(idSlot, container) {
 }
 
 function renderListaOptativas(idSlot, area, container) {
-    container.innerHTML = `<h3>${area}</h3><div class="optativa-lista"></div>`;
+    const nome = materiaOpitativa[area].nome;
+    container.innerHTML = `<h3>${nome}</h3><div class="optativa-lista"></div>`;
     const lista = container.querySelector('.optativa-lista');
 
     materiaOpitativa[area].materias.forEach(opt => {
