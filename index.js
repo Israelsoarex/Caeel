@@ -53,10 +53,7 @@ function criarPainel(cursoEngenharia) {
                 estaCumprido(`${chave}-${index}`)
             );
 
-            if (todasCumpridas) {
-                //divMateria.style.pointerEvents = 'none'; // Desativa o clique nas matérias cumpridas
-                // divMateria.style.opacity = '0.6'; // Torna as matérias cumpridas semi-transparentes
-            }
+           
 
             // Adiciona o evento de 5ü clique para mostrar os detalhes
             divMateria.addEventListener('click', () => {
@@ -119,7 +116,7 @@ function criarLayerOptativa() {
     layer.className = 'detalhes-layer';
 
     layer.innerHTML = `
-        <div class="detalhes-conteudo">
+        <div class="detalhes-conteudo detalhes-optativa" >
             <h2 id="optativaTitulo">Selecionar Optativa</h2>
             <div id="optativaConteudo"></div>
             <button id="fecharOptativa">Fechar</button>
@@ -195,7 +192,7 @@ function renderListaOptativas(idSlot, area, container) {
                 localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
 
                 criarPainel(cursoEngenharia);
-                atualizarEstadoMaterias(cursoEngenharia);
+                generateStatusColors(); atualizarEstadoMaterias(cursoEngenharia);
                 document.getElementById('optativaLayer').style.display = 'none';
             };
         }
@@ -215,10 +212,11 @@ function verificaPreRequisitos(preReqs = []) {
 function renderGerenciamentoOptativa(idSlot, opt, container) {
     const cumprida = estaCumprido(idSlot);
 
+
     const preReqs = opt.preRequisito
         ? (Array.isArray(opt.preRequisito) ? opt.preRequisito : [opt.preRequisito])
         : [];
-
+    container.classList
     container.innerHTML = `
         <h3>Gerenciar Optativa</h3>
 
@@ -253,7 +251,9 @@ function renderGerenciamentoOptativa(idSlot, opt, container) {
 
     // Atualiza o estado visual
     atualizarEstadoMaterias(cursoEngenharia);
-
+   // criarPainel(cursoEngenharia);
+    generateStatusColors();
+            document.getElementById('optativaLayer').style.display = 'none';
     // --- Salvar no localStorage ---
     const materiasCumpridas = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
 
@@ -281,8 +281,15 @@ function renderGerenciamentoOptativa(idSlot, opt, container) {
         delete optativas[idSlot];
         localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
 
+       criarPainel(cursoEngenharia);
         atualizarEstadoMaterias(cursoEngenharia);
         document.getElementById('optativaLayer').style.display = 'none';
+        
+        generateStatusColors();
+       
+              
+               document.getElementById('optativaLayer').style.display = 'none';
+        
     };
 }
 
