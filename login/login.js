@@ -66,6 +66,38 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
+    function idadeValida(dataNascimento) {
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mes = hoje.getMonth() - nascimento.getMonth();
+
+        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+
+        return idade >= 16;
+    }
+
+    // validação
+    if (!idadeValida(nascimento)) {
+        Toastify({
+            text: "É necessário ter no mínimo 16 anos para se cadastrar",
+            backgroundColor: "#e67e22"
+        }).showToast();
+        return;
+    }
+
+    if (!/^\d+$/.test(matricula)) {
+        Toastify({
+            text: "A matrícula deve conter apenas números",
+            backgroundColor: "#e67e22"
+        }).showToast();
+        return;
+    }
+
+
     try {
         // 👤 Criar usuário
         const cred = await createUserWithEmailAndPassword(auth, email, senha);
@@ -95,7 +127,7 @@ form.addEventListener("submit", async (e) => {
         }).showToast();
 
         setTimeout(() => {
-            window.location.href = "./index.html";
+            window.location.href = "../index.html";
         }, 1500);
 
     } catch (error) {
