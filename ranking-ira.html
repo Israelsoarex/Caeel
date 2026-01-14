@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ranking - IRA</title>
+    <link rel="stylesheet" href="ranking-ira.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">   
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-logo">
+        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
+    </div>
+
+    <div class="menu-sanduiche" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="menu-content" id="menu-content">
+            <a href="iraconfer.html">Conferir IRA</a>
+            <a href="calculo_c2.html">Cálculo C2</a>
+        </div>
+    </div>
+</nav>
+
+<div id="mainCard">
+    <h3>RANKING - IRA</h3>
+    <div id="rankingBtn">
+        <div>Turma</div>
+        <div>Geral</div>
+    </div>
+    <div id="podiumDiv">
+
+    <div class="podium second">
+        <div class="avatar" style="background-image:url('./images/avatar.jpg')"></div>
+        <span class="ira">IRA 9.02</span>
+        <span class="name">Avatar 2</span>
+    </div>
+
+    <div class="podium first">
+        <img src="./images/coroa.png" class="coroa">
+        <div class="avatar" style="background-image:url('./images/avatar.jpg')"></div>
+        <span class="ira">IRA 9.08</span>
+        <span class="name">Avatar 1</span>
+    </div>
+
+    <div class="podium third">
+        <div class="avatar" style="background-image:url('./images/avatar.jpg')"></div>
+        <span class="ira">IRA 8.97</span>
+        <span class="name">Avatar 3</span>
+    </div>
+
+    <div id="throneDiv">
+        <img src="./images/podium.png" alt="">
+    </div>
+
+</div>
+<div id="rankingListDiv">
+    <span class="strokeIcon"></span>
+    <div id="rankingCardsDiv">
+        <div id="rankingCard">
+            <span class="indexSpan"> 1 </span>
+            <img class="cardImv
+            g"src="./images/avatar.jpg" alt="">
+            <p id="cardName">Avatar 1</p>
+            <p id="cardIra">9.08</p>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    function toggleMenu() {
+    const menu = document.getElementById("menu-content");
+    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+}
+</script>
+<script src="ranking-ira.js"></script>
+</body>
+</html>
