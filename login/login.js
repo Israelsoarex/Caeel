@@ -1,4 +1,4 @@
-// 🔥 Firebase imports
+//  Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import {
     getAuth,
@@ -11,6 +11,56 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+const CLOUD_NAME = "drntmxv0m";
+const UPLOAD_PRESET = "eng_eletrica_ufpi";
+
+
+const profilePicDiv = document.querySelector("#profilePicDiv");
+const profilePicInput = document.querySelector("#profilePicInput");
+
+profilePicDiv.addEventListener("click", () => {
+    profilePicInput.click();
+});
+
+let selectedImageFile = null;
+
+profilePicInput.addEventListener("change", () => {
+    const file = profilePicInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+        Toastify({
+            text: "Selecione apenas imagens",
+            backgroundColor: "#e74c3c"
+        }).showToast();
+        return;
+    }
+    if (file.size > 1_000_000) { // 1MB
+        Toastify({
+            text: "Imagem muito grande (máx. 1MB)",
+            backgroundColor: "#e74c3c"
+        }).showToast();
+        return;
+    }
+
+
+    selectedImageFile = file;
+
+    const previewUrl = URL.createObjectURL(file);
+
+    profilePicDiv.onload = () => {
+        URL.revokeObjectURL(previewUrl);
+    };
+
+
+    profilePicDiv.style.backgroundImage = `url(${previewUrl})`;
+    profilePicDiv.style.backgroundSize = "cover";
+    profilePicDiv.style.backgroundPosition = "center";
+    profilePicDiv.innerText = "";
+});
+
+
+
 // 🔧 Configuração Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBVNgbRD9AGU4XCbEJ5J8ln4lnLupxpsLE",
@@ -21,17 +71,17 @@ const firebaseConfig = {
     appId: "1:151889804874:web:d2f7950e68fa5a69bcf0b3"
 };
 
-// 🚀 Inicialização
+//  Inicialização
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 📌 Seletores
+//  Seletores
 const form = document.querySelector("#registerForm");
 
 const $ = (selector) => document.querySelector(selector);
 
-// 🧠 Submit
+// Submit
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -47,7 +97,7 @@ form.addEventListener("submit", async (e) => {
     const ira = iraRaw ? Number(Number(iraRaw).toFixed(4)) : null;
 
 
-    // 🔐 Validações
+    //  Validações
     if (senha !== confirmarSenha) {
         Toastify({
             text: "As senhas não coincidem",
@@ -97,13 +147,45 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
-
     try {
-        // 👤 Criar usuário
+        showLoadingToast("Criando conta...");
+
+        // 1️⃣ Criar usuário
         const cred = await createUserWithEmailAndPassword(auth, email, senha);
         const { uid } = cred.user;
 
-        // 💾 Firestore
+        let photoUrl = null;
+
+        // 2️⃣ Upload da imagem
+        if (selectedImageFile) {
+            updateLoadingToast("Enviando foto de perfil...");
+
+            const formData = new FormData();
+            formData.append("file", selectedImageFile);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            formData.append("folder", `avatars/${uid}`);
+            formData.append("public_id", "profile");
+
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                { method: "POST", body: formData }
+            );
+
+            const data = await res.json();
+
+            if (!data.secure_url) {
+                throw new Error("Falha no upload da imagem");
+            }
+
+            photoUrl = data.secure_url.replace(
+                "/upload/",
+                "/upload/c_fill,g_face,w_400,h_400,q_auto,f_auto/"
+            );
+        }
+
+        // 3️⃣ Firestore
+        updateLoadingToast("Finalizando cadastro...");
+
         const [ano, semestre] = ingresso.split(".");
 
         await setDoc(doc(db, "users", uid), {
@@ -116,10 +198,12 @@ form.addEventListener("submit", async (e) => {
             matricula,
             email,
             ira,
+            fotoPerfil: photoUrl,
             materiasCumpridas: [],
             criadoEm: serverTimestamp()
         });
 
+        hideLoadingToast();
 
         Toastify({
             text: "Cadastro realizado com sucesso ⚡",
@@ -131,11 +215,14 @@ form.addEventListener("submit", async (e) => {
         }, 1500);
 
     } catch (error) {
+        hideLoadingToast();
+
         Toastify({
             text: traduzErroFirebase(error.code),
             backgroundColor: "#e74c3c"
         }).showToast();
     }
+
 });
 
 // 🧠 Tradutor de erros Firebase (UX profissional)
@@ -147,4 +234,32 @@ function traduzErroFirebase(code) {
     };
 
     return erros[code] || "Erro ao cadastrar usuário";
+}
+let loadingToast = null;
+
+function showLoadingToast(text) {
+    loadingToast = Toastify({
+        text,
+        duration: -1,
+        close: false,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: false,
+        style: {
+            background: "#3498db"
+        }
+    });
+    loadingToast.showToast();
+}
+
+function updateLoadingToast(text) {
+    if (!loadingToast) return;
+    loadingToast.toastElement.textContent = text;
+}
+
+function hideLoadingToast() {
+    if (loadingToast) {
+        loadingToast.hideToast();
+        loadingToast = null;
+    }
 }

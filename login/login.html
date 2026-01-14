@@ -31,7 +31,8 @@
     <div id="mainCard">
         <div id="formDiv">
             <div id="formHead">
-                <div id="profilePicDiv"></div>
+                <div id="profilePicDiv"> clique e upload a foto de perfil</div>
+                <input type="file" id="profilePicInput" accept="image/*" hidden />
                 <h3>Bem vindo !</h3>
             </div>
             <div id="formBody">
@@ -48,12 +49,14 @@
                     <input type="date" id="nascimento" required>
 
                     <label>Ano de ingresso</label>
-                    <input type="text" id="ingresso" placeholder="Ex: 2017.2" pattern="^(19|20)\d{2}\.(1|2)$" required />
+                    <input type="text" id="ingresso" placeholder="Ex: 2017.2" pattern="^(19|20)\d{2}\.(1|2)$"
+                        required />
                     <small>Formato: AAAA.1 ou AAAA.2 (ex: 2008.2)</small>
 
 
                     <label>Matrícula</label>
-                    <input type="text" id="matricula" required placeholder="Ex: 20241234123" inputmode="numeric" pattern="^[0-9]+$" />
+                    <input type="text" id="matricula" required placeholder="Ex: 20241234123" inputmode="numeric"
+                        pattern="^[0-9]+$" />
                     <small>Apenas números</small>
 
 
