@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastrar-login</title>
+    <title>Register Page</title>
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -27,66 +28,36 @@
             </div>
         </div>
     </nav>
-
-    <div id="mainCard">
-        <div id="formDiv">
-            <div id="formHead">
-                <div id="profilePicDiv"> clique e upload a foto de perfil</div>
-                <input type="file" id="profilePicInput" accept="image/*" hidden />
-                <h3>Bem vindo !</h3>
+    <div class="login-container">
+        <form class="login-card">
+            <div class="profile-img">
+                <img src="../images/avatar.jpg" alt="Imagem do Usuário">
             </div>
-            <div id="formBody">
-                <form id="registerForm">
-
-                    <label>Nome completo</label>
-                    <input type="text" id="nome" required>
-
-                    <label>ID de usuário</label>
-                    <input type="text" id="userId" required>
-                    <small>Use "_" no lugar de espaços</small>
-
-                    <label>Data de nascimento</label>
-                    <input type="date" id="nascimento" required>
-
-                    <label>Ano de ingresso</label>
-                    <input type="text" id="ingresso" placeholder="Ex: 2017.2" pattern="^(19|20)\d{2}\.(1|2)$"
-                        required />
-                    <small>Formato: AAAA.1 ou AAAA.2 (ex: 2008.2)</small>
-
-
-                    <label>Matrícula</label>
-                    <input type="text" id="matricula" required placeholder="Ex: 20241234123" inputmode="numeric"
-                        pattern="^[0-9]+$" />
-                    <small>Apenas números</small>
-
-
-                    <label>Email</label>
-                    <input type="email" id="email" required placeholder="email@ufpi.edu.br">
-
-                    <label>Senha</label>
-                    <input type="password" id="senha" required>
-
-                    <label>Confirmar senha</label>
-                    <input type="password" id="confirmarSenha" required>
-
-                    <label>IRA atual</label>
-                    <input type="number" id="ira" step="0.0001" min="0" max="10"
-                        placeholder="Ex: 9.0876 (4 casas decimais)" />
-
-                    <button type="submit">Cadastrar</button>
-
-                </form>
+            <h2>Seja bem-vindo</h2>
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="  " required>
+                <label for="email">E-mail</label>
             </div>
-        </div>
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder=" " required>
+                <label for="password">Senha</label>
+                <i class="fas fa-eye-slash toggle-password"></i>
+            </div>
+            <div id="messageDiv">
+                <p>Pelo nenos 6 caracteres</p>
+            </div>
+            <button type="submit" id="submit">Entrar</button>
+            <a href="#" class="forgot-password">Esqueceu sua senha?</a>
+            <a href="./register.html" class="signIn">Cadastrar-se</a>
+        </form>
     </div>
-
-    <script>
+  <script>
         function toggleMenu() {
             const menu = document.getElementById("menu-content");
             menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
         }
     </script>
-    <script type="module" src="login.js"></script>
+    <script type="module" src="./login.js"></script>
 </body>
 
 </html>

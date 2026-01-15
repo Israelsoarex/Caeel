@@ -1,4 +1,28 @@
-function criarPainel(cursoEngenharia) {
+import { salvarProgresso } from "./user-data.js";
+
+
+document.querySelector('.seletor').addEventListener('change', async () => {
+    appState.materiasCumpridas =
+        Array.from(document.querySelectorAll('.materia-checkbox:checked'))
+            .map(cb => cb.value);
+
+    criarPainel(cursoEngenharia);
+    atualizarEstadoMaterias(cursoEngenharia);
+
+    if (appState.uid) {
+        await salvarProgresso(appState.uid, appState);
+    }
+});
+
+
+export const appState = {
+    uid: null,
+    materiasCumpridas: [],
+    optativasSelecionadas: {}
+};
+
+
+ export function criarPainel(cursoEngenharia) {
     const painel = document.querySelector('.painel');
     painel.style.display = "flex";
     painel.innerHTML = "";
@@ -25,7 +49,7 @@ function criarPainel(cursoEngenharia) {
             divMateria.className = `materia ${materia.tipo}`;
             divMateria.dataset.id = `${chave}-${index}`;
 
-            const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+            const optativas = appState.optativasSelecionadas;
             const id = `${chave}-${index}`;
 
             const nomeExibido =
@@ -53,7 +77,7 @@ function criarPainel(cursoEngenharia) {
                 estaCumprido(`${chave}-${index}`)
             );
 
-           
+
 
             // Adiciona o evento de 5ü clique para mostrar os detalhes
             divMateria.addEventListener('click', () => {
@@ -110,7 +134,7 @@ function criarPainel(cursoEngenharia) {
     });
 }
 
-function criarLayerOptativa() {
+export function criarLayerOptativa() {
     const layer = document.createElement('div');
     layer.id = 'optativaLayer';
     layer.className = 'detalhes-layer';
@@ -135,7 +159,7 @@ function criarLayerOptativa() {
         }
     });
 }
-function renderSelecaoArea(idSlot, container) {
+export function renderSelecaoArea(idSlot, container) {
     container.innerHTML = `
         <h3>Escolha a área</h3>
         <div class="optativa-area-lista"></div>
@@ -160,7 +184,7 @@ function renderSelecaoArea(idSlot, container) {
     });
 }
 
-function renderListaOptativas(idSlot, area, container) {
+export function renderListaOptativas(idSlot, area, container) {
     const nome = materiaOpitativa[area].nome;
     container.innerHTML = `<h3>${nome}</h3><div class="optativa-lista"></div>`;
     const lista = container.querySelector('.optativa-lista');
@@ -177,20 +201,22 @@ function renderListaOptativas(idSlot, area, container) {
 
         card.innerHTML = `
             <div class="optativa-nome">${opt.nome}</div>
-            ${
-                !liberada && prereqs.length
-                    ? `<div class="optativa-prereq">
+            ${!liberada && prereqs.length
+                ? `<div class="optativa-prereq">
                         Pré-requisito: ${prereqs.join(', ')}
                        </div>`
-                    : ''
+                : ''
             }
         `;
 
         if (liberada) {
             card.onclick = () => {
-                const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+                const optativas = appState.optativasSelecionadas;
                 optativas[idSlot] = { ...opt, area };
-                localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
+                if (appState.uid) {
+                    salvarProgresso(appState.uid, appState);
+                }
+
 
                 criarPainel(cursoEngenharia);
                 generateStatusColors(); atualizarEstadoMaterias(cursoEngenharia);
@@ -202,7 +228,7 @@ function renderListaOptativas(idSlot, area, container) {
     });
 }
 
-function verificaPreRequisitos(preReqs = []) {
+export function verificaPreRequisitos(preReqs = []) {
     const lista = Array.isArray(preReqs) ? preReqs : [preReqs];
 
     return lista.every(pr => {
@@ -210,7 +236,7 @@ function verificaPreRequisitos(preReqs = []) {
         return id && estaCumprido(id);
     });
 }
-function renderGerenciamentoOptativa(idSlot, opt, container) {
+export function renderGerenciamentoOptativa(idSlot, opt, container) {
     const cumprida = estaCumprido(idSlot);
 
 
@@ -226,11 +252,10 @@ function renderGerenciamentoOptativa(idSlot, opt, container) {
 
         <p><strong>Pré-requisitos:</strong></p>
         <ul class="optativa-prereq">
-            ${
-                preReqs.length
-                    ? preReqs.map(pr => `<li>${pr}</li>`).join('')
-                    : '<li>Nenhum</li>'
-            }
+            ${preReqs.length
+            ? preReqs.map(pr => `<li>${pr}</li>`).join('')
+            : '<li>Nenhum</li>'
+        }
         </ul>
 
         <div class="optativa-actions">
@@ -244,31 +269,31 @@ function renderGerenciamentoOptativa(idSlot, opt, container) {
 
     // Marcar / desmarcar como cumprida
     container.querySelector('.btn-add').onclick = () => {
-    const checkbox = document.querySelector(`.materia-checkbox[value="${idSlot}"]`);
-    if (!checkbox) return;
+        const checkbox = document.querySelector(`.materia-checkbox[value="${idSlot}"]`);
+        if (!checkbox) return;
 
-    // Alterna o estado do checkbox
-    checkbox.checked = !checkbox.checked;
+        // Alterna o estado do checkbox
+        checkbox.checked = !checkbox.checked;
 
-    // Atualiza o estado visual
-    atualizarEstadoMaterias(cursoEngenharia);
-   // criarPainel(cursoEngenharia);
-    generateStatusColors();
-            document.getElementById('optativaLayer').style.display = 'none';
-    // --- Salvar no localStorage ---
-    const materiasCumpridas = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
+        // Atualiza o estado visual
+        atualizarEstadoMaterias(cursoEngenharia);
+        // criarPainel(cursoEngenharia);
+        generateStatusColors();
+        document.getElementById('optativaLayer').style.display = 'none';
+        // --- Salvar no localStorage ---
+        const materiasCumpridas = appState.materiasCumpridas;
 
-    if (checkbox.checked) {
-        // adiciona se não existir
-        if (!materiasCumpridas.includes(idSlot)) materiasCumpridas.push(idSlot);
-    } else {
-        // remove se estiver desmarcado
-        const index = materiasCumpridas.indexOf(idSlot);
-        if (index > -1) materiasCumpridas.splice(index, 1);
-    }
+        if (checkbox.checked) {
+            // adiciona se não existir
+            if (!materiasCumpridas.includes(idSlot)) materiasCumpridas.push(idSlot);
+        } else {
+            // remove se estiver desmarcado
+            const index = materiasCumpridas.indexOf(idSlot);
+            if (index > -1) materiasCumpridas.splice(index, 1);
+        }
 
-    localStorage.setItem('materiasCumpridas', JSON.stringify(materiasCumpridas));
-};
+        localStorage.setItem('materiasCumpridas', JSON.stringify(materiasCumpridas));
+    };
 
 
     // Trocar optativa
@@ -278,30 +303,30 @@ function renderGerenciamentoOptativa(idSlot, opt, container) {
 
     // Excluir optativa
     container.querySelector('.btn-remove').onclick = () => {
-        const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+        const optativas = appState.optativasSelecionadas;
         delete optativas[idSlot];
-        localStorage.setItem('optativasSelecionadas', JSON.stringify(optativas));
+        if (appState.uid) {
+            salvarProgresso(appState.uid, appState);
+        }
 
-       criarPainel(cursoEngenharia);
+        criarPainel(cursoEngenharia);
         atualizarEstadoMaterias(cursoEngenharia);
         document.getElementById('optativaLayer').style.display = 'none';
-        
+
         generateStatusColors();
-       
-              
-               document.getElementById('optativaLayer').style.display = 'none';
-        
+
+
+        document.getElementById('optativaLayer').style.display = 'none';
+
     };
 }
 
-
-
-
-function abrirSeletorOptativa(idSlot) {
+export function abrirSeletorOptativa(idSlot) {
     const layer = document.getElementById('optativaLayer');
     const conteudo = document.getElementById('optativaConteudo');
 
-    const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+    const optativas = appState.optativasSelecionadas;
+
     const optativaAtual = optativas[idSlot];
 
     conteudo.innerHTML = '';
@@ -315,10 +340,7 @@ function abrirSeletorOptativa(idSlot) {
     layer.style.display = 'flex';
 }
 
-
-
-
-function mostrarDetalhes(materia) {
+export function mostrarDetalhes(materia) {
     const detalhesLayer = document.querySelector('#detalhesLayer');
     const detalhesTitulo = document.querySelector('#detalhesTitulo');
     const detalhesDescricao = document.querySelector('#detalhesDescricao');
@@ -363,7 +385,7 @@ document.querySelector('#detalhesLayer').addEventListener('click', (event) => {
 
 //criarPainel(cursoEngenharia);
 
-function criarLayerDetalhes() {
+export function criarLayerDetalhes() {
     // Cria o layer principal
     const detalhesLayer = document.createElement('div');
     detalhesLayer.id = 'detalhesLayer';
@@ -418,7 +440,7 @@ function criarLayerDetalhes() {
     });
 }
 
-function criarSeletor(cursoEngenharia) {
+export function criarSeletor(cursoEngenharia) {
 
     const seletor = document.querySelector('.seletor');
 
@@ -483,7 +505,7 @@ document.querySelector('.seletor').addEventListener('change', () => {
 
 });
 
-function atualizarEstadoMaterias(cursoEngenharia) {
+export function atualizarEstadoMaterias(cursoEngenharia) {
     const todosOsPeriodos = document.querySelectorAll(".periodo");
 
     todosOsPeriodos.forEach((divPeriodo, index) => {
@@ -519,7 +541,7 @@ function atualizarEstadoMaterias(cursoEngenharia) {
             let materiaReal = materia;
 
             if (materia.tipo === "optativa") {
-                const optativas = JSON.parse(localStorage.getItem('optativasSelecionadas')) || {};
+                const optativas = appState.optativasSelecionadas;
                 materiaReal = optativas[idMateria] || materia;
             }
 
@@ -549,7 +571,7 @@ function atualizarEstadoMaterias(cursoEngenharia) {
 }
 
 // Função para adicionar o overlay visual
-function adicionarOverlay(periodoElement) {
+export function adicionarOverlay(periodoElement) {
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
     overlay.innerText = 'Já Cumprido';
@@ -557,14 +579,14 @@ function adicionarOverlay(periodoElement) {
 }
 
 // Função para remover o overlay visual
-function removerOverlay(periodoElement) {
+export function removerOverlay(periodoElement) {
     const overlay = periodoElement.querySelector('.overlay');
     if (overlay) {
         overlay.remove();
     }
 }
 /// remove classes 
-function removedorDeClasse(elemento, classe) {
+export function removedorDeClasse(elemento, classe) {
     elemento.classList.remove("curso");
     elemento.classList.remove("geral");
     elemento.classList.remove("optativa");
@@ -576,13 +598,13 @@ function removedorDeClasse(elemento, classe) {
 
 
 // Função para verificar se a matéria está cumprida (se está marcada no checkbox)
-function estaCumprido(idMateria) {
+export function estaCumprido(idMateria) {
     return document.querySelector(
         `.materia-checkbox[value="${idMateria}"]:checked`
     ) !== null;
 }
 // Função para encontrar a matéria no objeto de cursoEngenharia
-function encontrarMateria(cursoEngenharia, nomeMateria) {
+export function encontrarMateria(cursoEngenharia, nomeMateria) {
     for (const periodoKey in cursoEngenharia) {
         const periodo = cursoEngenharia[periodoKey];
         for (const materia of periodo.materias) {
@@ -598,14 +620,14 @@ function encontrarMateria(cursoEngenharia, nomeMateria) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    criarLayerDetalhes();   
-    criarLayerOptativa();   
+    criarLayerDetalhes();
+    criarLayerOptativa();
 
     const toggleButton = document.getElementById('toggleMode');
     const seletor = document.querySelector('.seletor');
 
     generateStatusColors();
-    recuperarMateriasCumpridas();
+    // recuperarMateriasCumpridas();
     criarPainel(cursoEngenharia);
     atualizarEstadoMaterias(cursoEngenharia);
 
@@ -629,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-function obterIdDaMateriaPorNome(cursoEngenharia, nomeMateria) {
+export function obterIdDaMateriaPorNome(cursoEngenharia, nomeMateria) {
     for (const chave in cursoEngenharia) {
         const periodo = cursoEngenharia[chave];
         for (let i = 0; i < periodo.materias.length; i++) {
@@ -642,7 +664,7 @@ function obterIdDaMateriaPorNome(cursoEngenharia, nomeMateria) {
 }
 
 
-function salvarMateriasCumpridas() {
+export function salvarMateriasCumpridas() {
     const checkboxes = document.querySelectorAll('.materia-checkbox:checked');
     const materiasCumpridas = Array.from(checkboxes).map(checkbox => checkbox.value);
 
@@ -662,7 +684,7 @@ function salvarMateriasCumpridas() {
     setTimeout(() => location.reload(), 3000);
 }
 
-function limparMateriasCumpridas() {
+export function limparMateriasCumpridas() {
     // Remove do localStorage
     localStorage.removeItem('materiasCumpridas');
 
@@ -685,8 +707,9 @@ document.getElementById('salvar').addEventListener('click', salvarMateriasCumpri
 document.getElementById('limpar').addEventListener('click', limparMateriasCumpridas);
 
 
-function recuperarMateriasCumpridas() {
-    const materiasCumpridas = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];
+export function recuperarMateriasCumpridas() {
+    const materiasCumpridas = appState.materiasCumpridas;
+
 
     // Marca os checkboxes das matérias cumpridas
     const checkboxes = document.querySelectorAll('.materia-checkbox');
@@ -698,6 +721,21 @@ function recuperarMateriasCumpridas() {
 
     // Atualiza o estado visual das matérias
     atualizarEstadoMaterias(cursoEngenharia);
+}
+export function aplicarEstadoDoUsuario({ materiasCumpridas, optativasSelecionadas }) {
+    appState.materiasCumpridas = materiasCumpridas || [];
+    appState.optativasSelecionadas = optativasSelecionadas || {};
+
+    // refletir no DOM
+    marcarCheckboxes();
+    criarPainel(cursoEngenharia);
+    atualizarEstadoMaterias(cursoEngenharia);
+    generateStatusColors();
+}
+export function marcarCheckboxes() {
+    document.querySelectorAll('.materia-checkbox').forEach(cb => {
+        cb.checked = appState.materiasCumpridas.includes(cb.value);
+    });
 }
 
 const generateCourseColors = () => {
@@ -757,27 +795,46 @@ const generateStatusColors = () => {
     });
 };
 
-let contador = document.querySelector("#contador");
+export function contarMateriasCumpridasReais() {
+    const obrigatoriasCumpridas = Array.isArray(appState.materiasCumpridas)
+        ? appState.materiasCumpridas.length
+        : 0;
 
-function contarMateria(cursoEngenharia) {
-    let qtdMateria = 0;
-    const qtdCumprida = localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')).length : 0;
-    for (periodo in cursoEngenharia) {
-        qtdMateria += cursoEngenharia[periodo].materias.length;
+    const optativasCumpridas = appState.optativasSelecionadas
+        ? Object.keys(appState.optativasSelecionadas).length
+        : 0;
 
-    }
-    let materiasRestantes = qtdMateria - qtdCumprida;
-    contador.innerHTML = ` Ainda Restam ${materiasRestantes} Matérias de ${qtdMateria}`
+    return obrigatoriasCumpridas + optativasCumpridas;
 }
 
-contarMateria(cursoEngenharia);
+let contador = document.querySelector("#contador");
+
+export function atualizarContadorReal(cursoEngenharia) {
+    let totalMaterias = 0;
+
+    for (const periodo in cursoEngenharia) {
+        totalMaterias += cursoEngenharia[periodo].materias.length;
+    }
+
+    const cumpridas = contarMateriasCumpridasReais();
+    const restantes = totalMaterias - cumpridas;
+
+    contador.innerHTML =
+        `Ainda restam ${restantes} matérias de ${totalMaterias}`;
+}
+
+
+document.addEventListener("firebaseReady", () => {
+    atualizarContadorReal(cursoEngenharia);
+});
+
 
 
 
 //console.log(localStorage.getItem('materiasCumpridas') ? JSON.parse(localStorage.getItem('materiasCumpridas')) : 0)
 
 
-function layoutCursando() {
+export function layoutCursando() {
     let todasAsMaterias = [];
     let materiaPendentes = [];
     let materiaPaga = JSON.parse(localStorage.getItem('materiasCumpridas')) || [];

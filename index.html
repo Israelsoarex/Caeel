@@ -58,9 +58,29 @@
 <div id="coloGraph"></div>
 <div id="contador"></div>
 <div class="painel"></div>
+<div id="authOverlay" class="auth-overlay hidden">
+  <div class="auth-box">
+    <div class="auth-icon">🔒</div>
+
+    <h2>Acesso restrito</h2>
+    <p>
+      Você precisa estar logado para<br>
+      salvar seu progresso no curso
+    </p>
+
+    <div class="auth-actions">
+      <a class="btn primary" href="./login/login.html">Entrar</a>
+      <a class="btn secondary" href="./login/register.html">Criar conta</a>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="db.js"></script>
-<script src="index.js"></script>
+<script type="module" src="index.js"></script>
+<script type="module" src="auth-guard.js"></script>
+
 
 <script>
     function toggleMenu() {

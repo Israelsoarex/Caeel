@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Page</title>
+    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
+        </div>
+
+        <div class="menu-sanduiche" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="menu-content" id="menu-content">
+                <a href="iraconfer.html">Conferir IRA</a>
+                <a href="calculo_c2.html">Cálculo C2</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mainCard">
+        <div id="formDiv">
+            <div id="formHead">
+                <div id="profilePicDiv"> clique e upload a foto de perfil</div>
+                <input type="file" id="profilePicInput" accept="image/*" hidden />
+                <h3>Bem vindo !</h3>
+            </div>
+            <div id="formBody">
+                <form id="registerForm">
+
+                    <label>Nome completo</label>
+                    <input type="text" id="nome" required>
+
+                    <label>ID de usuário</label>
+                    <input type="text" id="userId" required>
+                    <small>Use "_" no lugar de espaços</small>
+
+                    <label>Data de nascimento</label>
+                    <input type="date" id="nascimento" required>
+
+                    <label>Ano de ingresso</label>
+                    <input type="text" id="ingresso" placeholder="Ex: 2017.2" pattern="^(19|20)\d{2}\.(1|2)$"
+                        required />
+                    <small>Formato: AAAA.1 ou AAAA.2 (ex: 2008.2)</small>
+
+
+                    <label>Matrícula</label>
+                    <input type="text" id="matricula" required placeholder="Ex: 20241234123" inputmode="numeric"
+                        pattern="^[0-9]+$" />
+                    <small>Apenas números</small>
+
+
+                    <label>Email</label>
+                    <input type="email" id="email" required placeholder="email@ufpi.edu.br">
+
+                    <label>Senha</label>
+                    <input type="password" id="senha" required>
+
+                    <label>Confirmar senha</label>
+                    <input type="password" id="confirmarSenha" required>
+
+                    <label>IRA atual</label>
+                    <input type="number" id="ira" step="0.0001" min="0" max="10"
+                        placeholder="Ex: 9.0876 (4 casas decimais)" />
+
+                    <button type="submit">Cadastrar</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("menu-content");
+            menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+        }
+    </script>
+    <script type="module" src="register.js"></script>
+</body>
+
+</html>
