@@ -173,7 +173,7 @@ function renderLista(lista) {
   container.innerHTML = "";
 
   lista.forEach((pessoa, index) => {
-    const posicao = index;
+    const posicao = index+1;
 
     const card = document.createElement("div");
     card.id = "rankingCard";
