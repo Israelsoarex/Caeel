@@ -149,7 +149,7 @@ function renderRanking() {
   const dados = [...rankingData];
 
   renderPodium(dados.slice(0, 3));
-  renderLista(dados.slice(3));
+  renderLista(dados);
 }
 
 function renderPodium(top3) {
@@ -173,7 +173,7 @@ function renderLista(lista) {
   container.innerHTML = "";
 
   lista.forEach((pessoa, index) => {
-    const posicao = index + 4;
+    const posicao = index;
 
     const card = document.createElement("div");
     card.id = "rankingCard";
