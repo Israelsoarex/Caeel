@@ -1,0 +1,180 @@
+/* Menu lateral deslizante - Estilo melhorado */
+.menu-content {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 80%;
+    max-width: 400px;
+    height: 100vh;
+    background: linear-gradient(180deg, #043E7D 0%, #0369a1 100%);
+    z-index: 1000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    transform: translateX(0);
+}
+
+.menu-content.active {
+    left: 20%;
+}
+
+/* Overlay de fundo quando o menu está aberto */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Botão de fechar */
+.menu-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.menu-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-close::before,
+.menu-close::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+}
+
+.menu-close::before {
+    transform: rotate(45deg);
+}
+
+.menu-close::after {
+    transform: rotate(-45deg);
+}
+
+/* Informações do usuário - Estilo melhorado */
+#userInformations {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+#userInformations img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#userInformations #userName {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 5px;
+}
+
+#userInformations #userId {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 15px;
+}
+
+#userInformations button {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#userInformations button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Links do menu - Estilo melhorado */
+.menu-content a {
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+}
+
+.menu-content a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.menu-content a i {
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .menu-content {
+        width: 85%;
+    }
+    
+    .menu-content.active {
+        left: 15%;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-content {
+        width: 100%;
+        left: 100%;
+    }
+    
+    .menu-content.active {
+        left: 0;
+    }
+}
