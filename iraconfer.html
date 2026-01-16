@@ -1,10 +1,16 @@
-<!DOCTYPE html><html lang="pt">
+<!DOCTYPE html>
+<html lang="pt">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="navigation-bar.css">
     <title>Conferidor de IRA</title>
     <style>
+        *{
+            box-sizing: border-box;
+        }
         body {
             padding: 1rem;
             font-family: Arial, sans-serif;
@@ -13,33 +19,43 @@
             margin: 0;
             padding: 0;
         }
-        label {
+
+       .container label {
             display: block;
             margin-top: 10px;
         }
-        input, select, button {
+
+         .container input,
+        .container select,
+        .container button {
             margin-top: 5px;
             padding: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-        button {
+
+        .container button {
             cursor: pointer;
         }
+
         .btn-add {
             background-color: #28a745;
             color: white;
         }
+
         .btn-add:hover {
             background-color: #218838;
         }
+
         .btn-remove {
             background-color: #dc3545;
             color: white;
         }
+
         .btn-remove:hover {
             background-color: #c82333;
         }
+
         .materia-card {
             background-color: #fff;
             border-radius: 8px;
@@ -50,222 +66,220 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .materia-info {
             flex: 1;
         }
+
         #materiasLista {
             margin-top: 20px;
         }
-        input[type="number"], input[type="text"], select {
-    margin-top: 5px;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #a8c0d9;
-    background-color: #f7fbff;
-    color: #333;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
 
-input[type="number"]:focus, input[type="text"]:focus, select:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
-    background-color: #ffffff;
-}
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #043E7D;
-    color: white;
-    padding: 15px 20px;
-    font-family: Arial, sans-serif;
-    position: relative;
-}
+        .container input[type="number"],
+        .container input[type="text"],
+        .container select {
+            margin-top: 5px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #a8c0d9;
+            background-color: #f7fbff;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
 
-.nav-logo {
-    font-size: 20px;
-    font-weight: bold;
-}
+        .container input[type="number"]:focus,
+        .container [type="text"]:focus,
+        .container :focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+            background-color: #ffffff;
+        }
 
-/* Estilo do botão sanduíche */
-.menu-sanduiche {
-    cursor: pointer;
-    position: relative;
-}
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #043E7D;
+            color: white;
+            padding: 15px 20px;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
 
-.bar {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-    margin: 4px 0;
-    transition: 0.4s;
-}
+        .nav-logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-/* Menu dropdown */
-.menu-content {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background-color: #043E7D;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
+        /* Estilo do botão sanduíche */
+        .menu-sanduiche {
+            cursor: pointer;
+            position: relative;
+        }
 
-.menu-content a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
-}
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
 
-.menu-content a:hover {
-    background-color: #0369a1;
-}
-.container {
-    padding: 1rem;
-}
+       
+
+        .container {
+            padding: 1rem;
+        }
     </style>
 </head>
+
 <body>
-<nav class="navbar">
-    <div class="nav-logo">
-        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
-    </div>
-
-    <div class="menu-sanduiche" onclick="toggleMenu()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="menu-content" id="menu-content">
-            <a href="index.html">Grade Curricular</a>
-            <a href="calculo_c2.html">Cálculo C2</a>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
         </div>
+
+        <div class="menu-sanduiche" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu-content" id="menu-content">
+            <button class="menu-close" onclick="toggleMenu()"></button>
+            <div id="userInformations">
+                <img src="images/avatar.jpg" alt="">
+                <p id="userName">Unknowed User</p>
+                <small id="userId">@username</small>
+                <button id="profileEditBtn">editar perfil</button>
+
+            </div>
+            <a href="iraconfer.html">Conferir IRA</a>
+            <a href="calculo_c2.html">Cálculo C2</a>
+            <a href="index.html">Grade Currículo</a>
+            <a href="ranking-ira.html">Ranking - IRA</a>
+            <a href="reprovometro.html">Reprovômetro</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Cálculo de IRA</h1>
+
+        <label>Carga horária passada:
+            <input type="number" id="chcumprida" placeholder="Ex: 810">
+        </label>
+
+        <label>Somatório passado:
+            <input type="number" id="somaPassada" placeholder="Ex: 6741">
+        </label>
+
+        <div>
+            <p><strong>Adicionar matéria:</strong></p>
+
+            <label>Matéria:
+                <input type="text" id="nomeMateria" placeholder="Ex: Cálculo III">
+            </label>
+
+            <label>Carga horária:
+                <select id="cargaHoraria" onchange="gerarNotas()">
+                    <option value="30">30 horas</option>
+                    <option value="60">60 horas</option>
+                    <option value="90">90 horas</option>
+                </select>
+            </label>
+
+            <div id="notasContainer"></div>
+
+            <label>Nota da prova final (opcional):
+                <input type="number" id="provaFinal" min="0" max="10">
+            </label>
+
+            <button class="btn-add" onclick="adicionarMateria()">Adicionar matéria</button>
+            <button class="btn-remove" onclick="limparTudo()">Limpar tudo</button>
+        </div>
+
+        <div id="materiasLista"></div>
+        <div id="result"></div>
     </div>
-</nav>
+    <script>
+        let materias = JSON.parse(localStorage.getItem("materias")) || [];
 
-<div class="container">
-    <h1>Cálculo de IRA</h1>
+        function gerarNotas() {
+            const carga = Number(document.getElementById('cargaHoraria').value);
+            const notasContainer = document.getElementById('notasContainer');
+            notasContainer.innerHTML = '';
 
-    <label>Carga horária passada:
-        <input type="number" id="chcumprida" placeholder="Ex: 810">
-    </label>
+            const numNotas = carga === 30 ? 2 : carga === 60 ? 3 : 4;
 
-    <label>Somatório passado:
-        <input type="number" id="somaPassada" placeholder="Ex: 6741">
-    </label>
-
-    <div>
-        <p><strong>Adicionar matéria:</strong></p>
-
-        <label>Matéria:
-            <input type="text" id="nomeMateria" placeholder="Ex: Cálculo III">
-        </label>
-
-        <label>Carga horária:
-            <select id="cargaHoraria" onchange="gerarNotas()">
-                <option value="30">30 horas</option>
-                <option value="60">60 horas</option>
-                <option value="90">90 horas</option>
-            </select>
-        </label>
-
-        <div id="notasContainer"></div>
-
-        <label>Nota da prova final (opcional):
-            <input type="number" id="provaFinal" min="0" max="10">
-        </label>
-
-        <button class="btn-add" onclick="adicionarMateria()">Adicionar matéria</button>
-        <button class="btn-remove" onclick="limparTudo()">Limpar tudo</button>
-    </div>
-
-    <div id="materiasLista"></div>
-    <div id="result"></div>
-</div><script>
-    let materias = JSON.parse(localStorage.getItem("materias")) || [];
-
-    function gerarNotas() {
-        const carga = Number(document.getElementById('cargaHoraria').value);
-        const notasContainer = document.getElementById('notasContainer');
-        notasContainer.innerHTML = '';
-
-        const numNotas = carga === 30 ? 2 : carga === 60 ? 3 : 4;
-
-        for (let i = 0; i < numNotas; i++) {
-            notasContainer.innerHTML += `<label>Nota ${i + 1}: <input type="number" class="nota" min="0" max="10"></label>`;
-        }
-    }
-
-    function adicionarMateria() {
-        const nome = document.getElementById('nomeMateria').value;
-        const carga = Number(document.getElementById('cargaHoraria').value);
-        const notaInputs = document.querySelectorAll('.nota');
-        const provaFinal = document.getElementById('provaFinal').value;
-
-        const notas = Array.from(notaInputs).map(input => Number(input.value));
-
-        if (!nome || notas.length === 0 || notas.some(n => isNaN(n))) {
-            alert("Preencha corretamente o nome e todas as notas.");
-            return;
+            for (let i = 0; i < numNotas; i++) {
+                notasContainer.innerHTML += `<label>Nota ${i + 1}: <input type="number" class="nota" min="0" max="10"></label>`;
+            }
         }
 
-        if ([...notas, Number(provaFinal)].some(n => n > 10)) {
-            alert("Erro: as notas devem ser entre 0 e 10.");
-            return;
+        function adicionarMateria() {
+            const nome = document.getElementById('nomeMateria').value;
+            const carga = Number(document.getElementById('cargaHoraria').value);
+            const notaInputs = document.querySelectorAll('.nota');
+            const provaFinal = document.getElementById('provaFinal').value;
+
+            const notas = Array.from(notaInputs).map(input => Number(input.value));
+
+            if (!nome || notas.length === 0 || notas.some(n => isNaN(n))) {
+                alert("Preencha corretamente o nome e todas as notas.");
+                return;
+            }
+
+            if ([...notas, Number(provaFinal)].some(n => n > 10)) {
+                alert("Erro: as notas devem ser entre 0 e 10.");
+                return;
+            }
+
+            let media = notas.reduce((acc, val) => acc + val, 0) / notas.length;
+
+            if (provaFinal) {
+                media = (media + Number(provaFinal)) / 2;
+            }
+
+            materias.push({ nome, carga, media });
+
+            salvarMaterias();
+            atualizarResultado();
+
+            document.getElementById('nomeMateria').value = "";
+            document.getElementById('provaFinal').value = "";
+            gerarNotas();
         }
 
-        let media = notas.reduce((acc, val) => acc + val, 0) / notas.length;
-
-        if (provaFinal) {
-            media = (media + Number(provaFinal)) / 2;
-        }
-
-        materias.push({ nome, carga, media });
-
-        salvarMaterias();
-        atualizarResultado();
-
-        document.getElementById('nomeMateria').value = "";
-        document.getElementById('provaFinal').value = "";
-        gerarNotas();
-    }
-
-    function removerMateria(index) {
-        materias.splice(index, 1);
-        salvarMaterias();
-        atualizarResultado();
-    }
-
-    function salvarMaterias() {
-        localStorage.setItem("materias", JSON.stringify(materias));
-    }
-
-    function limparTudo() {
-        if (confirm("Tem certeza que deseja limpar tudo?")) {
-            materias = [];
-            localStorage.removeItem("materias");
+        function removerMateria(index) {
+            materias.splice(index, 1);
+            salvarMaterias();
             atualizarResultado();
         }
-    }
 
-    function atualizarResultado() {
-        const cargaAnterior = Number(document.getElementById('chcumprida').value);
-        const somaAnterior = Number(document.getElementById('somaPassada').value);
+        function salvarMaterias() {
+            localStorage.setItem("materias", JSON.stringify(materias));
+        }
 
-        let cargaMaterias = 0;
-        let somaMaterias = 0;
+        function limparTudo() {
+            if (confirm("Tem certeza que deseja limpar tudo?")) {
+                materias = [];
+                localStorage.removeItem("materias");
+                atualizarResultado();
+            }
+        }
 
-        const listaHTML = materias.map((mat, index) => {
-            const soma = mat.carga * mat.media;
-            cargaMaterias += mat.carga;
-            somaMaterias += soma;
-            return `
+        function atualizarResultado() {
+            const cargaAnterior = Number(document.getElementById('chcumprida').value);
+            const somaAnterior = Number(document.getElementById('somaPassada').value);
+
+            let cargaMaterias = 0;
+            let somaMaterias = 0;
+
+            const listaHTML = materias.map((mat, index) => {
+                const soma = mat.carga * mat.media;
+                cargaMaterias += mat.carga;
+                somaMaterias += soma;
+                return `
                 <div class="materia-card">
                     <div class="materia-info">
                         <strong>${mat.nome}</strong><br>
@@ -274,30 +288,27 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                     <button class="btn-remove" onclick="removerMateria(${index})">Remover</button>
                 </div>
             `;
-        }).join('');
+            }).join('');
 
-        const cargaTotal = cargaAnterior + cargaMaterias;
-        const somaTotal = somaAnterior + somaMaterias;
-        const iraNovo = (cargaTotal > 0) ? (somaTotal / cargaTotal).toFixed(2) : 0;
-        const iraAnterior = (cargaAnterior > 0) ? (somaAnterior / cargaAnterior).toFixed(2) : "N/A";
+            const cargaTotal = cargaAnterior + cargaMaterias;
+            const somaTotal = somaAnterior + somaMaterias;
+            const iraNovo = (cargaTotal > 0) ? (somaTotal / cargaTotal).toFixed(2) : 0;
+            const iraAnterior = (cargaAnterior > 0) ? (somaAnterior / cargaAnterior).toFixed(2) : "N/A";
 
-        document.getElementById('materiasLista').innerHTML = `<p><strong>Matérias adicionadas:</strong></p>${listaHTML}`;
+            document.getElementById('materiasLista').innerHTML = `<p><strong>Matérias adicionadas:</strong></p>${listaHTML}`;
 
-        document.getElementById('result').innerHTML = `
+            document.getElementById('result').innerHTML = `
             IRA Anterior: ${iraAnterior} <br>
             Carga horária total: ${cargaTotal}h <br>
             Somatório total: ${somaTotal.toFixed(2)} <br>
             <strong>IRA Atualizado: ${iraNovo}</strong>
         `;
-    }
+        }
 
-    gerarNotas();
-    atualizarResultado();
-    
-    
-    function toggleMenu() {
-    const menu = document.getElementById("menu-content");
-    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
-}
-</script></body>
+        gerarNotas();
+        atualizarResultado();
+    </script>
+    <script src="navigation-bar.js"></script>
+</body>
+
 </html>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <title>Cálculos: Indutor / Capacitor / Impedância</title>
+
 <style>
     :root{
         --primary: #043E7D;
@@ -35,17 +36,7 @@
     .nav-logo{font-size:18px;font-weight:700;display:flex;gap:8px;align-items:center}
     .menu-sanduiche{cursor:pointer;position:relative}
     .bar{width:22px;height:2px;background:white;margin:3px 0;transition:0.3s}
-    .menu-content{
-        display:none;
-        flex-direction:column;
-        position:absolute;
-        top:44px;
-        right:0;
-        background:var(--primary);
-        padding:8px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.15)
-    }
-    .menu-content a{color:white;text-decoration:none;padding:6px 10px;border-radius:6px}
-    .menu-content a:hover{background:#0369a1}
+    
 
     .container{max-width:1100px;margin:22px auto;padding:18px}
     .grid{display:grid;grid-template-columns: 1fr 420px;gap:18px}
@@ -81,22 +72,34 @@
     .note{font-size:13px;color:#334155;margin-top:6px}
     pre{background:#0b1220;color:#dbeafe;padding:10px;border-radius:6px;overflow:auto}
 </style>
+<link rel="stylesheet" href="navigation-bar.css">
 </head>
 <body>
 <nav class="navbar">
     <div class="nav-logo">
-        <i class="fas fa-bolt"></i>
-        Engenharia Elétrica - UFPI
+        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
     </div>
+
     <div class="menu-sanduiche" onclick="toggleMenu()">
         <div class="bar"></div>
         <div class="bar"></div>
         <div class="bar"></div>
-        <div class="menu-content" id="menu-content">
-            <a href="index.html">Grade Curricular</a>
-            <a href="iraconfer.html">Conferir IRA</a>
-        </div>
     </div>
+    <div class="menu-content" id="menu-content">
+        <button class="menu-close" onclick="toggleMenu()"></button>
+        <div id="userInformations">
+            <img src="images/avatar.jpg" alt="">
+            <p id="userName">Unknowed User</p>
+            <small id="userId">@username</small>
+            <button id="profileEditBtn">editar perfil</button>
+            
+        </div>
+            <a href="iraconfer.html">Conferir IRA</a>
+            <a href="calculo_c2.html">Cálculo C2</a>
+            <a href="index.html">Grade Currículo</a>
+            <a href="ranking-ira.html">Ranking - IRA</a>
+            <a href="reprovometro.html">Reprovômetro</a>
+        </div>
 </nav>
 
 <div class="container">
@@ -275,10 +278,7 @@
 
 <script>
 /* ----------------- UI helpers ----------------- */
-function toggleMenu(){
-    const menu = document.getElementById('menu-content');
-    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-}
+
 
 // show timestamp
 document.getElementById('timeStamp').innerText = (new Date()).toLocaleString();
@@ -708,5 +708,6 @@ function downloadTxt(){
     onOperationChange();
 })();
 </script>
+<script src="navigation-bar.js"></script>
 </body>
 </html>

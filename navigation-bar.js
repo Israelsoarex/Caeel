@@ -1,19 +1,19 @@
 function toggleMenu() {
     const menu = document.getElementById("menu-content");
-    const overlay = document.getElementById("menu-overlay");
+    //const overlay = document.getElementById("menu-overlay");
     
     menu.classList.toggle("active");
     overlay.classList.toggle("active");
 }
 
 // Adicionar overlay ao HTML
-document.addEventListener('DOMContentLoaded', function() {
-    const overlay = document.createElement('div');
-    overlay.className = 'menu-overlay';
-    overlay.id = 'menu-overlay';
-    overlay.onclick = toggleMenu;
-    document.body.appendChild(overlay);
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//    // const overlay = document.createElement('div');
+//     overlay.className = 'menu-overlay';
+//     overlay.id = 'menu-overlay';
+//     overlay.onclick = toggleMenu;
+//     document.body.appendChild(overlay);
+// });
 
 // Adicionar ícones aos links (opcional)
 document.addEventListener('DOMContentLoaded', function() {

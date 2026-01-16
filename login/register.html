@@ -6,27 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register Page</title>
     <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="../navigation-bar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="nav-logo">
-            <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
-        </div>
+   <nav class="navbar">
+    <div class="nav-logo">
+        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
+    </div>
 
-        <div class="menu-sanduiche" onclick="toggleMenu()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="menu-content" id="menu-content">
-                <a href="iraconfer.html">Conferir IRA</a>
-                <a href="calculo_c2.html">Cálculo C2</a>
-            </div>
+    <div class="menu-sanduiche" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div class="menu-content" id="menu-content">
+        <button class="menu-close" onclick="toggleMenu()"></button>
+        <div id="userInformations">
+            <img src="../images/avatar.jpg" alt="">
+            <p id="userName">Unknowed User</p>
+            <small id="userId">@username</small>
+            <button id="profileEditBtn">editar perfil</button>
+            
         </div>
-    </nav>
+            <a href="../iraconfer.html">Conferir IRA</a>
+            <a href="../calculo_c2.html">Cálculo C2</a>
+            <a href="../index.html">Grade Currículo</a>
+            <a href="../ranking-ira.html">Ranking - IRA</a>
+            <a href="../reprovometro.html">Reprovômetro</a>
+        </div>
+</nav>
 
     <div id="mainCard">
         <div id="formDiv">
@@ -79,14 +91,8 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById("menu-content");
-            menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
-        }
-    </script>
     <script type="module" src="register.js"></script>
+    <script src="../navigation-bar.js"></script>
 </body>
 
 </html>

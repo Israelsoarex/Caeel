@@ -5,12 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Efeito Bola de Neve – Reprovações</title>
     <link rel="stylesheet" href="reprovometro.css">
+    <link rel="stylesheet" href="navigation-bar.css">
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-logo">Simulador Acadêmico</div>
-</nav>
+ <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
+        </div>
+
+        <div class="menu-sanduiche" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu-content" id="menu-content">
+            <button class="menu-close" onclick="toggleMenu()"></button>
+            <div id="userInformations">
+                <img src="images/avatar.jpg" alt="">
+                <p id="userName">Unknowed User</p>
+                <small id="userId">@username</small>
+                <button id="profileEditBtn">editar perfil</button>
+
+            </div>
+            <a href="iraconfer.html">Conferir IRA</a>
+            <a href="calculo_c2.html">Cálculo C2</a>
+            <a href="index.html">Grade Currículo</a>
+            <a href="ranking-ira.html">Ranking - IRA</a>
+            <a href="reprovometro.html">Reprovômetro</a>
+        </div>
+    </nav>
 
 <section class="seletor">
     <h2>Simule uma reprovação</h2>
@@ -27,5 +51,6 @@
 <section class="painel" id="painel"></section>
 <script src="db.js"></script>
 <script src="reprovometro.js"></script>
+<script src="navigation-bar.js"></script>
 </body>
 </html>
