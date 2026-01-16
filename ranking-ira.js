@@ -41,7 +41,7 @@ async function carregarRankingGeral() {
   return snap.docs.map(doc => {
     const data = doc.data();
     return {
-      nome: data.userId,
+      nome: data.userIdName,
       ira: data.ira,
       avatar: data.fotoPerfil || "./images/avatar.jpg",
       turma: data.ingresso
@@ -63,7 +63,7 @@ async function carregarRankingPorTurma(turma) {
   return snap.docs.map(doc => {
     const data = doc.data();
     return {
-      nome: data.userId,
+      nome: data.userIdName,
       ira: data.ira,
       avatar: data.fotoPerfil || "./images/avatar.jpg",
       turma: data.ingresso
