@@ -86,7 +86,7 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const nome = $("#nome").value.trim();
-    const userId = $("#userId").value.trim();
+    const userIdName = $("#userIdName").value.trim();
     const nascimento = $("#nascimento").value;
     const ingresso = $("#ingresso").value;
     const matricula = $("#matricula").value.trim();
@@ -190,7 +190,7 @@ form.addEventListener("submit", async (e) => {
 
         await setDoc(doc(db, "users", uid), {
             nome,
-            userId,
+            userIdName,
             nascimento,
             ingresso,
             ingressoAno: Number(ano),

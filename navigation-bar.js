@@ -3,7 +3,7 @@ function toggleMenu() {
     //const overlay = document.getElementById("menu-overlay");
     
     menu.classList.toggle("active");
-    overlay.classList.toggle("active");
+    //overlay.classList.toggle("active");
 }
 
 // Adicionar overlay ao HTML
