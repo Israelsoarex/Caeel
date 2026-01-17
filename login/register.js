@@ -225,7 +225,7 @@ if (erro) {
 
         await setDoc(doc(db, "users", uid), {
             nome,
-            userIdName,
+            userIdName: normalizarUserId(userIdName),
             nascimento,
             ingresso,
             ingressoAno: Number(ano),
