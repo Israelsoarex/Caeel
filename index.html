@@ -1,97 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grade Curricular</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="navigation-bar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">  
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">   
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body>
-<nav class="navbar">
-    <div class="nav-logo">
-        <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
-    </div>
 
-    <div class="menu-sanduiche" onclick="toggleMenu()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-    <div class="menu-content" id="menu-content">
-        <button class="menu-close" onclick="toggleMenu()"></button>
-        <div id="userInformations">
-            <img src="images/avatar.jpg" alt="">
-            <p id="userName">Unknowed User</p>
-            <small id="userId">@username</small>
-            <button id="profileEditBtn">editar perfil</button>
-            
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-bolt"></i> Engenharia Elétrica - UFPI
         </div>
+
+        <div class="menu-sanduiche" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu-content" id="menu-content">
+            <button class="menu-close" onclick="toggleMenu()"></button>
+            <div id="userInformations">
+                <img src="images/avatar.jpg" alt="">
+                <p id="userName">Unknowed User</p>
+                <small id="userId">@username</small>
+                <button id="profileEditBtn">editar perfil</button>
+
+            </div>
             <a href="iraconfer.html">Conferir IRA</a>
             <a href="calculo_c2.html">Cálculo C2</a>
             <a href="index.html">Grade Currículo</a>
             <a href="ranking-ira.html">Ranking - IRA</a>
             <a href="reprovometro.html">Reprovômetro</a>
+            <button id="logoutBtn" class="menu-logout">
+                <i class="fas fa-right-from-bracket"></i> Sair
+            </button>
         </div>
-</nav>
 
-<div class="imagem">
-    <img src="lobo.webp" alt="">
-</div>
+    </nav>
 
-<div class="modalidade">
-    <button id="toggleMode" data-mode="grade">Ver Grade Inteira</button>
-</div>
+    <div class="imagem">
+        <img src="lobo.webp" alt="">
+    </div>
 
-<div class="seletor hidden">
-    <h2>Selecione o seu período</h2>
-    <select id="periodo">
-        <option value="">Selecione um período</option>
-        <option value="1">1°</option>
-        <option value="2">2°</option>
-        <option value="3">3°</option>
-        <option value="4">4°</option>
-        <option value="5">5°</option>
-        <option value="6">6°</option>
-        <option value="7">7°</option>
-        <option value="8">8°</option>
-        <option value="9">9°</option>
-        <option value="10">10°</option>
-    </select>
-    <h2>Selecione as matérias já cursadas</h2>
-    <div id="materias"></div>
-    <button id="salvar">Salvar Matérias</button>
-    <button id="limpar">Limpar Matérias</button>
-</div>
+    <div class="modalidade">
+        <button id="toggleMode" data-mode="grade">Ver Grade Inteira</button>
+    </div>
 
-<div id="coloGraph"></div>
-<div id="contador"></div>
-<div class="painel"></div>
-<div id="authOverlay" class="auth-overlay hidden">
+    <div class="seletor hidden">
+        <h2>Selecione o seu período</h2>
+        <select id="periodo">
+            <option value="">Selecione um período</option>
+            <option value="1">1°</option>
+            <option value="2">2°</option>
+            <option value="3">3°</option>
+            <option value="4">4°</option>
+            <option value="5">5°</option>
+            <option value="6">6°</option>
+            <option value="7">7°</option>
+            <option value="8">8°</option>
+            <option value="9">9°</option>
+            <option value="10">10°</option>
+        </select>
+        <h2>Selecione as matérias já cursadas</h2>
+        <div id="materias"></div>
+        <button id="salvar">Salvar Matérias</button>
+        <button id="limpar">Limpar Matérias</button>
+    </div>
+
+    <div id="coloGraph"></div>
+    <div id="contador"></div>
+    <div class="painel"></div>
+    <div id="authOverlay" class="auth-overlay hidden">
+        <div class="auth-box">
+            <div class="auth-icon">🔒</div>
+
+            <h2>Acesso restrito</h2>
+            <p>
+                Você precisa estar logado para<br>
+                salvar seu progresso no curso
+            </p>
+
+            <div class="auth-actions">
+                <a class="btn primary" href="./login/login.html">Entrar</a>
+                <a class="btn secondary" href="./login/register.html">Criar conta</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="editProfileOverlay" class="auth-overlay hidden">
   <div class="auth-box">
-    <div class="auth-icon">🔒</div>
 
-    <h2>Acesso restrito</h2>
-    <p>
-      Você precisa estar logado para<br>
-      salvar seu progresso no curso
-    </p>
+    <h2>Editar perfil</h2>
+
+    <div id="profilePicDiv" class="profile-pic-edit">
+      <span>Alterar foto</span>
+    </div>
+    <input type="file" id="profilePicInput" accept="image/*" hidden>
+
+    <div class="input-group">
+      <label for="editNome">Nome</label>
+      <input id="editNome" placeholder="Seu nome completo">
+    </div>
+
+    <div class="input-group">
+      <label for="editUserId">ID do usuário</label>
+      <input id="editUserId" placeholder="@usuario">
+    </div>
+
+    <div class="input-group">
+      <label for="editIra">IRA</label>
+      <input
+        id="editIra"
+        type="number"
+        step="0.0001"
+        min="0"
+        max="10"
+        placeholder="0.0000">
+    </div>
+
+    <div class="input-group">
+      <label for="editNascimento">Data de nascimento</label>
+      <input id="editNascimento" type="date">
+    </div>
+
+    <div class="input-group">
+      <label for="editIngresso">Ingresso</label>
+      <input id="editIngresso" placeholder="AAAA.1 ou AAAA.2">
+    </div>
 
     <div class="auth-actions">
-      <a class="btn primary" href="./login/login.html">Entrar</a>
-      <a class="btn secondary" href="./login/register.html">Criar conta</a>
+      <button id="saveProfileBtn" class="btn primary">Salvar</button>
+      <button id="cancelEditBtn" class="btn secondary">Cancelar</button>
     </div>
+
   </div>
 </div>
 
-
-
-<script src="db.js"></script>
-<script type="module" src="index.js"></script>
-<script type="module" src="auth-guard.js"></script>
-<script src="navigation-bar.js"></script>
+    <script src="db.js"></script>
+    <script type="module" src="index.js"></script>
+    <script type="module" src="auth-guard.js"></script>
+    <script  src="navigation-bar.js"></script>
+    <script type="module" src="profile-edit.js"></script>
 </body>
+
 </html>

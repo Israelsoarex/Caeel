@@ -159,6 +159,9 @@
             <a href="index.html">Grade Currículo</a>
             <a href="ranking-ira.html">Ranking - IRA</a>
             <a href="reprovometro.html">Reprovômetro</a>
+             <button id="logoutBtn" class="menu-logout">
+                <i class="fas fa-right-from-bracket"></i> Sair
+            </button>
         </div>
     </nav>
 
@@ -215,6 +218,54 @@
       <a class="btn primary" href="./login/login.html">Entrar</a>
       <a class="btn secondary" href="./login/register.html">Criar conta</a>
     </div>
+  </div>
+</div>
+ <div id="editProfileOverlay" class="auth-overlay hidden">
+  <div class="auth-box">
+
+    <h2>Editar perfil</h2>
+
+    <div id="profilePicDiv" class="profile-pic-edit">
+      <span>Alterar foto</span>
+    </div>
+    <input type="file" id="profilePicInput" accept="image/*" hidden>
+
+    <div class="input-group">
+      <label for="editNome">Nome</label>
+      <input id="editNome" placeholder="Seu nome completo">
+    </div>
+
+    <div class="input-group">
+      <label for="editUserId">ID do usuário</label>
+      <input id="editUserId" placeholder="@usuario">
+    </div>
+
+    <div class="input-group">
+      <label for="editIra">IRA</label>
+      <input
+        id="editIra"
+        type="number"
+        step="0.0001"
+        min="0"
+        max="10"
+        placeholder="0.0000">
+    </div>
+
+    <div class="input-group">
+      <label for="editNascimento">Data de nascimento</label>
+      <input id="editNascimento" type="date">
+    </div>
+
+    <div class="input-group">
+      <label for="editIngresso">Ingresso</label>
+      <input id="editIngresso" placeholder="AAAA.1 ou AAAA.2">
+    </div>
+
+    <div class="auth-actions">
+      <button id="saveProfileBtn" class="btn primary">Salvar</button>
+      <button id="cancelEditBtn" class="btn secondary">Cancelar</button>
+    </div>
+
   </div>
 </div>
     <script>
@@ -325,6 +376,7 @@
         atualizarResultado();
     </script>
     <script type="module" src="logado.js"></script>
+    <script type="module" src="profile-edit.js"></script>
     <script src="navigation-bar.js"></script>
 </body>
 
