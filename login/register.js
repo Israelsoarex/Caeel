@@ -11,6 +11,9 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+import { criarFiltroDeConteudo } from "./badwords.js";
+
+
 const CLOUD_NAME = "drntmxv0m";
 const UPLOAD_PRESET = "eng_eletrica_ufpi";
 
@@ -147,6 +150,38 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
+    const filtro = criarFiltroDeConteudo();
+
+let userIdNormalizado = normalizarUserId(userIdName);
+console.log(userIdNormalizado)
+// valida userId
+let erro = validarUserId(userIdNormalizado, filtro);
+if (erro) {
+    Toastify({ text: erro, backgroundColor: "#e74c3c" }).showToast();
+    return;
+}
+
+// valida nome
+erro = validarNome(nome, filtro);
+if (erro) {
+    Toastify({ text: erro, backgroundColor: "#e74c3c" }).showToast();
+    return;
+}
+
+// valida ingresso
+erro = validarIngresso(ingresso);
+if (erro) {
+    Toastify({ text: erro, backgroundColor: "#e67e22" }).showToast();
+    return;
+}
+
+// valida matrícula
+erro = validarMatricula(matricula);
+if (erro) {
+    Toastify({ text: erro, backgroundColor: "#e67e22" }).showToast();
+    return;
+}
+
     try {
         showLoadingToast("Criando conta...");
 
@@ -262,4 +297,76 @@ function hideLoadingToast() {
         loadingToast.hideToast();
         loadingToast = null;
     }
+}
+function normalizarUserId(valor) {
+    let id = valor.toLowerCase().trim();
+
+    // remove espaços
+    id = id.replace(/\s+/g, "");
+
+    // adiciona @ se não tiver
+    if (!id.includes("@")) {
+        id = "@" + id;
+    }
+
+    return id;
+}
+function validarUserId(id, filtro) {
+    if (/\s/.test(id)) {
+        return "O ID não pode conter espaços";
+    }
+
+    if (/[A-Z]/.test(id)) {
+        return "O ID não pode conter letras maiúsculas";
+    }
+
+    const ver = filtro.verificar(id);
+    if (ver.bloqueado) {
+        console.log(ver.palavra)
+        return "ID contém termos proibidos";
+    }
+
+    return null;
+}
+function validarNome(nome, filtro) {
+    if (/\d/.test(nome)) {
+        return "O nome não pode conter números";
+    }
+
+    const ver = filtro.verificar(nome);
+    if (ver.bloqueado) {
+        console.log(ver.palavra)
+        return "Nome contém termos proibidos";
+    }
+
+    return null;
+}
+function validarIngresso(ingresso) {
+    const anoAtual = new Date().getFullYear();
+    const match = ingresso.match(/^(\d{4})\.(1|2)$/);
+
+    if (!match) return "Formato inválido (AAAA.1 ou AAAA.2)";
+
+    const ano = Number(match[1]);
+
+    if (ano < 2011 || ano > anoAtual) {
+        return `Ano de ingresso deve estar entre 2011 e ${anoAtual}`;
+    }
+
+    return null;
+}
+function validarMatricula(matricula) {
+    const anoAtual = new Date().getFullYear();
+
+    if (!/^\d{9,11}$/.test(matricula)) {
+        return "Matrícula deve ter entre 9 e 11 números";
+    }
+
+    const ano = Number(matricula.substring(0, 4));
+
+    if (ano < 2011 || ano > anoAtual) {
+        return "Ano da matrícula inválido";
+    }
+
+    return null;
 }
