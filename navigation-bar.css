@@ -178,3 +178,110 @@
         left: 0;
     }
 }
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: fadeIn 0.25s ease;
+}
+
+.auth-overlay.hidden {
+  display: none;
+}
+
+/* Caixa central */
+.auth-box {
+  background: linear-gradient(180deg, #111, #0b0b0b);
+  color: #fff;
+
+  width: min(90%, 360px);
+  padding: 28px 24px;
+  border-radius: 16px;
+
+  text-align: center;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.05),
+    0 20px 40px rgba(0,0,0,.6);
+
+  animation: slideUp 0.3s ease;
+}
+
+/* Ícone */
+.auth-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+/* Texto */
+.auth-box h2 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.auth-box p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+/* Botões */
+.auth-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.auth-actions .btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Botão principal */
+.auth-actions .primary {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+}
+
+/* Botão secundário */
+.auth-actions .secondary {
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+/* Hover */
+.auth-actions .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.4);
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
