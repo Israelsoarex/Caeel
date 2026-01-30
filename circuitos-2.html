@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuitos Elétricos II - Ferramentas Avançadas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #043E7D;
+            --secondary: #2D5AA0;
+            --accent: #FF6B35;
+            --light: #f3f7fb;
+            --dark: #111;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f3f7fb 0%, #e8eff7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 16px 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar i {
+            font-size: 1.5rem;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 24px auto;
+            padding: 0 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        label {
+            font-size: 14px;
+            color: var(--muted);
+            display: block;
+            margin-top: 16px;
+            font-weight: 600;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px 16px;
+            margin-top: 6px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(4, 62, 125, 0.1);
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .row > * {
+            flex: 1;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            padding: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(90deg, #032a5a 0%, #1e4480 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(4, 62, 125, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(90deg, #6b7280 0%, #9ca3af 100%);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(90deg, #4b5563 0%, #6b7280 100%);
+        }
+
+        .result {
+            background: #f8fbff;
+            border: 1px solid #e5efff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 10px;
+            font-style: italic;
+            padding: 8px 12px;
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .unit-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .unit-btn {
+            padding: 8px 12px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .unit-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--muted);
+            transition: all 0.3s;
+            width: auto;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .fasor-diagram {
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+            position: relative;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .success { color: var(--success); }
+        .warning { color: var(--warning); }
+        .danger { color: var(--danger); }
+        .info { color: var(--primary); }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .op-btn {
+            padding: 10px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .op-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            .operation-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tab-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <i class="fas fa-bolt"></i>
+        Circuitos Elétricos II — Ferramentas Avançadas
+    </nav>
+
+    <div class="container">
+        <h1>Calculadora de Circuitos AC</h1>
+        <p class="subtitle">Ferramentas para análise de circuitos em corrente alternada: números complexos, impedâncias, fasores, potência e ressonância</p>
+
+        <div class="grid">
+            <!-- Painel de Controle -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-sliders-h"></i> Controles</h2>
+                
+                <label>Selecione o Módulo</label>
+                <select id="mainSelect" onchange="switchMain()">
+                    <option value="complex">Números Complexos</option>
+                    <option value="phasor">Fasores e Domínios</option>
+                    <option value="reactance">Reatâncias</option>
+                    <option value="impedance">Impedâncias</option>
+                    <option value="admittance">Admitância e Susceptância</option>
+                    <option value="power">Potência em CA</option>
+                    <option value="resonance">Ressonância</option>
+                    <option value="transfer">Função de Transferência</option>
+                </select>
+                
+                <div class="note">
+                    <i class="fas fa-info-circle"></i> Selecione um módulo acima para acessar as ferramentas específicas.
+                </div>
+            </div>
+
+            <!-- Painel de Resultados -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
+                <div id="output" class="result">
+                    Bem-vindo à calculadora de Circuitos Elétricos II!
+                    
+                    Selecione um módulo ao lado para começar os cálculos.
+                    
+                    ====================================
+                    
+                    Funcionalidades disponíveis:
+                    • Números complexos (retangular, polar, trigonométrica)
+                    • Conversão fasorial (tempo ↔ frequência)
+                    • Cálculo de reatâncias (indutiva/capacitiva)
+                    • Associação de impedâncias (série/paralelo)
+                    • Admitância e susceptância
+                    • Potência em CA (instantânea, média, complexa)
+                    • Ressonância (série e paralelo)
+                    • Funções de transferência
+                </div>
+                
+                <div class="fasor-diagram" id="phasorDiagram">
+                    <!-- Diagrama de fasores será desenhado aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Módulos de Cálculo -->
+        <div class="card" style="margin-top: 30px;">
+            <!-- Módulo: Números Complexos -->
+            <div id="complex" class="section active">
+                <h2 class="card-title"><i class="fas fa-calculator"></i> Números Complexos</h2>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchComplexTab('rect')">Retangular</button>
+                    <button class="tab-btn" onclick="switchComplexTab('polar')">Polar</button>
+                    <button class="tab-btn" onclick="switchComplexTab('trig')">Trigonométrica</button>
+                    <button class="tab-btn" onclick="switchComplexTab('operations')">Operações</button>
+                </div>
+                
+                <!-- Retangular -->
+                <div id="complex-rect" class="complex-subsection">
+                    <label>Número Complexo 1 (a + jb)</label>
+                    <div class="row">
+                        <input id="rect-a1" type="number" placeholder="Parte real (a)" step="any" value="3">
+                        <input id="rect-b1" type="number" placeholder="Parte imaginária (b)" step="any" value="4">
+                    </div>
+                    
+                    <label>Número Complexo 2 (c + jd)</label>
+                    <div class="row">
+                        <input id="rect-a2" type="number" placeholder="Parte real (c)" step="any" value="1">
+                        <input id="rect-b2" type="number" placeholder="Parte imaginária (d)" step="any" value="2">
+                    </div>
+                    
+                    <div class="operation-buttons">
+                        <button class="op-btn" onclick="complexOperation('add')">Soma (Z₁ + Z₂)</button>
+                        <button class="op-btn" onclick="complexOperation('sub')">Subtração (Z₁ - Z₂)</button>
+                        <button class="op-btn" onclick="complexOperation('mult')">Multiplicação (Z₁ × Z₂)</button>
+                        <button class="op-btn" onclick="complexOperation('div')">Divisão (Z₁ ÷ Z₂)</button>
+                        <button class="op-btn" onclick="rectToPolar()">Converter para Polar</button>
+                        <button class="op-btn" onclick="rectToTrig()">Converter para Trigonométrica</button>
+                    </div>
+                </div>
+                
+                <!-- Polar -->
+                <div id="complex-polar" class="complex-subsection" style="display:none">
+                    <label>Número Complexo 1 (|Z|∠θ°)</label>
+                    <div class="row">
+                        <input id="polar-mod1" type="number" placeholder="Módulo (|Z|)" step="any" value="5">
+                        <input id="polar-ang1" type="number" placeholder="Ângulo (θ°)" step="any" value="53.13">
+                    </div>
+                    
+                    <label>Número Complexo 2 (|Z|∠θ°)</label>
+                    <div class="row">
+                        <input id="polar-mod2" type="number" placeholder="Módulo (|Z|)" step="any" value="2.236">
+                        <input id="polar-ang2" type="number" placeholder="Ângulo (θ°)" step="any" value="63.435">
+                    </div>
+                    
+                    <div class="operation-buttons">
+                        <button class="op-btn" onclick="polarOperation('add')">Soma (Z₁ + Z₂)</button>
+                        <button class="op-btn" onclick="polarOperation('sub')">Subtração (Z₁ - Z₂)</button>
+                        <button class="op-btn" onclick="polarOperation('mult')">Multiplicação (Z₁ × Z₂)</button>
+                        <button class="op-btn" onclick="polarOperation('div')">Divisão (Z₁ ÷ Z₂)</button>
+                        <button class="op-btn" onclick="polarToRect()">Converter para Retangular</button>
+                    </div>
+                </div>
+                
+                <!-- Trigonométrica -->
+                <div id="complex-trig" class="complex-subsection" style="display:none">
+                    <label>Número Complexo na forma trigonométrica</label>
+                    <div class="row">
+                        <input id="trig-mod" type="number" placeholder="Módulo (|Z|)" step="any" value="5">
+                        <input id="trig-ang" type="number" placeholder="Ângulo (θ°)" step="any" value="53.13">
+                    </div>
+                    
+                    <label>Representação</label>
+                    <select id="trig-type">
+                        <option value="cos">A·cos(ωt + θ)</option>
+                        <option value="sin">A·sin(ωt + θ)</option>
+                    </select>
+                    
+                    <label>Frequência angular ω (rad/s)</label>
+                    <input id="trig-omega" type="number" placeholder="ω" step="any" value="100">
+                    
+                    <div class="operation-buttons">
+                        <button class="op-btn" onclick="trigToPhasor()">Converter para Fasor</button>
+                        <button class="op-btn" onclick="trigToRect()">Converter para Retangular</button>
+                        <button class="op-btn" onclick="trigToPolar()">Converter para Polar</button>
+                    </div>
+                </div>
+                
+                <!-- Operações Avançadas -->
+                <div id="complex-operations" class="complex-subsection" style="display:none">
+                    <label>Número Complexo (a + jb)</label>
+                    <div class="row">
+                        <input id="op-a" type="number" placeholder="Parte real (a)" step="any" value="3">
+                        <input id="op-b" type="number" placeholder="Parte imaginária (b)" step="any" value="4">
+                    </div>
+                    
+                    <div class="operation-buttons">
+                        <button class="op-btn" onclick="complexOp('conjugate')">Conjugado</button>
+                        <button class="op-btn" onclick="complexOp('inverse')">Inverso (1/Z)</button>
+                        <button class="op-btn" onclick="complexOp('magnitude')">Módulo |Z|</button>
+                        <button class="op-btn" onclick="complexOp('phase')">Fase ∠Z</button>
+                        <button class="op-btn" onclick="complexOp('sqrt')">Raiz Quadrada</button>
+                        <button class="op-btn" onclick="complexOp('exp')">Exponencial (e^Z)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Módulo: Fasores e Domínios -->
+            <div id="phasor" class="section">
+                <h2 class="card-title"><i class="fas fa-wave-square"></i> Fasores e Domínios</h2>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchPhasorTab('timeToFreq')">Tempo → Frequência</button>
+                    <button class="tab-btn" onclick="switchPhasorTab('freqToTime')">Frequência → Tempo</button>
+                    <button class="tab-btn" onclick="switchPhasorTab('phasorOperations')">Operações com Fasores</button>
+                </div>
+                
+                <!-- Tempo para Frequência -->
+                <div id="phasor-timeToFreq" class="phasor-subsection">
+                    <label>Sinal no Domínio do Tempo</label>
+                    <select id="time-signal-type">
+                        <option value="cos">v(t) = Vm·cos(ωt + θ)</option>
+                        <option value="sin">v(t) = Vm·sin(ωt + θ)</option>
+                    </select>
+                    
+                    <div class="row">
+                        <div>
+                            <label>Amplitude Vm (V)</label>
+                            <input id="time-vm" type="number" placeholder="Vm" step="any" value="10">
+                        </div>
+                        <div>
+                            <label>Frequência angular ω (rad/s)</label>
+                            <input id="time-omega" type="number" placeholder="ω" step="any" value="100">
+                        </div>
+                        <div>
+                            <label>Fase θ (graus)</label>
+                            <input id="time-theta" type="number" placeholder="θ" step="any" value="30">
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="timeToFrequency()">Converter para Fasor</button>
+                </div>
+                
+                <!-- Frequência para Tempo -->
+                <div id="phasor-freqToTime" class="phasor-subsection" style="display:none">
+                    <label>Fasor no Domínio da Frequência</label>
+                    <div class="row">
+                        <div>
+                            <label>Magnitude |V| (V)</label>
+                            <input id="freq-mag" type="number" placeholder="|V|" step="any" value="10">
+                        </div>
+                        <div>
+                            <label>Fase ∠V (graus)</label>
+                            <input id="freq-phase" type="number" placeholder="∠V" step="any" value="30">
+                        </div>
+                    </div>
+                    
+                    <label>Frequência angular ω (rad/s)</label>
+                    <input id="freq-omega" type="number" placeholder="ω" step="any" value="100">
+                    
+                    <label>Forma de onda no tempo</label>
+                    <select id="freq-waveform">
+                        <option value="cos">Cosseno (cos)</option>
+                        <option value="sin">Seno (sin)</option>
+                    </select>
+                    
+                    <button class="btn" onclick="frequencyToTime()">Converter para Domínio do Tempo</button>
+                </div>
+                
+                <!-- Operações com Fasores -->
+                <div id="phasor-operations" class="phasor-subsection" style="display:none">
+                    <label>Fasor 1 (|V|∠θ°)</label>
+                    <div class="row">
+                        <input id="phasor1-mag" type="number" placeholder="Magnitude" step="any" value="10">
+                        <input id="phasor1-phase" type="number" placeholder="Fase (°)" step="any" value="30">
+                    </div>
+                    
+                    <label>Fasor 2 (|V|∠θ°)</label>
+                    <div class="row">
+                        <input id="phasor2-mag" type="number" placeholder="Magnitude" step="any" value="5">
+                        <input id="phasor2-phase" type="number" placeholder="Fase (°)" step="any" value="60">
+                    </div>
+                    
+                    <div class="operation-buttons">
+                        <button class="op-btn" onclick="phasorOperation('add')">Soma de Fasores</button>
+                        <button class="op-btn" onclick="phasorOperation('sub')">Subtração de Fasores</button>
+                        <button class="op-btn" onclick="phasorOperation('mult')">Multiplicação</button>
+                        <button class="op-btn" onclick="phasorOperation('div')">Divisão</button>
+                        <button class="op-btn" onclick="phasorOperation('dot')">Produto Escalar</button>
+                        <button class="op-btn" onclick="drawPhasorDiagram()">Diagrama de Fasores</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Módulo: Reatâncias -->
+            <div id="reactance" class="section">
+                <h2 class="card-title"><i class="fas fa-resistor"></i> Reatâncias</h2>
+                
+                <label>Tipo de Reatância</label>
+                <select id="reactType" onchange="updateReactanceUnit()">
+                    <option value="L">Indutiva (XL)</option>
+                    <option value="C">Capacitiva (XC)</option>
+                </select>
+                
+                <label>Valor do Componente</label>
+                <div class="row">
+                    <input id="reactValue" type="number" placeholder="Valor" step="any" value="10">
+                    <select id="reactUnit">
+                        <!-- Unidades serão preenchidas via JavaScript -->
+                    </select>
+                </div>
+                
+                <label>Frequência (Hz)</label>
+                <input id="freq" type="number" placeholder="Frequência em Hertz" step="any" value="60">
+                
+                <div class="unit-selector">
+                    <span style="align-self: center; margin-right: 10px;">Múltiplos:</span>
+                    <button class="unit-btn" onclick="setFrequency(50)">50 Hz</button>
+                    <button class="unit-btn" onclick="setFrequency(60)">60 Hz</button>
+                    <button class="unit-btn" onclick="setFrequency(1000)">1 kHz</button>
+                    <button class="unit-btn" onclick="setFrequency(10000)">10 kHz</button>
+                </div>
+                
+                <button class="btn" onclick="calcReactance()">Calcular Reatância</button>
+                
+                <div class="note">
+                    <i class="fas fa-lightbulb"></i> Reatância Indutiva: XL = ωL = 2πfL<br>
+                    Reatância Capacitiva: XC = -1/(ωC) = -1/(2πfC)
+                </div>
+            </div>
+            
+            <!-- Módulo: Impedâncias -->
+            <div id="impedance" class="section">
+                <h2 class="card-title"><i class="fas fa-project-diagram"></i> Impedâncias</h2>
+                
+                <label>Tipo de Associação</label>
+                <select id="assocType">
+                    <option value="serie">Série</option>
+                    <option value="paralelo">Paralelo</option>
+                    <option value="serie-paralelo">Série-Paralelo</option>
+                </select>
+                
+                <div id="impedance-inputs">
+                    <div class="impedance-group">
+                        <label>Impedância Z₁ (Ω)</label>
+                        <div class="row">
+                            <select id="z1-type">
+                                <option value="rectangular">Retangular (R + jX)</option>
+                                <option value="polar">Polar (|Z|∠θ°)</option>
+                            </select>
+                        </div>
+                        
+                        <div id="z1-rect">
+                            <div class="row">
+                                <input id="r1" placeholder="Resistência R₁ (Ω)" step="any" value="4">
+                                <input id="x1" placeholder="Reatância X₁ (Ω)" step="any" value="3">
+                            </div>
+                        </div>
+                        
+                        <div id="z1-polar" style="display:none">
+                            <div class="row">
+                                <input id="z1-mag" placeholder="|Z₁| (Ω)" step="any" value="5">
+                                <input id="z1-ang" placeholder="∠Z₁ (°)" step="any" value="36.87">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="impedance-group">
+                        <label>Impedância Z₂ (Ω)</label>
+                        <div class="row">
+                            <select id="z2-type">
+                                <option value="rectangular">Retangular (R + jX)</option>
+                                <option value="polar">Polar (|Z|∠θ°)</option>
+                            </select>
+                        </div>
+                        
+                        <div id="z2-rect">
+                            <div class="row">
+                                <input id="r2" placeholder="Resistência R₂ (Ω)" step="any" value="3">
+                                <input id="x2" placeholder="Reatância X₂ (Ω)" step="any" value="4">
+                            </div>
+                        </div>
+                        
+                        <div id="z2-polar" style="display:none">
+                            <div class="row">
+                                <input id="z2-mag" placeholder="|Z₂| (Ω)" step="any" value="5">
+                                <input id="z2-ang" placeholder="∠Z₂ (°)" step="any" value="53.13">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="calcImpedance()">Calcular Impedância Equivalente</button>
+                
+                <div class="note">
+                    <i class="fas fa-lightbulb"></i> 
+                    • Série: Zeq = Z₁ + Z₂<br>
+                    • Paralelo: Zeq = (Z₁ × Z₂) / (Z₁ + Z₂)<br>
+                    • Use o conjugado para divisão de números complexos
+                </div>
+            </div>
+            
+            <!-- Módulo: Admitância e Susceptância -->
+            <div id="admittance" class="section">
+                <h2 class="card-title"><i class="fas fa-exchange-alt"></i> Admitância e Susceptância</h2>
+                
+                <label>Impedância Z (Ω)</label>
+                <div class="row">
+                    <input id="z-real" type="number" placeholder="Parte Real (R)" step="any" value="4">
+                    <input id="z-imag" type="number" placeholder="Parte Imaginária (X)" step="any" value="3">
+                </div>
+                
+                <div class="operation-buttons">
+                    <button class="op-btn" onclick="calcAdmittance()">Calcular Admitância (Y)</button>
+                    <button class="op-btn" onclick="calcConductance()">Calcular Condutância (G)</button>
+                    <button class="op-btn" onclick="calcSusceptance()">Calcular Susceptância (B)</button>
+                    <button class="op-btn" onclick="calcAdmittancePolar()">Admitância na Forma Polar</button>
+                </div>
+                
+                <div class="note">
+                    <i class="fas fa-lightbulb"></i> 
+                    Admitância: Y = 1/Z = G + jB<br>
+                    Condutância: G = R/(R² + X²)<br>
+                    Susceptância: B = -X/(R² + X²)
+                </div>
+            </div>
+            
+            <!-- Módulo: Potência em CA -->
+            <div id="power" class="section">
+                <h2 class="card-title"><i class="fas fa-bolt"></i> Potência em Corrente Alternada</h2>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchPowerTab('instant')">Potência Instantânea</button>
+                    <button class="tab-btn" onclick="switchPowerTab('average')">Potência Média</button>
+                    <button class="tab-btn" onclick="switchPowerTab('complex')">Potência Complexa</button>
+                    <button class="tab-btn" onclick="switchPowerTab('rms')">Valor Eficaz (RMS)</button>
+                </div>
+                
+                <!-- Potência Instantânea -->
+                <div id="power-instant" class="power-subsection">
+                    <label>Tensão v(t) = Vm·cos(ωt + θv)</label>
+                    <div class="row">
+                        <input id="p-vm" type="number" placeholder="Vm (V)" step="any" value="10">
+                        <input id="p-omega" type="number" placeholder="ω (rad/s)" step="any" value="100">
+                        <input id="p-theta-v" type="number" placeholder="θv (°)" step="any" value="0">
+                    </div>
+                    
+                    <label>Corrente i(t) = Im·cos(ωt + θi)</label>
+                    <div class="row">
+                        <input id="p-im" type="number" placeholder="Im (A)" step="any" value="2">
+                        <input id="p-theta-i" type="number" placeholder="θi (°)" step="any" value="-30">
+                    </div>
+                    
+                    <button class="btn" onclick="calcInstantPower()">Calcular Potência Instantânea</button>
+                </div>
+                
+                <!-- Potência Média -->
+                <div id="power-average" class="power-subsection" style="display:none">
+                    <label>Valores de Pico</label>
+                    <div class="row">
+                        <input id="avg-vm" type="number" placeholder="Tensão Vm (V)" step="any" value="10">
+                        <input id="avg-im" type="number" placeholder="Corrente Im (A)" step="any" value="2">
+                        <input id="avg-phi" type="number" placeholder="Dif. de Fase φ (°)" step="any" value="30">
+                    </div>
+                    
+                    <button class="btn" onclick="calcAveragePower()">Calcular Potência Média</button>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> 
+                        Potência Média: P = (Vm·Im/2)·cos(φ)<br>
+                        onde φ = θv - θi
+                    </div>
+                </div>
+                
+                <!-- Potência Complexa -->
+                <div id="power-complex" class="power-subsection" style="display:none">
+                    <label>Tensão Fasorial V = |V|∠θv</label>
+                    <div class="row">
+                        <input id="comp-v-mag" type="number" placeholder="|V| (V)" step="any" value="10">
+                        <input id="comp-v-phase" type="number" placeholder="θv (°)" step="any" value="0">
+                    </div>
+                    
+                    <label>Corrente Fasorial I = |I|∠θi</label>
+                    <div class="row">
+                        <input id="comp-i-mag" type="number" placeholder="|I| (A)" step="any" value="2">
+                        <input id="comp-i-phase" type="number" placeholder="θi (°)" step="any" value="-30">
+                    </div>
+                    
+                    <button class="btn" onclick="calcComplexPower()">Calcular Potência Complexa</button>
+                </div>
+                
+                <!-- Valor Eficaz (RMS) -->
+                <div id="power-rms" class="power-subsection" style="display:none">
+                    <label>Forma de Onda</label>
+                    <select id="waveform-type">
+                        <option value="sine">Senoide</option>
+                        <option value="square">Onda Quadrada</option>
+                        <option value="triangle">Onda Triangular</option>
+                        <option value="sawtooth">Onda Dente de Serra</option>
+                    </select>
+                    
+                    <label>Valor de Pico Vp (V)</label>
+                    <input id="rms-vp" type="number" placeholder="Tensão de Pico" step="any" value="10">
+                    
+                    <button class="btn" onclick="calcRMS()">Calcular Valor RMS</button>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> 
+                        Para senoide: Vrms = Vp/√2 ≈ 0.7071·Vp<br>
+                        Para onda quadrada: Vrms = Vp<br>
+                        Para onda triangular: Vrms = Vp/√3 ≈ 0.5774·Vp
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Módulo: Ressonância -->
+            <div id="resonance" class="section">
+                <h2 class="card-title"><i class="fas fa-wave-square"></i> Ressonância</h2>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchResonanceTab('series')">Ressonância Série</button>
+                    <button class="tab-btn" onclick="switchResonanceTab('parallel')">Ressonância Paralelo</button>
+                    <button class="tab-btn" onclick="switchResonanceTab('qfactor')">Fator de Qualidade (Q)</button>
+                </div>
+                
+                <!-- Ressonância Série -->
+                <div id="resonance-series" class="resonance-subsection">
+                    <label>Componentes do Circuito RLC Série</label>
+                    <div class="row">
+                        <input id="series-r" type="number" placeholder="Resistência R (Ω)" step="any" value="10">
+                        <input id="series-l" type="number" placeholder="Indutância L (H)" step="any" value="0.1">
+                        <input id="series-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.000001">
+                    </div>
+                    
+                    <button class="btn" onclick="calcSeriesResonance()">Calcular Ressonância Série</button>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> 
+                        Frequência de ressonância: fr = 1/(2π√(LC))<br>
+                        Largura de banda: BW = R/L (rad/s)<br>
+                        Fator de qualidade: Q = ω₀L/R = 1/(ω₀CR)
+                    </div>
+                </div>
+                
+                <!-- Ressonância Paralelo -->
+                <div id="resonance-parallel" class="resonance-subsection" style="display:none">
+                    <label>Componentes do Circuito RLC Paralelo</label>
+                    <div class="row">
+                        <input id="parallel-r" type="number" placeholder="Resistência R (Ω)" step="any" value="1000">
+                        <input id="parallel-l" type="number" placeholder="Indutância L (H)" step="any" value="0.1">
+                        <input id="parallel-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.000001">
+                    </div>
+                    
+                    <button class="btn" onclick="calcParallelResonance()">Calcular Ressonância Paralelo</button>
+                    
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i> 
+                        Frequência de ressonância: fr = 1/(2π√(LC))<br>
+                        Para circuito paralelo ideal: Zmax = R na ressonância<br>
+                        Fator de qualidade: Q = R/(ω₀L) = ω₀CR
+                    </div>
+                </div>
+                
+                <!-- Fator de Qualidade -->
+                <div id="resonance-qfactor" class="resonance-subsection" style="display:none">
+                    <label>Parâmetros do Circuito</label>
+                    <div class="row">
+                        <input id="q-freq" type="number" placeholder="Frequência f (Hz)" step="any" value="1000">
+                        <input id="q-bw" type="number" placeholder="Largura de Banda BW (Hz)" step="any" value="100">
+                    </div>
+                    
+                    <label>Ou especifique os componentes</label>
+                    <div class="row">
+                        <input id="q-r" type="number" placeholder="Resistência R (Ω)" step="any" value="10">
+                        <input id="q-l" type="number" placeholder="Indutância L (H)" step="any" value="0.001">
+                        <input id="q-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.0000001">
+                    </div>
+                    
+                    <select id="q-circuit-type">
+                        <option value="series">Circuito Série</option>
+                        <option value="parallel">Circuito Paralelo</option>
+                    </select>
+                    
+                    <button class="btn" onclick="calcQFactor()">Calcular Fator de Qualidade</button>
+                </div>
+            </div>
+            
+            <!-- Módulo: Função de Transferência -->
+            <div id="transfer" class="section">
+                <h2 class="card-title"><i class="fas fa-filter"></i> Função de Transferência</h2>
+                
+                <label>Tipo de Circuito</label>
+                <select id="transfer-circuit-type">
+                    <option value="rl">Circuito RL</option>
+                    <option value="rc">Circuito RC</option>
+                    <option value="rlc">Circuito RLC</option>
+                    <option value="custom">Personalizada</option>
+                </select>
+                
+                <div id="transfer-rl" class="transfer-subsection">
+                    <label>Circuito RL (Divisor de Tensão)</label>
+                    <div class="row">
+                        <input id="rl-r" type="number" placeholder="Resistência R (Ω)" step="any" value="1000">
+                        <input id="rl-l" type="number" placeholder="Indutância L (H)" step="any" value="0.01">
+                    </div>
+                    
+                    <label>Saída desejada</label>
+                    <select id="rl-output">
+                        <option value="vr">Tensão no Resistor (VR)</option>
+                        <option value="vl">Tensão no Indutor (VL)</option>
+                    </select>
+                </div>
+                
+                <div id="transfer-rc" class="transfer-subsection" style="display:none">
+                    <label>Circuito RC (Divisor de Tensão)</label>
+                    <div class="row">
+                        <input id="rc-r" type="number" placeholder="Resistência R (Ω)" step="any" value="1000">
+                        <input id="rc-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.000001">
+                    </div>
+                    
+                    <label>Saída desejada</label>
+                    <select id="rc-output">
+                        <option value="vr">Tensão no Resistor (VR)</option>
+                        <option value="vc">Tensão no Capacitor (VC)</option>
+                    </select>
+                </div>
+                
+                <div id="transfer-rlc" class="transfer-subsection" style="display:none">
+                    <label>Circuito RLC Série</label>
+                    <div class="row">
+                        <input id="rlc-r" type="number" placeholder="Resistência R (Ω)" step="any" value="100">
+                        <input id="rlc-l" type="number" placeholder="Indutância L (H)" step="any" value="0.1">
+                        <input id="rlc-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.000001">
+                    </div>
+                    
+                    <label>Saída desejada</label>
+                    <select id="rlc-output">
+                        <option value="vr">Tensão no Resistor (VR)</option>
+                        <option value="vl">Tensão no Indutor (VL)</option>
+                        <option value="vc">Tensão no Capacitor (VC)</option>
+                    </select>
+                </div>
+                
+                <div id="transfer-custom" class="transfer-subsection" style="display:none">
+                    <label>Função de Transferência Personalizada H(s)</label>
+                    <div class="row">
+                        <input id="tf-num" type="text" placeholder="Numerador (ex: s, s+1, s^2+2s+1)" value="s">
+                        <input id="tf-den" type="text" placeholder="Denominador (ex: s+1, s^2+2s+1)" value="s+10">
+                    </div>
+                </div>
+                
+                <label>Frequência para avaliação (Hz)</label>
+                <input id="tf-freq" type="number" placeholder="Frequência f (Hz)" step="any" value="1000">
+                
+                <button class="btn" onclick="calcTransferFunction()">Calcular Função de Transferência</button>
+                
+                <div class="note">
+                    <i class="fas fa-lightbulb"></i> 
+                    Função de transferência: H(s) = Vout(s)/Vin(s)<br>
+                    No domínio da frequência: H(jω) = |H(jω)|∠θ(ω)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let currentComplexTab = 'rect';
+        let currentPhasorTab = 'timeToFreq';
+        let currentPowerTab = 'instant';
+        let currentResonanceTab = 'series';
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar unidades de reatância
+            updateReactanceUnit();
+            
+            // Configurar listeners para os selects de tipo de impedância
+            document.getElementById('z1-type').addEventListener('change', function() {
+                updateImpedanceInputs('z1');
+            });
+            document.getElementById('z2-type').addEventListener('change', function() {
+                updateImpedanceInputs('z2');
+            });
+            
+            // Configurar listener para o tipo de circuito de função de transferência
+            document.getElementById('transfer-circuit-type').addEventListener('change', function() {
+                updateTransferFunctionInputs();
+            });
+            
+            // Desenhar diagrama de fasores inicial
+            drawPhasorDiagram();
+        });
+        
+        // Funções de navegação principal
+        function switchMain() {
+            const mainSelect = document.getElementById('mainSelect');
+            const sections = document.querySelectorAll('.section');
+            
+            // Ocultar todas as seções
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar a seção selecionada
+            const selectedSection = document.getElementById(mainSelect.value);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+            
+            // Atualizar o resultado com instruções
+            const moduleNames = {
+                'complex': 'Números Complexos',
+                'phasor': 'Fasores e Domínios',
+                'reactance': 'Reatâncias',
+                'impedance': 'Impedâncias',
+                'admittance': 'Admitância e Susceptância',
+                'power': 'Potência em CA',
+                'resonance': 'Ressonância',
+                'transfer': 'Função de Transferência'
+            };
+            
+            output(`Módulo selecionado: ${moduleNames[mainSelect.value]}\n\nPreencha os campos e clique nos botões para realizar cálculos.`);
+        }
+        
+        // Funções para números complexos
+        function switchComplexTab(tab) {
+            currentComplexTab = tab;
+            
+            // Atualizar botões da aba
+            document.querySelectorAll('#complex .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.complex-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            document.getElementById(`complex-${tab}`).style.display = 'block';
+        }
+        
+        function complexOperation(op) {
+            const a1 = parseFloat(document.getElementById('rect-a1').value) || 0;
+            const b1 = parseFloat(document.getElementById('rect-b1').value) || 0;
+            const a2 = parseFloat(document.getElementById('rect-a2').value) || 0;
+            const b2 = parseFloat(document.getElementById('rect-b2').value) || 0;
+            
+            let result, real, imag;
+            
+            switch(op) {
+                case 'add':
+                    real = a1 + a2;
+                    imag = b1 + b2;
+                    result = `Soma:\nZ₁ + Z₂ = (${a1} + j${b1}) + (${a2} + j${b2})\n= ${real} + j${imag}`;
+                    break;
+                    
+                case 'sub':
+                    real = a1 - a2;
+                    imag = b1 - b2;
+                    result = `Subtração:\nZ₁ - Z₂ = (${a1} + j${b1}) - (${a2} + j${b2})\n= ${real} + j${imag}`;
+                    break;
+                    
+                case 'mult':
+                    real = a1*a2 - b1*b2;
+                    imag = a1*b2 + b1*a2;
+                    result = `Multiplicação:\nZ₁ × Z₂ = (${a1} + j${b1}) × (${a2} + j${b2})\n= ${real} + j${imag}`;
+                    break;
+                    
+                case 'div':
+                    const denom = a2*a2 + b2*b2;
+                    if (denom === 0) {
+                        result = "Erro: Divisão por zero!";
+                    } else {
+                        real = (a1*a2 + b1*b2) / denom;
+                        imag = (b1*a2 - a1*b2) / denom;
+                        result = `Divisão:\nZ₁ ÷ Z₂ = (${a1} + j${b1}) ÷ (${a2} + j${b2})\n= ${real.toFixed(4)} + j${imag.toFixed(4)}`;
+                    }
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        function rectToPolar() {
+            const a = parseFloat(document.getElementById('rect-a1').value) || 0;
+            const b = parseFloat(document.getElementById('rect-b1').value) || 0;
+            
+            const mod = Math.sqrt(a*a + b*b);
+            const ang = Math.atan2(b, a) * 180 / Math.PI;
+            
+            const result = `Conversão Retangular → Polar:\nZ = ${a} + j${b}\n\nForma Polar:\n|Z| = ${mod.toFixed(4)}\n∠Z = ${ang.toFixed(2)}°`;
+            
+            output(result);
+            
+            // Atualizar os campos da forma polar
+            document.getElementById('polar-mod1').value = mod.toFixed(4);
+            document.getElementById('polar-ang1').value = ang.toFixed(2);
+        }
+        
+        function rectToTrig() {
+            const a = parseFloat(document.getElementById('rect-a1').value) || 0;
+            const b = parseFloat(document.getElementById('rect-b1').value) || 0;
+            
+            const mod = Math.sqrt(a*a + b*b);
+            const ang = Math.atan2(b, a);
+            
+            const result = `Conversão Retangular → Trigonométrica:\nZ = ${a} + j${b}\n\nForma Trigonométrica:\nZ = ${mod.toFixed(4)}·(cos(${ang.toFixed(4)} rad) + j·sin(${ang.toFixed(4)} rad))\nZ = ${mod.toFixed(4)}·(cos(${(ang * 180 / Math.PI).toFixed(2)}°) + j·sin(${(ang * 180 / Math.PI).toFixed(2)}°))`;
+            
+            output(result);
+        }
+        
+        function polarOperation(op) {
+            const mod1 = parseFloat(document.getElementById('polar-mod1').value) || 0;
+            const ang1 = parseFloat(document.getElementById('polar-ang1').value) || 0;
+            const mod2 = parseFloat(document.getElementById('polar-mod2').value) || 0;
+            const ang2 = parseFloat(document.getElementById('polar-ang2').value) || 0;
+            
+            // Converter para radianos
+            const ang1Rad = ang1 * Math.PI / 180;
+            const ang2Rad = ang2 * Math.PI / 180;
+            
+            let result, mod, ang;
+            
+            switch(op) {
+                case 'add':
+                case 'sub':
+                    // Converter para retangular para soma/subtração
+                    const a1 = mod1 * Math.cos(ang1Rad);
+                    const b1 = mod1 * Math.sin(ang1Rad);
+                    const a2 = mod2 * Math.cos(ang2Rad);
+                    const b2 = mod2 * Math.sin(ang2Rad);
+                    
+                    let real, imag;
+                    if (op === 'add') {
+                        real = a1 + a2;
+                        imag = b1 + b2;
+                        result = `Soma:\nZ₁ + Z₂ = ${mod1}∠${ang1}° + ${mod2}∠${ang2}°\n`;
+                    } else {
+                        real = a1 - a2;
+                        imag = b1 - b2;
+                        result = `Subtração:\nZ₁ - Z₂ = ${mod1}∠${ang1}° - ${mod2}∠${ang2}°\n`;
+                    }
+                    
+                    mod = Math.sqrt(real*real + imag*imag);
+                    ang = Math.atan2(imag, real) * 180 / Math.PI;
+                    
+                    result += `= ${real.toFixed(4)} + j${imag.toFixed(4)}\n= ${mod.toFixed(4)}∠${ang.toFixed(2)}°`;
+                    break;
+                    
+                case 'mult':
+                    mod = mod1 * mod2;
+                    ang = ang1 + ang2;
+                    result = `Multiplicação:\nZ₁ × Z₂ = ${mod1}∠${ang1}° × ${mod2}∠${ang2}°\n= ${mod.toFixed(4)}∠${ang.toFixed(2)}°`;
+                    break;
+                    
+                case 'div':
+                    if (mod2 === 0) {
+                        result = "Erro: Divisão por zero!";
+                    } else {
+                        mod = mod1 / mod2;
+                        ang = ang1 - ang2;
+                        result = `Divisão:\nZ₁ ÷ Z₂ = ${mod1}∠${ang1}° ÷ ${mod2}∠${ang2}°\n= ${mod.toFixed(4)}∠${ang.toFixed(2)}°`;
+                    }
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        function polarToRect() {
+            const mod = parseFloat(document.getElementById('polar-mod1').value) || 0;
+            const ang = parseFloat(document.getElementById('polar-ang1').value) || 0;
+            
+            const angRad = ang * Math.PI / 180;
+            const a = mod * Math.cos(angRad);
+            const b = mod * Math.sin(angRad);
+            
+            const result = `Conversão Polar → Retangular:\nZ = ${mod}∠${ang}°\n\nForma Retangular:\nZ = ${a.toFixed(4)} + j${b.toFixed(4)}`;
+            
+            output(result);
+            
+            // Atualizar os campos da forma retangular
+            document.getElementById('rect-a1').value = a.toFixed(4);
+            document.getElementById('rect-b1').value = b.toFixed(4);
+        }
+        
+        function trigToPhasor() {
+            const mod = parseFloat(document.getElementById('trig-mod').value) || 0;
+            const ang = parseFloat(document.getElementById('trig-ang').value) || 0;
+            const trigType = document.getElementById('trig-type').value;
+            const omega = parseFloat(document.getElementById('trig-omega').value) || 0;
+            
+            let result;
+            
+            if (trigType === 'cos') {
+                result = `Sinal no tempo:\nv(t) = ${mod}·cos(${omega}t + ${ang}°)\n\nFasor correspondente:\nV = ${mod}∠${ang}°`;
+            } else {
+                // sin(ωt + θ) = cos(ωt + θ - 90°)
+                const phase = ang - 90;
+                result = `Sinal no tempo:\nv(t) = ${mod}·sin(${omega}t + ${ang}°)\n\nFasor correspondente:\nV = ${mod}∠${phase}° (pois sin(ωt+θ) = cos(ωt+θ-90°))`;
+            }
+            
+            output(result);
+        }
+        
+        function trigToRect() {
+            const mod = parseFloat(document.getElementById('trig-mod').value) || 0;
+            const ang = parseFloat(document.getElementById('trig-ang').value) || 0;
+            
+            const angRad = ang * Math.PI / 180;
+            const a = mod * Math.cos(angRad);
+            const b = mod * Math.sin(angRad);
+            
+            const result = `Conversão Trigonométrica → Retangular:\nZ = ${mod}·(cos(${ang}°) + j·sin(${ang}°))\n\nForma Retangular:\nZ = ${a.toFixed(4)} + j${b.toFixed(4)}`;
+            
+            output(result);
+        }
+        
+        function trigToPolar() {
+            const mod = parseFloat(document.getElementById('trig-mod').value) || 0;
+            const ang = parseFloat(document.getElementById('trig-ang').value) || 0;
+            
+            const result = `Conversão Trigonométrica → Polar:\nZ = ${mod}·(cos(${ang}°) + j·sin(${ang}°))\n\nForma Polar:\nZ = ${mod}∠${ang}°`;
+            
+            output(result);
+        }
+        
+        function complexOp(op) {
+            const a = parseFloat(document.getElementById('op-a').value) || 0;
+            const b = parseFloat(document.getElementById('op-b').value) || 0;
+            
+            let result;
+            
+            switch(op) {
+                case 'conjugate':
+                    result = `Conjugado de Z = ${a} + j${b}:\nZ* = ${a} - j${b}`;
+                    break;
+                    
+                case 'inverse':
+                    const denom = a*a + b*b;
+                    if (denom === 0) {
+                        result = "Erro: Inverso de zero!";
+                    } else {
+                        const real = a / denom;
+                        const imag = -b / denom;
+                        result = `Inverso de Z = ${a} + j${b}:\n1/Z = ${real.toFixed(4)} + j${imag.toFixed(4)}`;
+                    }
+                    break;
+                    
+                case 'magnitude':
+                    const mod = Math.sqrt(a*a + b*b);
+                    result = `Módulo de Z = ${a} + j${b}:\n|Z| = √(${a}² + ${b}²) = ${mod.toFixed(4)}`;
+                    break;
+                    
+                case 'phase':
+                    if (a === 0 && b === 0) {
+                        result = "Erro: Fase indefinida para zero!";
+                    } else {
+                        const phase = Math.atan2(b, a) * 180 / Math.PI;
+                        result = `Fase de Z = ${a} + j${b}:\n∠Z = atan2(${b}, ${a}) = ${phase.toFixed(2)}°`;
+                    }
+                    break;
+                    
+                case 'sqrt':
+                    const modZ = Math.sqrt(a*a + b*b);
+                    const phaseZ = Math.atan2(b, a);
+                    
+                    const modSqrt = Math.sqrt(modZ);
+                    const phaseSqrt = phaseZ / 2;
+                    
+                    const realSqrt = modSqrt * Math.cos(phaseSqrt);
+                    const imagSqrt = modSqrt * Math.sin(phaseSqrt);
+                    
+                    result = `Raiz quadrada de Z = ${a} + j${b}:\n√Z = ${realSqrt.toFixed(4)} + j${imagSqrt.toFixed(4)}\nOu: √Z = ${modSqrt.toFixed(4)}∠${(phaseSqrt * 180 / Math.PI).toFixed(2)}°`;
+                    break;
+                    
+                case 'exp':
+                    // e^(a+jb) = e^a * (cos(b) + j sin(b))
+                    const expReal = Math.exp(a) * Math.cos(b);
+                    const expImag = Math.exp(a) * Math.sin(b);
+                    result = `Exponencial de Z = ${a} + j${b}:\ne^Z = e^${a}·(cos(${b}) + j·sin(${b}))\n= ${expReal.toFixed(4)} + j${expImag.toFixed(4)}`;
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        // Funções para fasores
+        function switchPhasorTab(tab) {
+            currentPhasorTab = tab;
+            
+            // Atualizar botões da aba
+            document.querySelectorAll('#phasor .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.phasor-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            document.getElementById(`phasor-${tab}`).style.display = 'block';
+        }
+        
+        function timeToFrequency() {
+            const vm = parseFloat(document.getElementById('time-vm').value) || 0;
+            const omega = parseFloat(document.getElementById('time-omega').value) || 0;
+            const theta = parseFloat(document.getElementById('time-theta').value) || 0;
+            const signalType = document.getElementById('time-signal-type').value;
+            
+            let phase = theta;
+            
+            if (signalType === 'sin') {
+                // sin(ωt + θ) = cos(ωt + θ - 90°)
+                phase = theta - 90;
+            }
+            
+            const result = `Sinal no domínio do tempo:\n${signalType === 'cos' ? 'v(t) =' : 'v(t) ='} ${vm}·${signalType}(${omega}t + ${theta}°)\n\nFasor correspondente:\nV = ${vm}∠${phase}° V\n\nFrequência angular: ω = ${omega} rad/s\nFrequência: f = ${(omega/(2*Math.PI)).toFixed(2)} Hz`;
+            
+            output(result);
+        }
+        
+        function frequencyToTime() {
+            const mag = parseFloat(document.getElementById('freq-mag').value) || 0;
+            const phase = parseFloat(document.getElementById('freq-phase').value) || 0;
+            const omega = parseFloat(document.getElementById('freq-omega').value) || 0;
+            const waveform = document.getElementById('freq-waveform').value;
+            
+            let timePhase = phase;
+            
+            if (waveform === 'sin') {
+                // Para representar como seno, ajustamos a fase
+                timePhase = phase + 90;
+            }
+            
+            const result = `Fasor no domínio da frequência:\nV = ${mag}∠${phase}° V\n\nSinal no domínio do tempo:\nv(t) = ${mag}·${waveform}(${omega}t + ${timePhase}°)\n\nFrequência angular: ω = ${omega} rad/s\nFrequência: f = ${(omega/(2*Math.PI)).toFixed(2)} Hz`;
+            
+            output(result);
+        }
+        
+        function phasorOperation(op) {
+            const mag1 = parseFloat(document.getElementById('phasor1-mag').value) || 0;
+            const phase1 = parseFloat(document.getElementById('phasor1-phase').value) || 0;
+            const mag2 = parseFloat(document.getElementById('phasor2-mag').value) || 0;
+            const phase2 = parseFloat(document.getElementById('phasor2-phase').value) || 0;
+            
+            const phase1Rad = phase1 * Math.PI / 180;
+            const phase2Rad = phase2 * Math.PI / 180;
+            
+            let result;
+            
+            switch(op) {
+                case 'add':
+                case 'sub':
+                    // Converter para retangular
+                    const a1 = mag1 * Math.cos(phase1Rad);
+                    const b1 = mag1 * Math.sin(phase1Rad);
+                    const a2 = mag2 * Math.cos(phase2Rad);
+                    const b2 = mag2 * Math.sin(phase2Rad);
+                    
+                    let real, imag;
+                    if (op === 'add') {
+                        real = a1 + a2;
+                        imag = b1 + b2;
+                        result = `Soma de fasores:\nV₁ + V₂ = ${mag1}∠${phase1}° + ${mag2}∠${phase2}°\n`;
+                    } else {
+                        real = a1 - a2;
+                        imag = b1 - b2;
+                        result = `Subtração de fasores:\nV₁ - V₂ = ${mag1}∠${phase1}° - ${mag2}∠${phase2}°\n`;
+                    }
+                    
+                    const mod = Math.sqrt(real*real + imag*imag);
+                    const phase = Math.atan2(imag, real) * 180 / Math.PI;
+                    
+                    result += `= ${real.toFixed(4)} + j${imag.toFixed(4)}\n= ${mod.toFixed(4)}∠${phase.toFixed(2)}°`;
+                    break;
+                    
+                case 'mult':
+                    const modMult = mag1 * mag2;
+                    const phaseMult = phase1 + phase2;
+                    result = `Multiplicação de fasores:\nV₁ × V₂ = ${mag1}∠${phase1}° × ${mag2}∠${phase2}°\n= ${modMult.toFixed(4)}∠${phaseMult.toFixed(2)}°`;
+                    break;
+                    
+                case 'div':
+                    if (mag2 === 0) {
+                        result = "Erro: Divisão por zero!";
+                    } else {
+                        const modDiv = mag1 / mag2;
+                        const phaseDiv = phase1 - phase2;
+                        result = `Divisão de fasores:\nV₁ ÷ V₂ = ${mag1}∠${phase1}° ÷ ${mag2}∠${phase2}°\n= ${modDiv.toFixed(4)}∠${phaseDiv.toFixed(2)}°`;
+                    }
+                    break;
+                    
+                case 'dot':
+                    // Produto escalar (considerando como números complexos)
+                    const a1d = mag1 * Math.cos(phase1Rad);
+                    const b1d = mag1 * Math.sin(phase1Rad);
+                    const a2d = mag2 * Math.cos(phase2Rad);
+                    const b2d = mag2 * Math.sin(phase2Rad);
+                    
+                    const dot = a1d*a2d + b1d*b2d;
+                    result = `Produto escalar (parte real de V₁·V₂*):\nV₁·V₂* = (${mag1}∠${phase1}°)·(${mag2}∠${-phase2}°)\n= ${dot.toFixed(4)}`;
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        // Funções para reatâncias
+        function updateReactanceUnit() {
+            const reactType = document.getElementById('reactType').value;
+            const unitSelect = document.getElementById('reactUnit');
+            
+            // Limpar opções existentes
+            unitSelect.innerHTML = '';
+            
+            let units;
+            if (reactType === 'L') {
+                units = [
+                    {value: 1, text: 'H (Henry)'},
+                    {value: 0.001, text: 'mH (miliHenry)'},
+                    {value: 0.000001, text: 'μH (microHenry)'},
+                    {value: 0.000000001, text: 'nH (nanoHenry)'}
+                ];
+            } else {
+                units = [
+                    {value: 1, text: 'F (Farad)'},
+                    {value: 0.001, text: 'mF (miliFarad)'},
+                    {value: 0.000001, text: 'μF (microFarad)'},
+                    {value: 0.000000001, text: 'nF (nanoFarad)'},
+                    {value: 0.000000000001, text: 'pF (picoFarad)'}
+                ];
+            }
+            
+            // Adicionar novas opções
+            units.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.value;
+                option.text = unit.text;
+                unitSelect.appendChild(option);
+            });
+        }
+        
+        function setFrequency(freq) {
+            document.getElementById('freq').value = freq;
+        }
+        
+        function calcReactance() {
+            const type = document.getElementById('reactType').value;
+            const value = parseFloat(document.getElementById('reactValue').value) || 0;
+            const unit = parseFloat(document.getElementById('reactUnit').value) || 1;
+            const freq = parseFloat(document.getElementById('freq').value) || 0;
+            
+            // Converter para unidades base
+            const baseValue = value * unit;
+            const omega = 2 * Math.PI * freq;
+            
+            let result, X;
+            
+            if (type === 'L') {
+                X = omega * baseValue;
+                result = `Reatância Indutiva:\n\nDados:\nL = ${value} ${unit === 1 ? 'H' : unit === 0.001 ? 'mH' : unit === 0.000001 ? 'μH' : 'nH'}\nf = ${freq} Hz\nω = 2πf = ${omega.toFixed(2)} rad/s\n\nCálculo:\nX_L = ωL = ${omega.toFixed(2)} × ${baseValue.toFixed(6)}\nX_L = ${X.toFixed(4)} Ω\n\nForma fasorial:\nZ_L = j${X.toFixed(4)} Ω`;
+            } else {
+                X = -1 / (omega * baseValue);
+                result = `Reatância Capacitiva:\n\nDados:\nC = ${value} ${unit === 1 ? 'F' : unit === 0.001 ? 'mF' : unit === 0.000001 ? 'μF' : unit === 0.000000001 ? 'nF' : 'pF'}\nf = ${freq} Hz\nω = 2πf = ${omega.toFixed(2)} rad/s\n\nCálculo:\nX_C = -1/(ωC) = -1/(${omega.toFixed(2)} × ${baseValue.toFixed(6)})\nX_C = ${X.toFixed(4)} Ω\n\nForma fasorial:\nZ_C = j${X.toFixed(4)} Ω`;
+            }
+            
+            output(result);
+        }
+        
+        // Funções para impedâncias
+        function updateImpedanceInputs(z) {
+            const type = document.getElementById(`${z}-type`).value;
+            
+            if (type === 'rectangular') {
+                document.getElementById(`${z}-rect`).style.display = 'block';
+                document.getElementById(`${z}-polar`).style.display = 'none';
+            } else {
+                document.getElementById(`${z}-rect`).style.display = 'none';
+                document.getElementById(`${z}-polar`).style.display = 'block';
+            }
+        }
+        
+        function getImpedance(z) {
+            const type = document.getElementById(`${z}-type`).value;
+            
+            if (type === 'rectangular') {
+                const r = parseFloat(document.getElementById(z === 'z1' ? 'r1' : 'r2').value) || 0;
+                const x = parseFloat(document.getElementById(z === 'z1' ? 'x1' : 'x2').value) || 0;
+                return {r: r, x: x};
+            } else {
+                const mag = parseFloat(document.getElementById(`${z}-mag`).value) || 0;
+                const ang = parseFloat(document.getElementById(`${z}-ang`).value) || 0;
+                const angRad = ang * Math.PI / 180;
+                return {
+                    r: mag * Math.cos(angRad),
+                    x: mag * Math.sin(angRad)
+                };
+            }
+        }
+        
+        function calcImpedance() {
+            const assocType = document.getElementById('assocType').value;
+            const z1 = getImpedance('z1');
+            const z2 = getImpedance('z2');
+            
+            let result, zeq;
+            
+            switch(assocType) {
+                case 'serie':
+                    const rSer = z1.r + z2.r;
+                    const xSer = z1.x + z2.x;
+                    const modSer = Math.sqrt(rSer*rSer + xSer*xSer);
+                    const phaseSer = Math.atan2(xSer, rSer) * 180 / Math.PI;
+                    
+                    result = `Associação Série:\n\nZ₁ = ${z1.r} + j${z1.x} Ω\nZ₂ = ${z2.r} + j${z2.x} Ω\n\nZ_eq = Z₁ + Z₂ = (${z1.r} + j${z1.x}) + (${z2.r} + j${z2.x})\nZ_eq = ${rSer.toFixed(4)} + j${xSer.toFixed(4)} Ω\n\nForma polar:\n|Z_eq| = ${modSer.toFixed(4)} Ω\n∠Z_eq = ${phaseSer.toFixed(2)}°`;
+                    break;
+                    
+                case 'paralelo':
+                    // Zeq = (Z1 * Z2) / (Z1 + Z2)
+                    const numR = z1.r*z2.r - z1.x*z2.x;
+                    const numX = z1.r*z2.x + z1.x*z2.r;
+                    
+                    const denR = z1.r + z2.r;
+                    const denX = z1.x + z2.x;
+                    
+                    const denMag = denR*denR + denX*denX;
+                    
+                    if (denMag === 0) {
+                        result = "Erro: Impedância resultante infinita (ressonância)!";
+                        break;
+                    }
+                    
+                    const rPar = (numR*denR + numX*denX) / denMag;
+                    const xPar = (numX*denR - numR*denX) / denMag;
+                    
+                    const modPar = Math.sqrt(rPar*rPar + xPar*xPar);
+                    const phasePar = Math.atan2(xPar, rPar) * 180 / Math.PI;
+                    
+                    result = `Associação Paralelo:\n\nZ₁ = ${z1.r} + j${z1.x} Ω\nZ₂ = ${z2.r} + j${z2.x} Ω\n\nZ_eq = (Z₁ × Z₂) / (Z₁ + Z₂)\nZ_eq = ${rPar.toFixed(4)} + j${xPar.toFixed(4)} Ω\n\nForma polar:\n|Z_eq| = ${modPar.toFixed(4)} Ω\n∠Z_eq = ${phasePar.toFixed(2)}°`;
+                    break;
+                    
+                case 'serie-paralelo':
+                    // Para simplificar, vamos fazer Z1 em série com (Z2 em paralelo com Z1)
+                    // Zeq = Z1 + (Z1*Z2)/(Z1+Z2)
+                    const numR2 = z1.r*z2.r - z1.x*z2.x;
+                    const numX2 = z1.r*z2.x + z1.x*z2.r;
+                    
+                    const denR2 = z1.r + z2.r;
+                    const denX2 = z1.x + z2.x;
+                    
+                    const denMag2 = denR2*denR2 + denX2*denX2;
+                    
+                    if (denMag2 === 0) {
+                        result = "Erro: Divisão por zero na parte paralela!";
+                        break;
+                    }
+                    
+                    const rPar2 = (numR2*denR2 + numX2*denX2) / denMag2;
+                    const xPar2 = (numX2*denR2 - numR2*denX2) / denMag2;
+                    
+                    const rTotal = z1.r + rPar2;
+                    const xTotal = z1.x + xPar2;
+                    
+                    const modTotal = Math.sqrt(rTotal*rTotal + xTotal*xTotal);
+                    const phaseTotal = Math.atan2(xTotal, rTotal) * 180 / Math.PI;
+                    
+                    result = `Associação Série-Paralelo (Z₁ em série com Z₁||Z₂):\n\nZ₁ = ${z1.r} + j${z1.x} Ω\nZ₂ = ${z2.r} + j${z2.x} Ω\n\nZ_paralelo = (Z₁ × Z₂) / (Z₁ + Z₂) = ${rPar2.toFixed(4)} + j${xPar2.toFixed(4)} Ω\nZ_eq = Z₁ + Z_paralelo = ${rTotal.toFixed(4)} + j${xTotal.toFixed(4)} Ω\n\nForma polar:\n|Z_eq| = ${modTotal.toFixed(4)} Ω\n∠Z_eq = ${phaseTotal.toFixed(2)}°`;
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        // Funções para admitância
+        function calcAdmittance() {
+            const r = parseFloat(document.getElementById('z-real').value) || 0;
+            const x = parseFloat(document.getElementById('z-imag').value) || 0;
+            
+            const denom = r*r + x*x;
+            
+            if (denom === 0) {
+                output("Erro: Impedância zero não tem admitância definida!");
+                return;
+            }
+            
+            const g = r / denom;
+            const b = -x / denom;
+            
+            const yMag = Math.sqrt(g*g + b*b);
+            const yPhase = Math.atan2(b, g) * 180 / Math.PI;
+            
+            const result = `Cálculo de Admitância:\n\nImpedância: Z = ${r} + j${x} Ω\n\nAdmitância: Y = 1/Z = G + jB\nG = R/(R² + X²) = ${r}/(${r}² + ${x}²) = ${g.toFixed(6)} S\nB = -X/(R² + X²) = -${x}/(${r}² + ${x}²) = ${b.toFixed(6)} S\n\nY = ${g.toFixed(6)} + j${b.toFixed(6)} S\n\nForma polar:\n|Y| = ${yMag.toFixed(6)} S\n∠Y = ${yPhase.toFixed(2)}°`;
+            
+            output(result);
+        }
+        
+        function calcConductance() {
+            const r = parseFloat(document.getElementById('z-real').value) || 0;
+            const x = parseFloat(document.getElementById('z-imag').value) || 0;
+            
+            const denom = r*r + x*x;
+            
+            if (denom === 0) {
+                output("Erro: Impedância zero!");
+                return;
+            }
+            
+            const g = r / denom;
+            
+            const result = `Cálculo de Condutância:\n\nImpedância: Z = ${r} + j${x} Ω\n\nCondutância: G = R/(R² + X²)\nG = ${r}/(${r}² + ${x}²) = ${g.toFixed(6)} S`;
+            
+            output(result);
+        }
+        
+        function calcSusceptance() {
+            const r = parseFloat(document.getElementById('z-real').value) || 0;
+            const x = parseFloat(document.getElementById('z-imag').value) || 0;
+            
+            const denom = r*r + x*x;
+            
+            if (denom === 0) {
+                output("Erro: Impedância zero!");
+                return;
+            }
+            
+            const b = -x / denom;
+            
+            const result = `Cálculo de Susceptância:\n\nImpedância: Z = ${r} + j${x} Ω\n\nSusceptância: B = -X/(R² + X²)\nB = -${x}/(${r}² + ${x}²) = ${b.toFixed(6)} S`;
+            
+            output(result);
+        }
+        
+        function calcAdmittancePolar() {
+            const r = parseFloat(document.getElementById('z-real').value) || 0;
+            const x = parseFloat(document.getElementById('z-imag').value) || 0;
+            
+            const zMag = Math.sqrt(r*r + x*x);
+            const zPhase = Math.atan2(x, r);
+            
+            if (zMag === 0) {
+                output("Erro: Impedância zero!");
+                return;
+            }
+            
+            const yMag = 1 / zMag;
+            const yPhase = -zPhase * 180 / Math.PI;
+            
+            const result = `Cálculo de Admitância na Forma Polar:\n\nImpedância:\n|Z| = ${zMag.toFixed(4)} Ω\n∠Z = ${(zPhase * 180 / Math.PI).toFixed(2)}°\n\nAdmitância:\n|Y| = 1/|Z| = 1/${zMag.toFixed(4)} = ${yMag.toFixed(6)} S\n∠Y = -∠Z = -${(zPhase * 180 / Math.PI).toFixed(2)}° = ${yPhase.toFixed(2)}°`;
+            
+            output(result);
+        }
+        
+        // Funções para potência
+        function switchPowerTab(tab) {
+            currentPowerTab = tab;
+            
+            // Atualizar botões da aba
+            document.querySelectorAll('#power .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.power-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            document.getElementById(`power-${tab}`).style.display = 'block';
+        }
+        
+        function calcInstantPower() {
+            const vm = parseFloat(document.getElementById('p-vm').value) || 0;
+            const omega = parseFloat(document.getElementById('p-omega').value) || 0;
+            const thetaV = parseFloat(document.getElementById('p-theta-v').value) || 0;
+            const im = parseFloat(document.getElementById('p-im').value) || 0;
+            const thetaI = parseFloat(document.getElementById('p-theta-i').value) || 0;
+            
+            const phi = (thetaV - thetaI) * Math.PI / 180;
+            const phiDeg = thetaV - thetaI;
+            
+            const result = `Potência Instantânea:\n\nTensão: v(t) = ${vm}·cos(${omega}t + ${thetaV}°) V\nCorrente: i(t) = ${im}·cos(${omega}t + ${thetaI}°) A\n\nDiferença de fase: φ = θv - θi = ${thetaV}° - ${thetaI}° = ${phiDeg}°\n\nPotência instantânea:\np(t) = v(t)·i(t) = (Vm·Im/2)[cos(φ) + cos(2ωt + θv + θi)]\np(t) = (${vm}×${im}/2)[cos(${phiDeg}°) + cos(${2*omega}t + ${thetaV+thetaI}°)]\np(t) = ${(vm*im/2).toFixed(2)}[${Math.cos(phi).toFixed(4)} + cos(${2*omega}t + ${thetaV+thetaI}°)] W`;
+            
+            output(result);
+        }
+        
+        function calcAveragePower() {
+            const vm = parseFloat(document.getElementById('avg-vm').value) || 0;
+            const im = parseFloat(document.getElementById('avg-im').value) || 0;
+            const phi = parseFloat(document.getElementById('avg-phi').value) || 0;
+            
+            const phiRad = phi * Math.PI / 180;
+            const p = (vm * im / 2) * Math.cos(phiRad);
+            
+            const result = `Potência Média (Ativa):\n\nTensão de pico: Vm = ${vm} V\nCorrente de pico: Im = ${im} A\nDiferença de fase: φ = ${phi}°\n\nFórmula: P = (Vm·Im/2)·cos(φ)\nP = (${vm}×${im}/2)·cos(${phi}°)\nP = ${(vm*im/2).toFixed(2)} × ${Math.cos(phiRad).toFixed(4)}\nP = ${p.toFixed(4)} W\n\nValores RMS:\nVrms = Vm/√2 = ${(vm/Math.sqrt(2)).toFixed(4)} V\nIrms = Im/√2 = ${(im/Math.sqrt(2)).toFixed(4)} A\nP = Vrms·Irms·cos(φ) = ${((vm/Math.sqrt(2))*(im/Math.sqrt(2))*Math.cos(phiRad)).toFixed(4)} W`;
+            
+            output(result);
+        }
+        
+        function calcComplexPower() {
+            const vMag = parseFloat(document.getElementById('comp-v-mag').value) || 0;
+            const vPhase = parseFloat(document.getElementById('comp-v-phase').value) || 0;
+            const iMag = parseFloat(document.getElementById('comp-i-mag').value) || 0;
+            const iPhase = parseFloat(document.getElementById('comp-i-phase').value) || 0;
+            
+            const vPhaseRad = vPhase * Math.PI / 180;
+            const iPhaseRad = iPhase * Math.PI / 180;
+            
+            const phi = vPhase - iPhase;
+            const phiRad = phi * Math.PI / 180;
+            
+            // Potência complexa S = V·I* / 2
+            // I* é o conjugado da corrente
+            const iConjMag = iMag;
+            const iConjPhase = -iPhase;
+            
+            // Multiplicação em forma polar
+            const sMag = (vMag * iConjMag) / 2;
+            const sPhase = vPhase + iConjPhase;
+            
+            // Converter para retangular
+            const p = sMag * Math.cos(sPhase * Math.PI / 180); // Parte real (potência ativa)
+            const q = sMag * Math.sin(sPhase * Math.PI / 180); // Parte imaginária (potência reativa)
+            
+            const result = `Potência Complexa:\n\nFasor tensão: V = ${vMag}∠${vPhase}° V\nFasor corrente: I = ${iMag}∠${iPhase}° A\nConjugado da corrente: I* = ${iMag}∠${-iPhase}° A\n\nPotência complexa: S = V·I* / 2\nS = (${vMag}∠${vPhase}°)·(${iMag}∠${-iPhase}°) / 2\nS = ${(vMag*iMag).toFixed(2)}∠${(vPhase - iPhase).toFixed(2)}° / 2\nS = ${sMag.toFixed(4)}∠${sPhase.toFixed(2)}° VA\n\nForma retangular:\nS = P + jQ\nP = |S|·cos(φ) = ${sMag.toFixed(4)}·cos(${sPhase.toFixed(2)}°) = ${p.toFixed(4)} W\nQ = |S|·sin(φ) = ${sMag.toFixed(4)}·sin(${sPhase.toFixed(2)}°) = ${q.toFixed(4)} VAR\n\nS = ${p.toFixed(4)} + j${q.toFixed(4)} VA\n\nFator de potência: FP = cos(φ) = cos(${phi}°) = ${Math.cos(phiRad).toFixed(4)}`;
+            
+            output(result);
+        }
+        
+        function calcRMS() {
+            const waveform = document.getElementById('waveform-type').value;
+            const vp = parseFloat(document.getElementById('rms-vp').value) || 0;
+            
+            let vrms, formula;
+            
+            switch(waveform) {
+                case 'sine':
+                    vrms = vp / Math.sqrt(2);
+                    formula = "Vrms = Vp/√2";
+                    break;
+                case 'square':
+                    vrms = vp;
+                    formula = "Vrms = Vp";
+                    break;
+                case 'triangle':
+                    vrms = vp / Math.sqrt(3);
+                    formula = "Vrms = Vp/√3";
+                    break;
+                case 'sawtooth':
+                    vrms = vp / Math.sqrt(3);
+                    formula = "Vrms = Vp/√3";
+                    break;
+                default:
+                    vrms = 0;
+                    formula = "Fórmula não disponível";
+            }
+            
+            const result = `Valor Eficaz (RMS) - ${waveform === 'sine' ? 'Senoidal' : waveform === 'square' ? 'Onda Quadrada' : waveform === 'triangle' ? 'Onda Triangular' : 'Onda Dente de Serra'}:\n\nTensão de pico: Vp = ${vp} V\n\nFórmula: ${formula}\n\nValor RMS: Vrms = ${vrms.toFixed(4)} V\n\nPara tensão senoidal:\nVrms = Vp/√2 = ${vp}/1.4142 = ${(vp/1.4142).toFixed(4)} V`;
+            
+            output(result);
+        }
+        
+        // Funções para ressonância
+        function switchResonanceTab(tab) {
+            currentResonanceTab = tab;
+            
+            // Atualizar botões da aba
+            document.querySelectorAll('#resonance .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.resonance-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            document.getElementById(`resonance-${tab}`).style.display = 'block';
+        }
+        
+        function calcSeriesResonance() {
+            const r = parseFloat(document.getElementById('series-r').value) || 0;
+            const l = parseFloat(document.getElementById('series-l').value) || 0;
+            const c = parseFloat(document.getElementById('series-c').value) || 0;
+            
+            if (l === 0 || c === 0) {
+                output("Erro: L ou C não podem ser zero!");
+                return;
+            }
+            
+            const fr = 1 / (2 * Math.PI * Math.sqrt(l * c));
+            const omega0 = 2 * Math.PI * fr;
+            const q = omega0 * l / r;
+            const bw = r / l; // Em rad/s
+            const bwHz = bw / (2 * Math.PI);
+            
+            const result = `Ressonância Série RLC:\n\nComponentes:\nR = ${r} Ω\nL = ${l} H\nC = ${c} F\n\nFrequência de ressonância:\nf₀ = 1/(2π√(LC)) = 1/(2π√(${l}×${c}))\nf₀ = ${fr.toFixed(2)} Hz\nω₀ = 2πf₀ = ${omega0.toFixed(2)} rad/s\n\nFator de qualidade:\nQ = ω₀L/R = ${omega0.toFixed(2)}×${l}/${r} = ${q.toFixed(2)}\n\nLargura de banda:\nBW = R/L = ${r}/${l} = ${bw.toFixed(2)} rad/s\nBW = ${bwHz.toFixed(2)} Hz\n\nFrequências de corte:\nf₁ = f₀ - BW/2 = ${(fr - bwHz/2).toFixed(2)} Hz\nf₂ = f₀ + BW/2 = ${(fr + bwHz/2).toFixed(2)} Hz\n\nImpedância na ressonância:\nZ(ω₀) = R = ${r} Ω (puramente resistiva)`;
+            
+            output(result);
+        }
+        
+        function calcParallelResonance() {
+            const r = parseFloat(document.getElementById('parallel-r').value) || 0;
+            const l = parseFloat(document.getElementById('parallel-l').value) || 0;
+            const c = parseFloat(document.getElementById('parallel-c').value) || 0;
+            
+            if (l === 0 || c === 0) {
+                output("Erro: L ou C não podem ser zero!");
+                return;
+            }
+            
+            const fr = 1 / (2 * Math.PI * Math.sqrt(l * c));
+            const omega0 = 2 * Math.PI * fr;
+            const q = r / (omega0 * l);
+            const bw = 1 / (r * c); // Em rad/s para circuito paralelo ideal
+            const bwHz = bw / (2 * Math.PI);
+            
+            const result = `Ressonância Paralelo RLC:\n\nComponentes:\nR = ${r} Ω\nL = ${l} H\nC = ${c} F\n\nFrequência de ressonância:\nf₀ = 1/(2π√(LC)) = 1/(2π√(${l}×${c}))\nf₀ = ${fr.toFixed(2)} Hz\nω₀ = 2πf₀ = ${omega0.toFixed(2)} rad/s\n\nFator de qualidade:\nQ = R/(ω₀L) = ${r}/(${omega0.toFixed(2)}×${l}) = ${q.toFixed(2)}\n\nLargura de banda (circuito ideal):\nBW = 1/(RC) = 1/(${r}×${c}) = ${bw.toFixed(2)} rad/s\nBW = ${bwHz.toFixed(2)} Hz\n\nFrequências de corte:\nf₁ = f₀ - BW/2 = ${(fr - bwHz/2).toFixed(2)} Hz\nf₂ = f₀ + BW/2 = ${(fr + bwHz/2).toFixed(2)} Hz\n\nImpedância na ressonância:\nZ(ω₀) = R = ${r} Ω (máxima impedância)`;
+            
+            output(result);
+        }
+        
+        function calcQFactor() {
+            const f = parseFloat(document.getElementById('q-freq').value) || 0;
+            const bw = parseFloat(document.getElementById('q-bw').value) || 0;
+            const r = parseFloat(document.getElementById('q-r').value) || 0;
+            const l = parseFloat(document.getElementById('q-l').value) || 0;
+            const c = parseFloat(document.getElementById('q-c').value) || 0;
+            const circuitType = document.getElementById('q-circuit-type').value;
+            
+            let result, q;
+            
+            if (f > 0 && bw > 0) {
+                q = f / bw;
+                result = `Fator de Qualidade a partir da largura de banda:\n\nFrequência de ressonância: f₀ = ${f} Hz\nLargura de banda: BW = ${bw} Hz\n\nQ = f₀ / BW = ${f} / ${bw} = ${q.toFixed(2)}`;
+            } else if (r > 0 && l > 0 && c > 0) {
+                const fr = 1 / (2 * Math.PI * Math.sqrt(l * c));
+                const omega0 = 2 * Math.PI * fr;
+                
+                if (circuitType === 'series') {
+                    q = omega0 * l / r;
+                    result = `Fator de Qualidade para circuito série:\n\nComponentes:\nR = ${r} Ω\nL = ${l} H\nC = ${c} F\n\nFrequência de ressonância:\nf₀ = 1/(2π√(LC)) = ${fr.toFixed(2)} Hz\nω₀ = 2πf₀ = ${omega0.toFixed(2)} rad/s\n\nQ = ω₀L/R = ${omega0.toFixed(2)}×${l}/${r} = ${q.toFixed(2)}`;
+                } else {
+                    q = r / (omega0 * l);
+                    result = `Fator de Qualidade para circuito paralelo:\n\nComponentes:\nR = ${r} Ω\nL = ${l} H\nC = ${c} F\n\nFrequência de ressonância:\nf₀ = 1/(2π√(LC)) = ${fr.toFixed(2)} Hz\nω₀ = 2πf₀ = ${omega0.toFixed(2)} rad/s\n\nQ = R/(ω₀L) = ${r}/(${omega0.toFixed(2)}×${l}) = ${q.toFixed(2)}`;
+                }
+            } else {
+                result = "Por favor, insira valores válidos para cálculo do fator de qualidade.";
+            }
+            
+            output(result);
+        }
+        
+        // Funções para função de transferência
+        function updateTransferFunctionInputs() {
+            const circuitType = document.getElementById('transfer-circuit-type').value;
+            
+            // Ocultar todas as subseções
+            document.querySelectorAll('.transfer-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+            
+            // Mostrar a subseção correspondente
+            document.getElementById(`transfer-${circuitType}`).style.display = 'block';
+        }
+        
+        function calcTransferFunction() {
+            const circuitType = document.getElementById('transfer-circuit-type').value;
+            const freq = parseFloat(document.getElementById('tf-freq').value) || 0;
+            const omega = 2 * Math.PI * freq;
+            
+            let result, hMag, hPhase;
+            
+            switch(circuitType) {
+                case 'rl':
+                    const rRL = parseFloat(document.getElementById('rl-r').value) || 0;
+                    const l = parseFloat(document.getElementById('rl-l').value) || 0;
+                    const rlOutput = document.getElementById('rl-output').value;
+                    
+                    if (rlOutput === 'vr') {
+                        // H(s) = R / (R + sL)
+                        // H(jω) = R / (R + jωL)
+                        const denMag = Math.sqrt(rRL*rRL + (omega*l)*(omega*l));
+                        hMag = rRL / denMag;
+                        hPhase = -Math.atan2(omega*l, rRL) * 180 / Math.PI;
+                        
+                        result = `Função de Transferência - Circuito RL (Tensão no Resistor):\n\nComponentes:\nR = ${rRL} Ω\nL = ${l} H\nFrequência: f = ${freq} Hz, ω = ${omega.toFixed(2)} rad/s\n\nH(s) = Vr(s)/Vin(s) = R/(R + sL)\nH(jω) = ${rRL}/(${rRL} + j${omega*l})\n|H(jω)| = ${hMag.toFixed(4)}\n∠H(jω) = ${hPhase.toFixed(2)}°\n\nFiltro passa-baixas com frequência de corte:\nf_c = R/(2πL) = ${rRL}/(2π×${l}) = ${(rRL/(2*Math.PI*l)).toFixed(2)} Hz`;
+                    } else {
+                        // H(s) = sL / (R + sL)
+                        // H(jω) = jωL / (R + jωL)
+                        const denMag = Math.sqrt(rRL*rRL + (omega*l)*(omega*l));
+                        hMag = (omega*l) / denMag;
+                        hPhase = (90 - Math.atan2(omega*l, rRL) * 180 / Math.PI);
+                        
+                        result = `Função de Transferência - Circuito RL (Tensão no Indutor):\n\nComponentes:\nR = ${rRL} Ω\nL = ${l} H\nFrequência: f = ${freq} Hz, ω = ${omega.toFixed(2)} rad/s\n\nH(s) = Vl(s)/Vin(s) = sL/(R + sL)\nH(jω) = j${omega*l}/(${rRL} + j${omega*l})\n|H(jω)| = ${hMag.toFixed(4)}\n∠H(jω) = ${hPhase.toFixed(2)}°\n\nFiltro passa-altas com frequência de corte:\nf_c = R/(2πL) = ${rRL}/(2π×${l}) = ${(rRL/(2*Math.PI*l)).toFixed(2)} Hz`;
+                    }
+                    break;
+                    
+                case 'rc':
+                    const rRC = parseFloat(document.getElementById('rc-r').value) || 0;
+                    const c = parseFloat(document.getElementById('rc-c').value) || 0;
+                    const rcOutput = document.getElementById('rc-output').value;
+                    
+                    if (rcOutput === 'vr') {
+                        // H(s) = R / (R + 1/(sC))
+                        // H(jω) = R / (R + 1/(jωC))
+                        const denMag = Math.sqrt(rRC*rRC + 1/(omega*c*omega*c));
+                        hMag = rRC / denMag;
+                        hPhase = Math.atan2(1/(omega*c), rRC) * 180 / Math.PI;
+                        
+                        result = `Função de Transferência - Circuito RC (Tensão no Resistor):\n\nComponentes:\nR = ${rRC} Ω\nC = ${c} F\nFrequência: f = ${freq} Hz, ω = ${omega.toFixed(2)} rad/s\n\nH(s) = Vr(s)/Vin(s) = R/(R + 1/(sC))\nH(jω) = ${rRC}/(${rRC} + 1/(j${omega*c}))\n|H(jω)| = ${hMag.toFixed(4)}\n∠H(jω) = ${hPhase.toFixed(2)}°\n\nFiltro passa-altas com frequência de corte:\nf_c = 1/(2πRC) = 1/(2π×${rRC}×${c}) = ${(1/(2*Math.PI*rRC*c)).toFixed(2)} Hz`;
+                    } else {
+                        // H(s) = 1/(sC) / (R + 1/(sC))
+                        // H(jω) = 1/(jωC) / (R + 1/(jωC))
+                        const denMag = Math.sqrt(rRC*rRC + 1/(omega*c*omega*c));
+                        hMag = (1/(omega*c)) / denMag;
+                        hPhase = (-90 - Math.atan2(1/(omega*c), rRC) * 180 / Math.PI);
+                        
+                        result = `Função de Transferência - Circuito RC (Tensão no Capacitor):\n\nComponentes:\nR = ${rRC} Ω\nC = ${c} F\nFrequência: f = ${freq} Hz, ω = ${omega.toFixed(2)} rad/s\n\nH(s) = Vc(s)/Vin(s) = 1/(sC)/(R + 1/(sC))\nH(jω) = 1/(j${omega*c})/(${rRC} + 1/(j${omega*c}))\n|H(jω)| = ${hMag.toFixed(4)}\n∠H(jω) = ${hPhase.toFixed(2)}°\n\nFiltro passa-baixas com frequência de corte:\nf_c = 1/(2πRC) = 1/(2π×${rRC}×${c}) = ${(1/(2*Math.PI*rRC*c)).toFixed(2)} Hz`;
+                    }
+                    break;
+                    
+                case 'rlc':
+                    const rRLC = parseFloat(document.getElementById('rlc-r').value) || 0;
+                    const lRLC = parseFloat(document.getElementById('rlc-l').value) || 0;
+                    const cRLC = parseFloat(document.getElementById('rlc-c').value) || 0;
+                    const rlcOutput = document.getElementById('rlc-output').value;
+                    
+                    // H(s) = Zout(s) / (R + sL + 1/(sC))
+                    let zOut;
+                    switch(rlcOutput) {
+                        case 'vr':
+                            zOut = rRLC;
+                            break;
+                        case 'vl':
+                            zOut = `s*${lRLC}`;
+                            break;
+                        case 'vc':
+                            zOut = `1/(s*${cRLC})`;
+                            break;
+                    }
+                    
+                    // H(jω) = Zout(jω) / (R + jωL + 1/(jωC))
+                    const denR = rRLC;
+                    const denX = omega*lRLC - 1/(omega*cRLC);
+                    const denMag = Math.sqrt(denR*denR + denX*denX);
+                    
+                    let outMag, outPhase;
+                    switch(rlcOutput) {
+                        case 'vr':
+                            outMag = rRLC;
+                            outPhase = 0;
+                            hMag = outMag / denMag;
+                            hPhase = outPhase - Math.atan2(denX, denR) * 180 / Math.PI;
+                            break;
+                        case 'vl':
+                            outMag = omega*lRLC;
+                            outPhase = 90;
+                            hMag = outMag / denMag;
+                            hPhase = outPhase - Math.atan2(denX, denR) * 180 / Math.PI;
+                            break;
+                        case 'vc':
+                            outMag = 1/(omega*cRLC);
+                            outPhase = -90;
+                            hMag = outMag / denMag;
+                            hPhase = outPhase - Math.atan2(denX, denR) * 180 / Math.PI;
+                            break;
+                    }
+                    
+                    const fr = 1 / (2 * Math.PI * Math.sqrt(lRLC * cRLC));
+                    
+                    result = `Função de Transferência - Circuito RLC Série (Tensão no ${rlcOutput === 'vr' ? 'Resistor' : rlcOutput === 'vl' ? 'Indutor' : 'Capacitor'}):\n\nComponentes:\nR = ${rRLC} Ω\nL = ${lRLC} H\nC = ${cRLC} F\nFrequência: f = ${freq} Hz, ω = ${omega.toFixed(2)} rad/s\n\nH(s) = V${rlcOutput === 'vr' ? 'r' : rlcOutput === 'vl' ? 'l' : 'c'}(s)/Vin(s) = ${zOut}/(R + sL + 1/(sC))\nH(jω) = ${zOut}/(${rRLC} + j${omega*lRLC} + 1/(j${omega*cRLC}))\n\nPara f = ${freq} Hz:\n|H(jω)| = ${hMag.toFixed(4)}\n∠H(jω) = ${hPhase.toFixed(2)}°\n\nFrequência de ressonância:\nf₀ = 1/(2π√(LC)) = ${fr.toFixed(2)} Hz`;
+                    break;
+                    
+                case 'custom':
+                    const num = document.getElementById('tf-num').value;
+                    const den = document.getElementById('tf-den').value;
+                    
+                    result = `Função de Transferência Personalizada:\n\nH(s) = (${num}) / (${den})\n\nPara uma avaliação numérica, é necessário implementar um parser de expressões matemáticas.\n\nRecomendação: Substitua s por jω e calcule manualmente para a frequência desejada.\n\nPara f = ${freq} Hz:\nω = 2πf = ${omega.toFixed(2)} rad/s\ns = jω = j${omega.toFixed(2)}`;
+                    break;
+            }
+            
+            output(result);
+        }
+        
+        // Função auxiliar para desenhar diagrama de fasores
+        function drawPhasorDiagram() {
+            const canvas = document.getElementById('phasorDiagram');
+            const ctx = canvas.getContext('2d');
+            
+            // Limpar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenhar eixos
+            ctx.beginPath();
+            ctx.moveTo(10, canvas.height/2);
+            ctx.lineTo(canvas.width-10, canvas.height/2);
+            ctx.moveTo(canvas.width/2, 10);
+            ctx.lineTo(canvas.width/2, canvas.height-10);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Adicionar labels
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('Re', canvas.width - 20, canvas.height/2 - 5);
+            ctx.fillText('Im', canvas.width/2 + 5, 20);
+            ctx.fillText('0', canvas.width/2 - 10, canvas.height/2 + 15);
+            
+            // Tentar obter valores de fasores para desenhar
+            try {
+                const mag1 = parseFloat(document.getElementById('phasor1-mag').value) || 0;
+                const phase1 = parseFloat(document.getElementById('phasor1-phase').value) || 0;
+                
+                const mag2 = parseFloat(document.getElementById('phasor2-mag').value) || 0;
+                const phase2 = parseFloat(document.getElementById('phasor2-phase').value) || 0;
+                
+                // Escala para caber no canvas
+                const scale = Math.min(canvas.width, canvas.height) / 2 / Math.max(mag1, mag2, 1) * 0.8;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                // Desenhar fasor 1
+                if (mag1 > 0) {
+                    const phase1Rad = phase1 * Math.PI / 180;
+                    const x1 = centerX + mag1 * scale * Math.cos(phase1Rad);
+                    const y1 = centerY - mag1 * scale * Math.sin(phase1Rad); // Inverter Y porque o canvas Y aumenta para baixo
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x1, y1);
+                    ctx.strokeStyle = '#043E7D';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Adicionar seta
+                    drawArrow(ctx, centerX, centerY, x1, y1, '#043E7D');
+                    
+                    // Adicionar label
+                    ctx.fillStyle = '#043E7D';
+                    ctx.fillText(`V₁ (${mag1}∠${phase1}°)`, x1 + 5, y1 - 5);
+                }
+                
+                // Desenhar fasor 2
+                if (mag2 > 0) {
+                    const phase2Rad = phase2 * Math.PI / 180;
+                    const x2 = centerX + mag2 * scale * Math.cos(phase2Rad);
+                    const y2 = centerY - mag2 * scale * Math.sin(phase2Rad);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = '#FF6B35';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Adicionar seta
+                    drawArrow(ctx, centerX, centerY, x2, y2, '#FF6B35');
+                    
+                    // Adicionar label
+                    ctx.fillStyle = '#FF6B35';
+                    ctx.fillText(`V₂ (${mag2}∠${phase2}°)`, x2 + 5, y2 - 5);
+                }
+            } catch (e) {
+                // Se não conseguir obter valores, mostrar mensagem
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#64748b';
+                ctx.textAlign = 'center';
+                ctx.fillText('Diagrama de Fasores', canvas.width/2, canvas.height/2);
+                ctx.font = '12px Arial';
+                ctx.fillText('Preencha os valores na aba "Operações com Fasores"', canvas.width/2, canvas.height/2 + 20);
+                ctx.textAlign = 'left';
+            }
+        }
+        
+        function drawArrow(ctx, fromX, fromY, toX, toY, color) {
+            const headlen = 10;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            
+            // Desenhar a ponta da seta
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // Função auxiliar para exibir resultados
+        function output(text) {
+            document.getElementById('output').textContent = text;
+        }
+    </script>
+</body>
+</html>
