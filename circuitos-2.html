@@ -264,14 +264,23 @@
         }
 
         .fasor-diagram {
-            width: 100%;
-            height: 200px;
-            margin: 20px 0;
-            position: relative;
-            border: 1px dashed #cbd5e1;
-            border-radius: 8px;
-            overflow: hidden;
-        }
+    width: 100%;
+    margin: 20px 0;
+    position: relative;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    aspect-ratio: 2.5 / 1; /* Mantém proporção aproximadamente 2.5:1 */
+    min-height: 180px;
+    max-height: 300px;
+}
+
+#phasorDiagram {
+    width: 100% ;
+    height: 100% ;
+    display: block;
+}
 
         .success { color: var(--success); }
         .warning { color: var(--warning); }
@@ -312,6 +321,41 @@
                 flex-wrap: wrap;
             }
         }
+        @media (max-width: 768px) {
+    .container {
+        padding: 0 12px;
+    }
+    
+    .card {
+        padding: 16px;
+    }
+    
+    .fasor-diagram {
+        min-height: 150px;
+        aspect-ratio: 2 / 1;
+    }
+    
+    #output {
+        font-size: 14px;
+        padding: 15px;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        font-size: 0.9rem;
+        padding: 12px 16px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .fasor-diagram {
+        min-height: 120px;
+    }
+}
     </style>
 </head>
 <body>
@@ -349,26 +393,23 @@
             <!-- Painel de Resultados -->
             <div class="card">
                 <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
-                <div id="output" class="result">
-                    Bem-vindo à calculadora de Circuitos Elétricos II!
-                    
-                    Selecione um módulo ao lado para começar os cálculos.
-                    
-                    ====================================
-                    
-                    Funcionalidades disponíveis:
-                    • Números complexos (retangular, polar, trigonométrica)
-                    • Conversão fasorial (tempo ↔ frequência)
-                    • Cálculo de reatâncias (indutiva/capacitiva)
-                    • Associação de impedâncias (série/paralelo)
-                    • Admitância e susceptância
-                    • Potência em CA (instantânea, média, complexa)
-                    • Ressonância (série e paralelo)
-                    • Funções de transferência
-                </div>
+               <div id="output" class="result">
+    Bem-vindo à calculadora de Circuitos Elétricos II!<br><br>
+    Selecione um módulo ao lado para começar os cálculos.<br><br>
+    ====================================<br><br>
+    Funcionalidades disponíveis:<br>
+    • Números complexos (retangular, polar, trigonométrica)<br>
+    • Conversão fasorial (tempo ↔ frequência)<br>
+    • Cálculo de reatâncias (indutiva/capacitiva)<br>
+    • Associação de impedâncias (série/paralelo)<br>
+    • Admitância e susceptância<br>
+    • Potência em CA (instantânea, média, complexa)<br>
+    • Ressonância (série e paralelo)<br>
+    • Funções de transferência
+</div>
                 
                 <div class="fasor-diagram">
-    <canvas id="phasorDiagram" width="500" height="200"></canvas>
+    <canvas id="phasorDiagram"></canvas> <!-- Remova width e height fixos -->
 </div>
             </div>
         </div>
@@ -945,19 +986,22 @@
         // Funções de navegação principal
         function switchMain() {
             const mainSelect = document.getElementById('mainSelect');
-            const sections = document.querySelectorAll('.section');
-            
-            // Ocultar todas as seções
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Mostrar a seção selecionada
-            const selectedSection = document.getElementById(mainSelect.value);
-            if (selectedSection) {
-                selectedSection.classList.add('active');
-            }
-            
+    const sections = document.querySelectorAll('.section');
+    
+    // Ocultar todas as seções
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Mostrar a seção selecionada
+    const selectedSection = document.getElementById(mainSelect.value);
+    if (selectedSection) {
+        selectedSection.classList.add('active');
+    }
+    
+    // Redesenhar canvas se for o módulo de fasores
+    setTimeout(redrawCanvasIfNeeded, 50); // Pequeno delay para garantir renderização
+    
             // Atualizar o resultado com instruções
             const moduleNames = {
                 'complex': 'Números Complexos',
@@ -1959,7 +2003,13 @@ function drawPhasorDiagram() {
         return;
     }
     
+    // Configurar tamanho do canvas baseado no container
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    
     const ctx = canvas.getContext('2d');
+    
     
     // Limpar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2138,9 +2188,12 @@ function drawPhasorDiagram() {
         
         
         // Função auxiliar para exibir resultados
-        function output(text) {
-            document.getElementById('output').textContent = text;
-        }
+       // Função auxiliar para exibir resultados
+function output(text) {
+    const outputElement = document.getElementById('output');
+    // Usar innerHTML para preservar quebras de linha
+    outputElement.innerHTML = text.replace(/\n/g, '<br>');
+}
          // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
             // Configurar unidades de reatância
@@ -2159,9 +2212,21 @@ function drawPhasorDiagram() {
                 updateTransferFunctionInputs();
             });
             
-            // Desenhar diagrama de fasores inicial
-            drawPhasorDiagram();
+             // Desenhar diagrama de fasores inicial
+    drawPhasorDiagram();
+    
+    // Redesenhar quando a janela for redimensionada
+    window.addEventListener('resize', function() {
+        drawPhasorDiagram();
+    });
         });
+
+        function redrawCanvasIfNeeded() {
+    const mainSelect = document.getElementById('mainSelect');
+    if (mainSelect.value === 'phasor') {
+        drawPhasorDiagram();
+    }
+}
         
     </script>
 </body>
