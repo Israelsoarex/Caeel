@@ -419,7 +419,7 @@
         <h1>Calculadora de Circuitos AC</h1>
         <p class="subtitle">Ferramentas para análise de circuitos em corrente alternada: números complexos, impedâncias,
             fasores, potência e ressonância</p>
-
+        
         <div class="grid">
             <!-- Painel de Controle -->
             <div class="card">
@@ -442,47 +442,18 @@
                     específicas.
                 </div>
             </div>
-
-            <!-- Painel de Resultados -->
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
-                <div id="output" class="result">
-                    Bem-vindo à calculadora de Circuitos Elétricos II!<br><br>
-                    Selecione um módulo ao lado para começar os cálculos.<br><br>
-                    ====================================<br><br>
-                    Funcionalidades disponíveis:<br>
-                    • Números complexos (retangular, polar, trigonométrica)<br>
-                    • Conversão fasorial (tempo ↔ frequência)<br>
-                    • Cálculo de reatâncias (indutiva/capacitiva)<br>
-                    • Associação de impedâncias (série/paralelo)<br>
-                    • Admitância e susceptância<br>
-                    • Potência em CA (instantânea, média, complexa)<br>
-                    • Ressonância (série e paralelo)<br>
-                    • Funções de transferência
-                </div>
-
-                <div class="fasor-diagram">
-    <canvas id="phasorDiagram"></canvas>
-    <div id="canvasPlaceholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #64748b; font-size: 14px; z-index: 1; pointer-events: none;">
-        Diagrama de Fasores<br>
-        <small>Selecione o módulo "Fasores e Domínios"</small>
-    </div>
-</div>
-            </div>
-        </div>
-
-        <!-- Módulos de Cálculo -->
-        <div class="card" style="margin-top: 30px;">
+    <!-- Módulos de Cálculo -->
+        <div class="card">
             <!-- Módulo: Números Complexos -->
             <div id="complex" class="section active">
                 <h2 class="card-title"><i class="fas fa-calculator"></i> Números Complexos</h2>
 
                 <div class="tab-buttons">
-    <button class="tab-btn active" onclick="switchComplexTab('rect', event)">Retangular</button>
-    <button class="tab-btn" onclick="switchComplexTab('polar', event)">Polar</button>
-    <button class="tab-btn" onclick="switchComplexTab('trig', event)">Trigonométrica</button>
-    <button class="tab-btn" onclick="switchComplexTab('operations', event)">Operações</button>
-</div>
+                    <button class="tab-btn active" onclick="switchComplexTab('rect')">Retangular</button>
+                    <button class="tab-btn" onclick="switchComplexTab('polar')">Polar</button>
+                    <button class="tab-btn" onclick="switchComplexTab('trig')">Trigonométrica</button>
+                    <button class="tab-btn" onclick="switchComplexTab('operations')">Operações</button>
+                </div>
 
                 <!-- Retangular -->
                 <div id="complex-rect" class="complex-subsection">
@@ -578,11 +549,11 @@
             <div id="phasor" class="section">
                 <h2 class="card-title"><i class="fas fa-wave-square"></i> Fasores e Domínios</h2>
 
-               <div class="tab-buttons">
-    <button class="tab-btn active" onclick="switchPhasorTab('timeToFreq', event)">Tempo → Frequência</button>
-    <button class="tab-btn" onclick="switchPhasorTab('freqToTime', event)">Frequência → Tempo</button>
-    <button class="tab-btn" onclick="switchPhasorTab('phasorOperations', event)">Operações com Fasores</button>
-</div>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchPhasorTab('timeToFreq')">Tempo → Frequência</button>
+                    <button class="tab-btn" onclick="switchPhasorTab('freqToTime')">Frequência → Tempo</button>
+                    <button class="tab-btn" onclick="switchPhasorTab('phasorOperations')">Operações com Fasores</button>
+                </div>
 
                 <!-- Tempo para Frequência -->
                 <div id="phasor-timeToFreq" class="phasor-subsection">
@@ -799,11 +770,11 @@
                 <h2 class="card-title"><i class="fas fa-bolt"></i> Potência em Corrente Alternada</h2>
 
                 <div class="tab-buttons">
-    <button class="tab-btn active" onclick="switchPowerTab('instant', event)">Potência Instantânea</button>
-    <button class="tab-btn" onclick="switchPowerTab('average', event)">Potência Média</button>
-    <button class="tab-btn" onclick="switchPowerTab('complex', event)">Potência Complexa</button>
-    <button class="tab-btn" onclick="switchPowerTab('rms', event)">Valor Eficaz (RMS)</button>
-</div>
+                    <button class="tab-btn active" onclick="switchPowerTab('instant')">Potência Instantânea</button>
+                    <button class="tab-btn" onclick="switchPowerTab('average')">Potência Média</button>
+                    <button class="tab-btn" onclick="switchPowerTab('complex')">Potência Complexa</button>
+                    <button class="tab-btn" onclick="switchPowerTab('rms')">Valor Eficaz (RMS)</button>
+                </div>
 
                 <!-- Potência Instantânea -->
                 <div id="power-instant" class="power-subsection">
@@ -887,10 +858,10 @@
                 <h2 class="card-title"><i class="fas fa-wave-square"></i> Ressonância</h2>
 
                 <div class="tab-buttons">
-    <button class="tab-btn active" onclick="switchResonanceTab('series', event)">Ressonância Série</button>
-    <button class="tab-btn" onclick="switchResonanceTab('parallel', event)">Ressonância Paralelo</button>
-    <button class="tab-btn" onclick="switchResonanceTab('qfactor', event)">Fator de Qualidade (Q)</button>
-</div>
+                    <button class="tab-btn active" onclick="switchResonanceTab('series')">Ressonância Série</button>
+                    <button class="tab-btn" onclick="switchResonanceTab('parallel')">Ressonância Paralelo</button>
+                    <button class="tab-btn" onclick="switchResonanceTab('qfactor')">Fator de Qualidade (Q)</button>
+                </div>
 
                 <!-- Ressonância Série -->
                 <div id="resonance-series" class="resonance-subsection">
@@ -898,7 +869,8 @@
                     <div class="row">
                         <input id="series-r" type="number" placeholder="Resistência R (Ω)" step="any" value="10">
                         <input id="series-l" type="number" placeholder="Indutância L (H)" step="any" value="0.1">
-                        <input id="series-c" type="number" placeholder="Capacitância C (F)" step="any" value="0.000001">
+                        <input id="series-c" type="number" placeholder="Capacitância C (F)" step="any"
+                            value="0.000001">
                     </div>
 
                     <button class="btn" onclick="calcSeriesResonance()">Calcular Ressonância Série</button>
@@ -1031,6 +1003,36 @@
                 </div>
             </div>
         </div>
+            <!-- Painel de Resultados -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
+                <div id="output" class="result">
+                    Bem-vindo à calculadora de Circuitos Elétricos II!<br><br>
+                    Selecione um módulo ao lado para começar os cálculos.<br><br>
+                    ====================================<br><br>
+                    Funcionalidades disponíveis:<br>
+                    • Números complexos (retangular, polar, trigonométrica)<br>
+                    • Conversão fasorial (tempo ↔ frequência)<br>
+                    • Cálculo de reatâncias (indutiva/capacitiva)<br>
+                    • Associação de impedâncias (série/paralelo)<br>
+                    • Admitância e susceptância<br>
+                    • Potência em CA (instantânea, média, complexa)<br>
+                    • Ressonância (série e paralelo)<br>
+                    • Funções de transferência
+                </div>
+
+                <div class="fasor-diagram">
+                    <canvas id="phasorDiagram"></canvas>
+                    <div id="canvasPlaceholder"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #64748b; font-size: 14px; z-index: 1; pointer-events: none;">
+                        Diagrama de Fasores<br>
+                        <small>Selecione o módulo "Fasores e Domínios"</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
     </div>
 
     <script>
@@ -1039,7 +1041,6 @@
         let currentPhasorTab = 'timeToFreq';
         let currentPowerTab = 'instant';
         let currentResonanceTab = 'series';
-
 
         // Funções de navegação principal
         function switchMain() {
@@ -1058,7 +1059,7 @@
             }
 
             // Redesenhar canvas se for o módulo de fasores
-            setTimeout(redrawCanvasIfNeeded, 50); // Pequeno delay para garantir renderização
+            setTimeout(redrawCanvasIfNeeded, 50);
 
             // Atualizar o resultado com instruções
             const moduleNames = {
@@ -1076,37 +1077,31 @@
         }
 
         // Funções para números complexos
-        // Funções para números complexos
-function switchComplexTab(tab, event = null) {
-    currentComplexTab = tab;
-    
-    // Atualizar botões da aba
-    const tabButtons = document.querySelectorAll('#complex .tab-btn');
-    tabButtons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ativar o botão correto
-    if (event && event.target) {
-        event.target.classList.add('active');
-    } else {
-        // Se não houver event, ativar pelo ID
-        const activeBtn = document.querySelector(`#complex .tab-btn[onclick*="${tab}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
+        function switchComplexTab(tab) {
+            currentComplexTab = tab;
+
+            // Atualizar botões da aba
+            const tabButtons = document.querySelectorAll('#complex .tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Ativar o botão correto
+            const activeBtn = document.querySelector(`#complex .tab-btn[onclick*="${tab}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.complex-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(`complex-${tab}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
         }
-    }
-    
-    // Mostrar a subseção selecionada
-    document.querySelectorAll('.complex-subsection').forEach(sub => {
-        sub.style.display = 'none';
-    });
-    
-    const targetSection = document.getElementById(`complex-${tab}`);
-    if (targetSection) {
-        targetSection.style.display = 'block';
-    }
-}
 
         function complexOperation(op) {
             const a1 = parseFloat(document.getElementById('rect-a1').value) || 0;
@@ -1355,37 +1350,32 @@ function switchComplexTab(tab, event = null) {
         }
 
         // Funções para fasores
-        // Funções para fasores
-function switchPhasorTab(tab, event = null) {
-    currentPhasorTab = tab;
-    
-    // Atualizar botões da aba
-    const tabButtons = document.querySelectorAll('#phasor .tab-btn');
-    tabButtons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ativar o botão correto
-    if (event && event.target) {
-        event.target.classList.add('active');
-    } else {
-        // Se não houver event, ativar pelo ID
-        const activeBtn = document.querySelector(`#phasor .tab-btn[onclick*="${tab}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
+        function switchPhasorTab(tab) {
+            currentPhasorTab = tab;
+
+            // Atualizar botões da aba
+            const tabButtons = document.querySelectorAll('#phasor .tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Ativar o botão correto
+            const activeBtn = document.querySelector(`#phasor .tab-btn[onclick*="${tab}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.phasor-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(`phasor-${tab}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
         }
-    }
-    
-    // Mostrar a subseção selecionada
-    document.querySelectorAll('.phasor-subsection').forEach(sub => {
-        sub.style.display = 'none';
-    });
-    
-    const targetSection = document.getElementById(`phasor-${tab}`);
-    if (targetSection) {
-        targetSection.style.display = 'block';
-    }
-}
+
         function timeToFrequency() {
             const vm = parseFloat(document.getElementById('time-vm').value) || 0;
             const omega = parseFloat(document.getElementById('time-omega').value) || 0;
@@ -1736,36 +1726,31 @@ function switchPhasorTab(tab, event = null) {
         }
 
         // Funções para potência
-        function switchPowerTab(tab, event = null) {
-    currentPowerTab = tab;
-    
-    // Atualizar botões da aba
-    const tabButtons = document.querySelectorAll('#power .tab-btn');
-    tabButtons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ativar o botão correto
-    if (event && event.target) {
-        event.target.classList.add('active');
-    } else {
-        // Se não houver event, ativar pelo ID
-        const activeBtn = document.querySelector(`#power .tab-btn[onclick*="${tab}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
+        function switchPowerTab(tab) {
+            currentPowerTab = tab;
+
+            // Atualizar botões da aba
+            const tabButtons = document.querySelectorAll('#power .tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Ativar o botão correto
+            const activeBtn = document.querySelector(`#power .tab-btn[onclick*="${tab}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.power-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(`power-${tab}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
         }
-    }
-    
-    // Mostrar a subseção selecionada
-    document.querySelectorAll('.power-subsection').forEach(sub => {
-        sub.style.display = 'none';
-    });
-    
-    const targetSection = document.getElementById(`power-${tab}`);
-    if (targetSection) {
-        targetSection.style.display = 'block';
-    }
-}
 
         function calcInstantPower() {
             const vm = parseFloat(document.getElementById('p-vm').value) || 0;
@@ -1859,36 +1844,31 @@ function switchPhasorTab(tab, event = null) {
         }
 
         // Funções para ressonância
-        function switchResonanceTab(tab, event = null) {
-    currentResonanceTab = tab;
-    
-    // Atualizar botões da aba
-    const tabButtons = document.querySelectorAll('#resonance .tab-btn');
-    tabButtons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ativar o botão correto
-    if (event && event.target) {
-        event.target.classList.add('active');
-    } else {
-        // Se não houver event, ativar pelo ID
-        const activeBtn = document.querySelector(`#resonance .tab-btn[onclick*="${tab}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
+        function switchResonanceTab(tab) {
+            currentResonanceTab = tab;
+
+            // Atualizar botões da aba
+            const tabButtons = document.querySelectorAll('#resonance .tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Ativar o botão correto
+            const activeBtn = document.querySelector(`#resonance .tab-btn[onclick*="${tab}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Mostrar a subseção selecionada
+            document.querySelectorAll('.resonance-subsection').forEach(sub => {
+                sub.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(`resonance-${tab}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
         }
-    }
-    
-    // Mostrar a subseção selecionada
-    document.querySelectorAll('.resonance-subsection').forEach(sub => {
-        sub.style.display = 'none';
-    });
-    
-    const targetSection = document.getElementById(`resonance-${tab}`);
-    if (targetSection) {
-        targetSection.style.display = 'block';
-    }
-}
 
         function calcSeriesResonance() {
             const r = parseFloat(document.getElementById('series-r').value) || 0;
@@ -2095,6 +2075,125 @@ function switchPhasorTab(tab, event = null) {
             output(result);
         }
 
+        // Função para desenhar diagrama de fasores
+        function drawPhasorDiagram() {
+            const canvas = document.getElementById('phasorDiagram');
+            const placeholder = document.getElementById('canvasPlaceholder');
+
+            if (!canvas) return;
+
+            const container = canvas.parentElement;
+            if (!container) return;
+
+            setTimeout(() => {
+                const containerWidth = container.clientWidth;
+                const containerHeight = container.clientHeight;
+
+                canvas.width = containerWidth;
+                canvas.height = containerHeight;
+
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+
+                // Limpar canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Verificar se estamos no módulo de fasores
+                const mainSelect = document.getElementById('mainSelect');
+                if (mainSelect.value !== 'phasor') {
+                    if (placeholder) placeholder.style.display = 'block';
+                    return;
+                }
+
+                if (placeholder) placeholder.style.display = 'none';
+
+                // Desenhar eixos com margens
+                const margin = 15;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(margin, centerY);
+                ctx.lineTo(canvas.width - margin, centerY);
+                ctx.moveTo(centerX, margin);
+                ctx.lineTo(centerX, canvas.height - margin);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Adicionar labels
+                ctx.font = '12px Arial';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('Re', canvas.width - margin - 10, centerY - 5);
+                ctx.fillText('Im', centerX + 5, margin + 10);
+                ctx.fillText('0', centerX - 10, centerY + 15);
+
+                // Tentar obter valores de fasores para desenhar
+                try {
+                    const mag1 = parseFloat(document.getElementById('phasor1-mag').value) || 0;
+                    const phase1 = parseFloat(document.getElementById('phasor1-phase').value) || 0;
+
+                    const mag2 = parseFloat(document.getElementById('phasor2-mag').value) || 0;
+                    const phase2 = parseFloat(document.getElementById('phasor2-phase').value) || 0;
+
+                    // Escala para caber no canvas
+                    const maxMag = Math.max(mag1, mag2, 1);
+                    const scale = Math.min(canvas.width, canvas.height) / 2 / maxMag * 0.8;
+
+                    // Desenhar fasor 1
+                    if (mag1 > 0) {
+                        const phase1Rad = phase1 * Math.PI / 180;
+                        const x1 = centerX + mag1 * scale * Math.cos(phase1Rad);
+                        const y1 = centerY - mag1 * scale * Math.sin(phase1Rad); // Inverter Y porque o canvas Y aumenta para baixo
+
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(x1, y1);
+                        ctx.strokeStyle = '#043E7D';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Adicionar seta
+                        drawArrow(ctx, centerX, centerY, x1, y1, '#043E7D');
+
+                        // Adicionar label
+                        ctx.fillStyle = '#043E7D';
+                        ctx.fillText(`V₁ (${mag1}∠${phase1}°)`, x1 + 5, y1 - 5);
+                    }
+
+                    // Desenhar fasor 2
+                    if (mag2 > 0) {
+                        const phase2Rad = phase2 * Math.PI / 180;
+                        const x2 = centerX + mag2 * scale * Math.cos(phase2Rad);
+                        const y2 = centerY - mag2 * scale * Math.sin(phase2Rad);
+
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(x2, y2);
+                        ctx.strokeStyle = '#FF6B35';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Adicionar seta
+                        drawArrow(ctx, centerX, centerY, x2, y2, '#FF6B35');
+
+                        // Adicionar label
+                        ctx.fillStyle = '#FF6B35';
+                        ctx.fillText(`V₂ (${mag2}∠${phase2}°)`, x2 + 5, y2 - 5);
+                    }
+                } catch (e) {
+                    // Se não conseguir obter valores, mostrar mensagem
+                    ctx.font = '14px Arial';
+                    ctx.fillStyle = '#64748b';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Diagrama de Fasores', canvas.width / 2, canvas.height / 2);
+                    ctx.font = '12px Arial';
+                    ctx.fillText('Preencha os valores na aba "Operações com Fasores"', canvas.width / 2, canvas.height / 2 + 20);
+                    ctx.textAlign = 'left';
+                }
+            }, 100);
+        }
+
         // Função auxiliar para desenhar setas
         function drawArrow(ctx, fromX, fromY, toX, toY, color) {
             const headlen = 10;
@@ -2112,199 +2211,13 @@ function switchPhasorTab(tab, event = null) {
             ctx.fill();
         }
 
-        // Função auxiliar para desenhar diagrama de fasores
-       function drawPhasorDiagram() {
-   const canvas = document.getElementById('phasorDiagram');
-    const placeholder = document.getElementById('canvasPlaceholder');
-    
-    if (!canvas) return;
-    
-    const container = canvas.parentElement;
-    if (!container) return;
-    
-    setTimeout(() => {
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
-        
-        canvas.width = containerWidth;
-        canvas.height = containerHeight;
-        
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        
-        // Limpar canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Verificar se estamos no módulo de fasores
-        const mainSelect = document.getElementById('mainSelect');
-        if (mainSelect.value !== 'phasor') {
-            if (placeholder) placeholder.style.display = 'block';
-            return;
-        }
-        
-        if (placeholder) placeholder.style.display = 'none';
-        //desenhar eixos com margens
-        const margin = 15;
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        
-        ctx.beginPath();
-        ctx.moveTo(margin, centerY);
-        ctx.lineTo(canvas.width - margin, centerY);
-        ctx.moveTo(centerX, margin);
-        ctx.lineTo(centerX, canvas.height - margin);
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        
-        // Adicionar labels
-        ctx.font = '12px Arial';
-        ctx.fillStyle = '#64748b';
-        ctx.fillText('Re', canvas.width - margin - 10, centerY - 5);
-        ctx.fillText('Im', centerX + 5, margin + 10);
-        ctx.fillText('0', centerX - 10, centerY + 15);
-        
-        // Tentar obter valores de fasores para desenhar
-        try {
-            const mag1 = parseFloat(document.getElementById('phasor1-mag').value) || 0;
-            const phase1 = parseFloat(document.getElementById('phasor1-phase').value) || 0;
-            
-            const mag2 = parseFloat(document.getElementById('phasor2-mag').value) || 0;
-            const phase2 = parseFloat(document.getElementById('phasor2-phase').value) || 0;
-            
-            // Escala para caber no canvas
-            const maxMag = Math.max(mag1, mag2, 1);
-            const scale = Math.min(canvas.width, canvas.height) / 2 / maxMag * 0.8;
-            
-            // Desenhar fasor 1
-            if (mag1 > 0) {
-                const phase1Rad = phase1 * Math.PI / 180;
-                const x1 = centerX + mag1 * scale * Math.cos(phase1Rad);
-                const y1 = centerY - mag1 * scale * Math.sin(phase1Rad); // Inverter Y porque o canvas Y aumenta para baixo
-                
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x1, y1);
-                ctx.strokeStyle = '#043E7D';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Adicionar seta
-                drawArrow(ctx, centerX, centerY, x1, y1, '#043E7D');
-                
-                // Adicionar label
-                ctx.fillStyle = '#043E7D';
-                ctx.fillText(`V₁ (${mag1}∠${phase1}°)`, x1 + 5, y1 - 5);
-            }
-            
-            // Desenhar fasor 2
-            if (mag2 > 0) {
-                const phase2Rad = phase2 * Math.PI / 180;
-                const x2 = centerX + mag2 * scale * Math.cos(phase2Rad);
-                const y2 = centerY - mag2 * scale * Math.sin(phase2Rad);
-                
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x2, y2);
-                ctx.strokeStyle = '#FF6B35';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Adicionar seta
-                drawArrow(ctx, centerX, centerY, x2, y2, '#FF6B35');
-                
-                // Adicionar label
-                ctx.fillStyle = '#FF6B35';
-                ctx.fillText(`V₂ (${mag2}∠${phase2}°)`, x2 + 5, y2 - 5);
-            }
-        } catch (e) {
-            // Se não conseguir obter valores, mostrar mensagem
-            ctx.font = '14px Arial';
-            ctx.fillStyle = '#64748b';
-            ctx.textAlign = 'center';
-            ctx.fillText('Diagrama de Fasores', canvas.width/2, canvas.height/2);
-            ctx.font = '12px Arial';
-            ctx.fillText('Preencha os valores na aba "Operações com Fasores"', canvas.width/2, canvas.height/2 + 20);
-            ctx.textAlign = 'left';
-        }
-    }, 100); // Delay de 100ms para garantir que o layout esteja pronto
-}
-
-// Função para inicializar o canvas corretamente
-function initCanvasOnLoad() {
-    // Esperar que a página esteja completamente carregada
-    if (document.readyState === 'complete') {
-        setTimeout(() => {
-            drawPhasorDiagram();
-        }, 300); // Delay maior para garantir tudo carregado
-    } else {
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                drawPhasorDiagram();
-            }, 300);
-        });
-    }
-}
-       
-
-        // Função auxiliar para exibir resultados
         // Função auxiliar para exibir resultados
         function output(text) {
             const outputElement = document.getElementById('output');
-            // Usar innerHTML para preservar quebras de linha
             outputElement.innerHTML = text.replace(/\n/g, '<br>');
         }
-       // Função para inicializar as abas corretamente
-function initTabs() {
-    // Inicializar abas ativas
-    switchComplexTab('rect');
-    switchPhasorTab('timeToFreq');
-    switchPowerTab('instant');
-    switchResonanceTab('series');
-}
 
-// Chamar no DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Configurar unidades de reatância
-    updateReactanceUnit();
-    
-    // Configurar listeners para os selects de tipo de impedância
-    document.getElementById('z1-type').addEventListener('change', function() {
-        updateImpedanceInputs('z1');
-    });
-    document.getElementById('z2-type').addEventListener('change', function() {
-        updateImpedanceInputs('z2');
-    });
-    
-    // Configurar listener para o tipo de circuito de função de transferência
-    document.getElementById('transfer-circuit-type').addEventListener('change', function() {
-        updateTransferFunctionInputs();
-    });
-    
-    // Inicializar canvas
-    initCanvasOnLoad();
-    
-    // Inicializar abas
-    initTabs();
-    
-    // Redesenhar quando a janela for redimensionada
-    window.addEventListener('resize', function() {
-        setTimeout(() => {
-            drawPhasorDiagram();
-        }, 100);
-    });
-    
-    // Também redesenhar quando a aba de fasores for ativada
-    document.getElementById('mainSelect').addEventListener('change', function() {
-        if (this.value === 'phasor') {
-            setTimeout(() => {
-                drawPhasorDiagram();
-            }, 100);
-        }
-    });
-});
-
-
+        // Função para redesenhar canvas se necessário
         function redrawCanvasIfNeeded() {
             const mainSelect = document.getElementById('mainSelect');
             if (mainSelect.value === 'phasor') {
@@ -2312,6 +2225,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Inicialização quando a página carrega
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configurar unidades de reatância
+            updateReactanceUnit();
+
+            // Configurar listeners para os selects de tipo de impedância
+            document.getElementById('z1-type').addEventListener('change', function () {
+                updateImpedanceInputs('z1');
+            });
+            document.getElementById('z2-type').addEventListener('change', function () {
+                updateImpedanceInputs('z2');
+            });
+
+            // Configurar listener para o tipo de circuito de função de transferência
+            document.getElementById('transfer-circuit-type').addEventListener('change', function () {
+                updateTransferFunctionInputs();
+            });
+
+            // Inicializar abas
+            switchComplexTab('rect');
+            switchPhasorTab('timeToFreq');
+            switchPowerTab('instant');
+            switchResonanceTab('series');
+
+            // Redesenhar quando a janela for redimensionada
+            window.addEventListener('resize', function () {
+                setTimeout(() => {
+                    drawPhasorDiagram();
+                }, 100);
+            });
+
+            // Desenhar diagrama inicial
+            setTimeout(() => {
+                drawPhasorDiagram();
+            }, 300);
+        });
     </script>
 </body>
 
