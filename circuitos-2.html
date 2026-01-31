@@ -169,18 +169,25 @@
             background: linear-gradient(90deg, #4b5563 0%, #6b7280 100%);
         }
 
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
         .result {
             background: #f8fbff;
             border: 1px solid #e5efff;
             padding: 20px;
             border-radius: 12px;
-            margin-top: 20px;
             white-space: pre-wrap;
             font-family: 'Courier New', monospace;
             font-size: 15px;
             line-height: 1.8;
-            max-height: 400px;
+            flex: 1;
             overflow-y: auto;
+            min-height: 200px;
+            max-height: 400px;
         }
 
         .result-title {
@@ -240,10 +247,11 @@
             display: flex;
             border-bottom: 2px solid #e2e8f0;
             margin-bottom: 20px;
+            overflow-x: auto;
         }
 
         .tab-btn {
-            padding: 12px 24px;
+            padding: 12px 16px;
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
@@ -251,7 +259,8 @@
             font-weight: 600;
             color: var(--muted);
             transition: all 0.3s;
-            width: auto;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -263,14 +272,19 @@
             border-bottom: 3px solid var(--primary);
         }
 
-        .fasor-diagram {
+        .fasor-diagram-container {
             width: 100%;
-            height: 200px;
             margin: 20px 0;
-            position: relative;
             border: 1px dashed #cbd5e1;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .fasor-diagram {
+            width: 100%;
+            height: 100%;
         }
 
         .success { color: var(--success); }
@@ -292,6 +306,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 14px;
         }
 
         .op-btn:hover {
@@ -309,7 +324,43 @@
             }
             
             .tab-buttons {
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .tab-btn {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .operation-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 12px;
+            }
+            
+            .grid {
+                gap: 16px;
+            }
+            
+            .btn {
+                padding: 12px;
             }
         }
     </style>
@@ -348,27 +399,29 @@
 
             <!-- Painel de Resultados -->
             <div class="card">
-                <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
-                <div id="output" class="result">
-                    Bem-vindo à calculadora de Circuitos Elétricos II!
+                <div class="result-container">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Resultados</h2>
+                    <div id="output" class="result">
+                        Bem-vindo à calculadora de Circuitos Elétricos II!
+                        
+                        Selecione um módulo ao lado para começar os cálculos.
+                        
+                        ====================================
+                        
+                        Funcionalidades disponíveis:
+                        • Números complexos (retangular, polar, trigonométrica)
+                        • Conversão fasorial (tempo ↔ frequência)
+                        • Cálculo de reatâncias (indutiva/capacitiva)
+                        • Associação de impedâncias (série/paralelo)
+                        • Admitância e susceptância
+                        • Potência em CA (instantânea, média, complexa)
+                        • Ressonância (série e paralelo)
+                        • Funções de transferência
+                    </div>
                     
-                    Selecione um módulo ao lado para começar os cálculos.
-                    
-                    ====================================
-                    
-                    Funcionalidades disponíveis:
-                    • Números complexos (retangular, polar, trigonométrica)
-                    • Conversão fasorial (tempo ↔ frequência)
-                    • Cálculo de reatâncias (indutiva/capacitiva)
-                    • Associação de impedâncias (série/paralelo)
-                    • Admitância e susceptância
-                    • Potência em CA (instantânea, média, complexa)
-                    • Ressonância (série e paralelo)
-                    • Funções de transferência
-                </div>
-                
-                <div class="fasor-diagram" id="phasorDiagram">
-                    <!-- Diagrama de fasores será desenhado aqui via JavaScript -->
+                    <div class="fasor-diagram-container">
+                        <canvas id="phasorDiagram" class="fasor-diagram"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -940,28 +993,7 @@
         let currentPhasorTab = 'timeToFreq';
         let currentPowerTab = 'instant';
         let currentResonanceTab = 'series';
-        
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar unidades de reatância
-            updateReactanceUnit();
-            
-            // Configurar listeners para os selects de tipo de impedância
-            document.getElementById('z1-type').addEventListener('change', function() {
-                updateImpedanceInputs('z1');
-            });
-            document.getElementById('z2-type').addEventListener('change', function() {
-                updateImpedanceInputs('z2');
-            });
-            
-            // Configurar listener para o tipo de circuito de função de transferência
-            document.getElementById('transfer-circuit-type').addEventListener('change', function() {
-                updateTransferFunctionInputs();
-            });
-            
-            // Desenhar diagrama de fasores inicial
-            drawPhasorDiagram();
-        });
+        let canvasSize = { width: 0, height: 0 };
         
         // Funções de navegação principal
         function switchMain() {
@@ -1952,10 +1984,45 @@
             
             output(result);
         }
+
+        // Função auxiliar para desenhar setas
+        function drawArrow(ctx, fromX, fromY, toX, toY, color) {
+            const headlen = 10;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            
+            // Desenhar a ponta da seta
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
+            ctx.closePath();
+            ctx.fill();
+        }
         
         // Função auxiliar para desenhar diagrama de fasores
         function drawPhasorDiagram() {
             const canvas = document.getElementById('phasorDiagram');
+            const container = canvas.parentElement;
+            
+            // Verificar se o canvas existe
+            if (!canvas) {
+                console.error("Canvas 'phasorDiagram' não encontrado!");
+                return;
+            }
+            
+            // Ajustar tamanho do canvas para ser responsivo
+            const containerWidth = container.clientWidth;
+            const containerHeight = 200; // Altura fixa para o diagrama
+            
+            // Atualizar tamanho do canvas se necessário
+            if (canvas.width !== containerWidth || canvas.height !== containerHeight) {
+                canvas.width = containerWidth;
+                canvas.height = containerHeight;
+            }
+            
             const ctx = canvas.getContext('2d');
             
             // Limpar canvas
@@ -1987,7 +2054,8 @@
                 const phase2 = parseFloat(document.getElementById('phasor2-phase').value) || 0;
                 
                 // Escala para caber no canvas
-                const scale = Math.min(canvas.width, canvas.height) / 2 / Math.max(mag1, mag2, 1) * 0.8;
+                const maxMag = Math.max(mag1, mag2, 1);
+                const scale = Math.min(canvas.width, canvas.height) / 2 / maxMag * 0.8;
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
                 
@@ -2044,26 +2112,44 @@
             }
         }
         
-        function drawArrow(ctx, fromX, fromY, toX, toY, color) {
-            const headlen = 10;
-            const angle = Math.atan2(toY - fromY, toX - fromX);
-            
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;
-            
-            // Desenhar a ponta da seta
-            ctx.beginPath();
-            ctx.moveTo(toX, toY);
-            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
-            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
-            ctx.closePath();
-            ctx.fill();
-        }
-        
         // Função auxiliar para exibir resultados
         function output(text) {
             document.getElementById('output').textContent = text;
+            // Rolagem automática para o final
+            const outputElement = document.getElementById('output');
+            outputElement.scrollTop = outputElement.scrollHeight;
         }
+        
+        // Função para redimensionar canvas quando a janela for redimensionada
+        function handleResize() {
+            drawPhasorDiagram();
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar unidades de reatância
+            updateReactanceUnit();
+            
+            // Configurar listeners para os selects de tipo de impedância
+            document.getElementById('z1-type').addEventListener('change', function() {
+                updateImpedanceInputs('z1');
+            });
+            document.getElementById('z2-type').addEventListener('change', function() {
+                updateImpedanceInputs('z2');
+            });
+            
+            // Configurar listener para o tipo de circuito de função de transferência
+            document.getElementById('transfer-circuit-type').addEventListener('change', function() {
+                updateTransferFunctionInputs();
+            });
+            
+            // Configurar redimensionamento da janela
+            window.addEventListener('resize', handleResize);
+            
+            // Desenhar diagrama de fasores inicial
+            drawPhasorDiagram();
+        });
+        
     </script>
 </body>
 </html>
